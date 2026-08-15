@@ -4,72 +4,64 @@ A browser-based ear-training and vocal intonation tool. Hear a note, sing it bac
 
 Created by **N. Scherbak**.
 
-No build step, no dependencies, no server. The app is a single self-contained HTML file that runs entirely in your browser using the Web Audio API. Nothing is uploaded; the microphone audio never leaves your device. (`test.html` next to it is a developer self-check, not part of the app — see below.)
+No build step, no dependencies, no server. One HTML file that runs entirely in your browser using the Web Audio API. Nothing is uploaded; the microphone audio never leaves your device.
 
-## For beginners — it works out of the box
+## Modes
 
-You don't need to change any settings. Every default is chosen to be beginner-friendly:
+The tool is laid out as a few clear steps:
 
-- **Note detection is forgiving** — it accepts low, breathy, or slightly unsteady notes rather than insisting on a perfectly clean tone, so ordinary singing registers instead of reading as "no sound".
-- **The pitch dial is in Beginner mode** — the needle keeps moving even when you start far off, so you can tell you're getting closer rather than just seeing it pegged.
-- **Grading follows you** — sing at your own pace; the app matches the notes you actually held, in order, without holding you to a stopwatch.
-- **Timing is relaxed** — you get a roomy window to find and hold each note.
+1. **Tones** — choose what you'll sing, via one of four modes (below).
+2. **Settings** (collapsed by default) — sound, playback tempo, grading mode, singing time, microphone environment, and your vocal range. The defaults suit most people; the collapsed row shows a one-line summary.
+3. **Play & sing** — **Play a tone** hears each tone on its own, one at a time; **Play a phrase** plays the whole sequence, then you sing it back.
+4. **Results** — expected vs. sung for each tone, plus an overall summary once a full exercise is done.
 
-Just pick a note, press Play, and sing. Everything below this is optional.
+### Tones: four modes
 
-**One thing to know:** if your singing reads as "no sound", it's almost always the microphone, not you — some call/meeting headsets process the signal in a way that hides the pitch. See **Choosing a microphone** below; a phone or a cheap wired earbud usually works better than a fancy headset.
+- **Manual** — pick tones one at a time with the dropdown and Add button (up to 9), drag to reorder, × to remove.
+- **Scales** — pick a scale type (Major or Natural minor), a key (all 12, correctly spelled — see below), a starting octave, how many octaves to span, and a direction (Up / Down / Up and down). Generates the full scale automatically.
+- **Arpeggios** — pick a chord type (major/minor triad, major/dominant/minor 7th), a key, octave, span, and direction. The chord tones (3 or 4 notes) are automatic — no need to count them yourself.
+- **Sequences** — standard vocal-warmup patterns built on scale degrees: 3-note ascending run, 3-note turn, 4-note ascending run, thirds, and the 5-note turn. Pick a scale type, key, and starting octave; the pattern does the rest.
 
-## For advanced singers — the Settings section
+A **Clear** button lives in every mode, since the tones are one shared sequence regardless of which mode built them — no need to switch back to Manual just to reset.
 
-Open **Settings** (collapsed by default) to tailor the app to a trained voice. The one-line summary under the header always shows your current choices. What you can change:
+### Correct key spelling
 
-- **Note detection: Forgiving / Strict** — Strict scores only clean, steady sustained tones and rejects breathy or unsteady singing. Use it if you have a steady low voice and want the app to hold you to a higher standard; leave it on Forgiving otherwise.
-- **Pitch dial: Beginner / Advanced** — Advanced gives a precise ±50¢ scale across the dial (a quartertone full-width) instead of compressing a whole octave onto it.
-- **Grading: Follow me / On the clock** — On the clock expects each note during a fixed timed slot, for strict practice.
-- **Singing time, playback tempo, sound, and microphone environment** — all adjustable; see the sections below.
+Every key is spelled correctly for its context — an F major scale reads F-G-A-**B♭**-C-D-E-F, not F-G-A-**A♯**-C-D-E-F. The two "black key" slots where major and minor conventionally disagree (C♯/D♭ and G♯/A♭) resolve to whichever spelling is standard for the scale type you've picked, automatically.
 
-## Layout
+### Rounds
 
-The interface is deliberately compact, top to bottom:
+A generated exercise longer than a few notes is split into **rounds** of about 4 notes each, so you're never asked to sing 15 notes in one breath. Each round is practiced and graded on its own; a round indicator ("Round 2 of 4 · D3–D5") shows your place and the whole exercise's range. A **Next round →** button appears once a round is graded; once every round is done, a **Step up a semitone ↑** button appears too — a standard vocal-warmup move that repeats the same exercise transposed up one half-step, rather than making you re-pick a key each time.
 
-- **Tones** — build your phrase. Toggle between **Manual** (pick tones with the dropdown) and **Arpeggio** (generate a random arpeggio). Up to 9 tones.
-- **Settings** (collapsed by default) — sound, playback tempo, grading mode, singing time, pitch dial scale, and microphone environment. The defaults suit most people; the collapsed row shows a one-line summary of the current settings.
-- **Play & sing** — **Play a tone** hears each tone on its own, one at a time; **Play a phrase** plays the whole sequence, then you sing it back. With a single tone selected, only **Play a tone** is available.
-- **Results** — expected vs. sung for each tone.
+### Up and down
 
-Build any sequence of up to 9 notes with the note picker, which spans the full singing range (**E2–C6**, bass through soprano). When two or more notes are in the sequence, **Play a phrase** appears so you can hear the whole phrase and sing it back in one go.
-
-Choose the playback sound between a **pure tone** and a **piano** (a real sampled grand loaded over the network when online — see below). A live tuning meter shows your pitch in real time while you sing, and a results grid grades each note (on pitch ≤15¢, close ≤35¢, off beyond that).
-
-## Random arpeggio
-
-The **Random arpeggio** generator builds a musically real arpeggio — the notes of a chord played in sequence — rather than random pitches. Pick the chord type (major/minor triad, major/dominant/minor 7th, or octave), the number of **distinct tones**, and a **range**, and it generates a fitting arpeggio, cycling up through octaves for longer lengths. Turn on **Ascending + descending** to mirror the shape back down without repeating the top (e.g. C–E–G–E–C). If a range is too small for the requested length, it tells you.
+**Play up and down** (next to the tone chips, for 2+ tones) mirrors whatever's selected on the fly — C-E-G plays as C-E-G-E-C, the peak note once, never repeated — without ever changing the chips themselves. It's the same mechanism whether the tones came from Manual, Scales, or Arpeggios (Sequences patterns are already complete shapes and don't use it).
 
 ## Getting started
 
-The tool opens with no tones selected — build your phrase from scratch in step 1 (add tones or generate an arpeggio). The Play button stays disabled until at least one tone is chosen.
+The tool opens with no tones selected — build your phrase from scratch (add tones manually, or generate one via Scales, Arpeggios, or Sequences). The Play button stays disabled until at least one tone is chosen.
 
-When a sung tone can't be graded, the feedback says which of three things happened: **no sound detected** (nothing came through the mic), **tone too short** (sound was heard but not held long enough to read), or **pitch kept moving** (a tone was heard but never settled — a slide or a hunt rather than a held note). So you know whether to sing at all, hold longer, or settle on one pitch.
+When a sung tone can't be graded, the feedback distinguishes two cases: **no sound detected** (nothing came through the mic) versus **tone too short** (sound was heard but not held long enough to read) — so you know whether to sing louder or hold longer.
 
-Quiet singing is fine. The app judges whether a signal is *periodic*, not whether it's loud, so a soft sustained vowel reads normally — you shouldn't need to sing up to be heard.
+## Profiles
 
-## The pitch dial
+A lightweight name-tag system — no login, no account, no server. A "Who's practicing?" switcher in the header lets more than one person share a device without mixing up settings. On first visit, a small welcome popup offers to save a nickname (skippable — you can always add one later via **+ New**). Everything is stored in your browser's local storage, tied to that nickname, on that device.
 
-The live meter shows how far you are from the target while you sing. It has two scales, in **Settings → Pitch dial**:
+## Vocal range
 
-- **Beginner** (default) — the needle stays 1:1 near the target, then compresses further out, so a whole octave fits on the dial. If you start a fifth or an octave off, the needle still moves as you close in — it tells you you're getting warmer, not just that you're flat.
-- **Advanced** — ±50¢ across the full dial. Precise, but it pegs at the edge and stops moving if you're further off than that.
+In Settings, set your comfortable singing range — either by picking notes directly, or with **🎤 Detect**: a short guided tool that asks you to sing your highest comfortable note, then your lowest, each held for at least half a second, and lets you double-check or adjust the result before saving.
 
-The green zone (±15¢) occupies exactly the same screen space in both, so switching scales doesn't change what "close" feels like — only what happens once you're well outside it. This affects the display only; scoring is identical in both modes.
+The range is **advisory only** — it never blocks anything. If a generated exercise goes outside it, you'll see a short note (e.g. "This exercise goes up to F5, which is 4 semitones above your stated range") and can still practice it, or adjust your range.
+
+Once a range is set, the Scales/Arpeggios/Sequences panes show a **"Suggested for your range"** list — the top 3 keys ranked by how many of their notes actually fit your range, e.g. "C major — 8/8" — and picking a key also pre-fills the best-fitting octave. Both are just suggestions; every key and octave stays fully selectable.
 
 ## Feedback for beginners
 
-- **You sang** shows the nearest note to what you actually sang, plus its own small deviation (e.g. `D3 +12¢`).
-- **Off target** shows how far that is from the note you were asked to sing, in cents.
-- A plain-English line translates the gap into musical terms — for example, *"You sang D3, which is about one and a half tones lower than C4."* No jargon required.
+- While singing, the **meter** is the live indicator — no text to read mid-note, just watch the needle. It glows and widens when you're on pitch, and pegs to the edge with a label (e.g. "≪ about two tones lower") if you're further off than it can show.
+- After each tone, the **results card** shows the target, the note you actually sang (e.g. `D3 +12¢`), and a plain-English verdict — *"about one and a half tones lower"* rather than raw cents. No jargon required.
+- Once a full exercise is done, a summary line gives the overall count — *"3/4 notes on pitch — see details below."*
 - A collapsible **"New to this?"** panel explains notes, semitones, tones, sharp/flat, and cents in plain language.
 
-An info panel beside the Play buttons narrates each step: an animated wave while a note plays, a friendly **"Sing!"** cue with a soft, unlabelled progress bar (no stressful countdown) during your turn, and **"Complete — check the summary below"** at the end.
+An info panel beside the Play buttons narrates each step: an animated wave while a note plays, a **"Get ready"** cue with three calm dots counting down, a friendly **"Sing!"** prompt during your turn, and the summary at the end.
 
 ## Feedback
 
@@ -91,71 +83,24 @@ The dot timer adapts automatically to whatever the total window is: the final 5 
 Two ways to grade a sung phrase:
 
 - **On the clock** — the classic mode. Each tone is expected during its highlighted slot on a fixed timer (the "Singing time for each tone" setting). Predictable and good for strict practice.
-- **Follow me** (default) — sing the phrase at your own pace and the app follows you. It records the whole take, finds the tones you actually *held* (a tone must be held for at least **half a second** to count, so an accidental sweep through the right pitch doesn't score), and matches them in order to the expected sequence. Timing no longer matters — only which tones you held, and in what order.
+- **Follow me** — sing the phrase at your own pace and the app follows you. It records the whole take, finds the tones you actually *held* (a tone must be held for at least **half a second** to count, so an accidental sweep through the right pitch doesn't score), and matches them in order to the expected sequence. Timing no longer matters — only which tones you held, and in what order.
 
-Both modes work with a single tone as well as a phrase.
+In **Follow me** mode the "Singing time for each tone" selector becomes an overall time *budget* per tone rather than a strict slot, with a floor that always leaves room to hold every tone for a full second. If the app detects a different number of held tones than expected, it tells you (e.g. "detected 4 held tones of 5"), which usually means two tones were slurred together or one wobbled into two.
 
-In **Follow me** mode the "Singing time for each tone" selector becomes an overall time *budget* per tone rather than a strict slot, with a floor that always leaves room to hold every tone for a full second.
-
-Matching is an order-preserving alignment, so a missed or extra note stays a local error: if you skip the middle note of a three-note phrase, the other two are still scored correctly and the missing one is reported as missing — rather than every later note being compared against the wrong target. Notes you didn't sing count against your score rather than quietly vanishing from the average.
-
-A brief dropout mid-note — a breath catch, or a moment where the voice dips — no longer splits one tone into two, or makes it disappear for being too short. Gaps under ~150 ms on the same pitch are treated as one continuous tone; longer silences, or a return on a different pitch, are a real pause.
-
-Follow me works best for clear, deliberate singing with a small gap between tones. Very legato phrases can still confuse the tone-splitting, since the app can only separate tones by pitch change when there's no silence between them.
-
-## Note detection
-
-**Forgiving** (default) accepts low, breathy, or slightly unsteady notes — the app looks for a periodic signal and, in this mode, tolerates a less-than-perfect one. This suits most singers, and especially low notes (around C3 and below) where the voice is naturally less stable. **Strict** tightens the thresholds so only clean, steady sustained tones are scored; a trained voice practising precise low notes may prefer it, but it will reject breathy or wavering singing as "no sound".
-
-If a note you clearly sang reads as "no sound", Forgiving mode usually fixes it. If it doesn't, the cause is almost always the microphone rather than the app — see **Choosing a microphone** below.
-
-## Choosing a microphone
-
-This matters more than you'd expect, and it's not about cost. The app needs to see the actual *waveform* of your voice to measure its pitch. Some microphones — especially headsets and earpieces designed for calls and meetings — run the signal through built-in processing (noise reduction, voice isolation, automatic gain) that is tuned to make **speech** clear, not to preserve **pitch**. That processing can smear or scramble the low frequencies of a sung note before the audio ever reaches the browser, so a note you sang cleanly arrives as something the app correctly reads as "not a tone".
-
-The tell-tale sign: a note reads as "no sound" or a wildly wrong pitch on one device but works fine on another — a phone, for instance — with the same voice.
-
-What works well:
-
-- A phone (the built-in mics on phones handle sung pitch well)
-- Plain wired earbuds/earphones with an inline mic (inexpensive is fine)
-- A laptop's built-in microphone
-- Any basic USB or plugged-in microphone that isn't a "communications" headset
-
-What to avoid for singing practice:
-
-- Headsets and earpieces that advertise noise cancellation or "crystal-clear calls" — the same processing that helps calls hurts pitch detection
-- Bluetooth headsets used as a microphone (call mode heavily downsamples and processes the mic)
-
-You don't need anything expensive — a cheap wired earbud mic often outperforms a pricey gaming or conferencing headset here, precisely because it does less to the signal. If you must use a processing headset, try turning off its "enhancements" or "signal processing" in your operating system's sound settings, though not all of them expose that option.
-
-If you're not sure whether your mic is the problem, turn on **Show detection diagnostics** (Settings → Developer tools) and sing a note: a `best-dip` value near 0 means the mic is delivering a clean, periodic signal, while a value near 1 means the signal reaching the app has no usable pitch — a strong sign the mic is processing it.
+Follow me is heuristic and works best for clear, deliberate singing with a small gap between tones; very legato phrases or heavy vibrato can confuse the tone-splitting. It's aimed at beginners and amateur singers who want natural practice rather than clock discipline.
 
 ## Recording environment
 
-**Quiet room** (default) uses your raw microphone signal, which reads pitch most accurately, and asks the browser to disable its echo cancellation, noise suppression, and gain control (including vendor-specific processing) so nothing alters the waveform. Note that this only controls the *browser's* processing — a microphone that processes the signal in its own hardware or in the operating system (see **Choosing a microphone**) is not affected by this setting. **Noisy room** turns the browser processing on — it reduces background noise while recording your voice, but can slightly affect pitch accuracy. Switching this re-acquires the microphone, since the setting is applied when the mic starts.
+**Quiet room** (default) uses your raw microphone signal, which reads pitch most accurately. **Noisy room** turns on the browser's noise suppression and automatic gain control — it reduces background noise while recording your voice, but can slightly affect pitch accuracy. Switching this re-acquires the microphone, since the setting is applied when the mic starts.
 
 ## Mobile notes
 
 The app works on phones, with a few browser-imposed limits worth knowing:
 
-- **Silent / ring mode mutes the speaker.** If the phone's hardware silent switch (iPhone) or ring/mute mode (Android) is on, the browser cannot play the reference tone through the **speaker** — you'll see the note "play" but hear nothing. **Headphones play even in silent mode**, so plugging them in is the quickest fix (and better for singing practice anyway); otherwise turn silent mode off. A web page has no way to *detect* the switch, so the app shows a one-time reminder on phones. (Your singing is still recorded fine either way — this only affects playback.)
-- **On iOS every browser is Safari underneath**, so Safari's rules apply everywhere. Audio only starts from a tap (the Play buttons handle this).
-- **The microphone requires https.** Opening `index.html` from local storage on a phone will not work — use the GitHub Pages URL. The app says so explicitly if it detects an insecure context.
-- **On iOS the mic is released between takes**, because iOS routes playback to the quiet earpiece for as long as a mic stream is live — so the reference tone would be inaudible otherwise. That means iOS may ask about the mic more than once. On desktop the stream is held for the session and muted between takes instead, so permission is asked for once.
-- **Backgrounding the app** stops a recording in progress; the app detects this and aborts cleanly rather than grading noise. On desktop it also releases the mic, so the browser's recording indicator doesn't stay lit while you're in another tab.
-- Pitch detection runs at ~30Hz to keep CPU use reasonable on phones.
-
-## When the microphone won't start
-
-Different failures get different messages, so you can tell them apart:
-
-- **Microphone blocked** — permission was refused. Allow mic access for the site.
-- **No microphone found** — nothing is connected.
-- **Audio didn't start** — permission was granted but the browser's audio engine didn't come up. Press Play to try again. (This is a real Chromium/Edge behaviour: the request to start audio can hang rather than fail. The app now gives up after 1.5 seconds and tells you, instead of sitting on "starting the microphone…" forever.)
-- **Microphone needs https** — you've opened the file locally rather than over a URL.
-
-In every case the app re-enables itself and Play retries. It should never get stuck in a listening or loading state.
+- **The microphone requires https.** Opening `index.html` from local storage on a phone will not work — use the GitHub Pages URL. The app now says so explicitly if it detects an insecure context.
+- **On iOS every browser is Safari underneath**, so Safari's rules apply everywhere. Audio only starts from a tap (the Play buttons handle this), and the physical silent switch can mute playback.
+- **Backgrounding the app** stops a recording in progress; the app detects this and aborts cleanly rather than grading noise.
+- Pitch detection is throttled to ~30Hz to keep CPU use reasonable on phones.
 
 ## Sound: tone vs. piano
 
@@ -180,21 +125,6 @@ Filenames follow the pattern `C4v8.mp3`, `D#4v8.mp3`, `A2v8.mp3` — note name, 
 
 These samples are third-party content — see [NOTICES.md](NOTICES.md).
 
-
-## Tuning
-
-A few constants near the top of their sections in `index.html` control how forgiving the app is. All were chosen against synthetic test signals, not real voices, so they're the first things to adjust if the app disagrees with your ears. `test.html` will tell you if you push one far enough to break something else.
-
-| constant | default | raise it if… | lower it if… |
-|---|---|---|---|
-| `CONF_MIN` | 0.5 | room noise is being scored as notes | quiet singing reads as "no sound" |
-| `MAX_UNSTABLE` | 45¢ | steady singing is rejected as "pitch kept moving" | slides and wobbles are being scored as held tones |
-| `GAP_BRIDGE_MS` | 150 ms | one held tone keeps splitting into two | two deliberate notes get merged into one |
-| `MIN_HOLD` | 500 ms | brief blips are counted as notes | short deliberate notes are being missed |
-| `BEG_MAX_C` | 1200¢ | — | the Beginner needle feels too lively when far off |
-| `SEG_TOL` | 60¢ | legato notes aren't being separated | vibrato is splitting one note into several |
-
-The measured margins behind two of these: a sung vowel scores 0.83–1.00 confidence while pure noise tops out around 0.11, so `CONF_MIN` sits in a wide empty gap rather than near an edge. Heavy vibrato measures ~32¢ of wobble and a slide through the target ~85¢, so `MAX_UNSTABLE` separates them with room to spare.
 
 ## Run locally
 
@@ -226,53 +156,14 @@ GitHub Pages serves over HTTPS, which is required for microphone access — so t
 
 ## Notes and limits
 
-- Pitch detection uses the **YIN algorithm**, which finds the period at which the signal best repeats and is robust against the octave errors that simpler autocorrelation is prone to. It reports a **confidence** value (how cleanly the signal repeats) alongside each reading; readings below the confidence threshold are discarded rather than graded, which is what lets quiet singing be read accurately instead of written off as silence. The **Forgiving / Strict** setting adjusts that threshold. Very high input sample rates (96/192 kHz) are decimated toward 48 kHz first, and the mic is band-limited to roughly 60–1400 Hz before analysis to keep hum and high harmonics from misleading it.
-- The lowest **target** is E2 (~82 Hz), but the detector reaches a whole tone lower so it can tell you how far below E2 a flat note landed. Below that, or for genuinely aperiodic input, it reports "no sound" rather than guessing. Mains hum (50/60 Hz) sits below the detection floor.
-- **Follow me** matches your held tones to the expected sequence with an order-preserving dynamic-programming alignment, so a dropped or added note stays a local error instead of shifting every note after it. **On the clock** still uses fixed time windows, so sing at a steady pace in that mode.
-- Grading measures the pitch you **settled on**, not your closest instant: it finds the steadiest stretch of the take, reports the median deviation there, and measures steadiness separately. A slow slide through the target doesn't score as a held tone, and an initial scoop is ignored without a hard grace period.
+- Pitch detection uses the **McLeod Pitch Method** (MPM), via a bundled, adapted copy of [pitchy](https://github.com/ianprime0509/pitchy) — a refinement of autocorrelation specifically designed to avoid octave errors and stay robust on real (non-pristine) audio, including a per-reading confidence ("clarity") score. See [NOTICES.md](NOTICES.md) for attribution.
+- Follow me's tone-segmentation is heuristic — very legato phrases (no gap between notes) or heavy vibrato can occasionally merge or split a tone incorrectly.
 - Works in any modern browser. Requires microphone permission.
-
-## Developer tools
-
-At the bottom of Settings, a collapsed **Developer tools** section holds diagnostics that ordinary use never needs:
-
-- **Show detection diagnostics** — adds a technical line under each take: the detected pitch, sample rate, confidence, periodicity, harmonic profile, and why a note wasn't scored. Useful for troubleshooting a mic or a "no sound" report.
-- **Use legacy detector** — swaps YIN for the older, simpler autocorrelation detector, for comparison.
-- **Bypass audio filters** — feeds the raw mic signal to the detector, skipping the band-pass filters (takes effect the next time the mic starts).
-
-## Self-check
-
-`test.html` sits next to `index.html` and checks the grading maths — 148 checks covering pitch detection (including sample-rate independence and forgiving/strict modes), single-tone scoring, phrase alignment, microphone startup, below-E2 feedback, and the dial scale. Open it and press **Run the checks**. (Opening it from a folder rather than a URL may stop the browser reading `index.html` on its own; drag the file onto the drop box if so.)
-
-It does **not** test the app — no microphone, no audio, no interface. It tells you whether an edit broke the scoring. Green means any problem you're seeing is the browser, mic, or audio rather than the maths. The page explains all of this in more detail when you open it.
-
-## Changelog
-
-### v2.2
-Layout update (Tone section)
-
-### v2.1
-
-Detection, feedback, and mobile improvements. All backward-compatible; existing behaviour is preserved, with smarter defaults.
-
-- **New pitch detection (YIN).** Replaced the earlier autocorrelation detector with the YIN algorithm.
-- **Forgiving / Strict detection modes** (Settings → Note detection). 
-- **Below-E2 feedback.** A note sung below the lowest target (E2) is now reported by how far below it landed.
-- **Sample-rate independence.** Detection no longer degrades on audio hardware running at 96/192 kHz, and the mic signal is band-limited (~60–1400 Hz) before analysis.
-- **Improved detection robustness**
-- **Microphone guidance** (README). Added a "Choosing a microphone" section: some headsets and call-optimised mics process the signal in ways that hide sung pitch, and an inexpensive clean mic (a phone, a plain wired earbud, a built-in laptop mic) often works far better than a pricey processing headset.
-- **Silent-mode reminder on phones.**
-- **Developer tools** (Settings, collapsed): detection diagnostics, a legacy-detector toggle, and a filter-bypass toggle, for troubleshooting.
-- **Self-check** grew to 148 checks, now covering sample-rate independence, the detection modes, and below-E2 feedback.
-
-### v2.0
-
-Grading and detection overhaul: order-preserving phrase alignment, steadiness-aware scoring, confidence-based detection, the Beginner/Advanced pitch dial, and the `test.html` self-check.
 
 ## Third-party content
 
-The piano samples in `samples/piano/` are **Salamander Grand Piano V3**, recorded by Alexander Holm and packaged as MP3 by darosh (Jan Forst), used under the MIT license. They are not covered by this project's own license — see [NOTICES.md](NOTICES.md) for the full notice and attribution.
+The piano samples in `samples/piano/` are **Salamander Grand Piano V3**, recorded by Alexander Holm and packaged as MP3 by darosh (Jan Forst), used under the MIT license. The pitch detector bundles **pitchy** (0BSD) and **fft.js** (MIT). None of this is covered by this project's own license — see [NOTICES.md](NOTICES.md) for the full notices and attribution.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+Free for non-commercial use. Reproduction of the app, in whole or in part, is allowed with attribution to the creator and source — see [LICENSE](LICENSE). Bundled third-party components (piano samples, pitchy, fft.js) remain under their own separate licenses — see [NOTICES.md](NOTICES.md).

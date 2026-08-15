@@ -1,27 +1,44 @@
-MIT License
+Vocal Pitch Trainer License
 
 Copyright (c) 2026 Nikolai Scherbak
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This license applies to the original source code and documentation of this
+project (the "Software"), written by Nikolai Scherbak. It does NOT cover
+bundled third-party components — see the "NOTE ON SCOPE" section below.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Permission is granted, free of charge, to use, copy, modify, and redistribute
+the Software, in whole or in part, subject to the following conditions:
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+1. NON-COMMERCIAL USE ONLY. The Software, and any copy, modification, or
+   derivative of it, may be used only for non-commercial purposes. Any use
+   intended for or directed toward commercial advantage or monetary
+   compensation is not permitted without prior written permission from the
+   copyright holder.
+
+2. ATTRIBUTION REQUIRED. Any reproduction or redistribution of the Software,
+   in whole or in part, must give clear attribution to the original creator
+   (Nikolai Scherbak) and the source of the project. This applies whether the
+   Software is shared unmodified, modified, or incorporated into a larger
+   work.
+
+3. NO WARRANTY. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+   KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+   NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+   DEALINGS IN THE SOFTWARE.
+
+For commercial licensing inquiries, contact the copyright holder directly.
 
 ---
 
-NOTE ON SCOPE: This license covers the source code and documentation of this
-project. It does NOT cover the third-party piano samples in samples/piano/,
-which are licensed separately - see NOTICES.md.
+NOTE ON SCOPE: This license covers only the original source code and
+documentation of this project. It does NOT cover:
+
+- The third-party piano samples in samples/piano/
+- The bundled pitchy (pitch detection) library
+- The bundled fft.js library
+
+These remain under their own original licenses — see NOTICES.md for full
+attribution and license text for each.
