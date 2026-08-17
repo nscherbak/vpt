@@ -102,6 +102,31 @@ The app works on phones, with a few browser-imposed limits worth knowing:
 - **Backgrounding the app** stops a recording in progress; the app detects this and aborts cleanly rather than grading noise.
 - Pitch detection is throttled to ~30Hz to keep CPU use reasonable on phones.
 
+## Headphones and microphones
+
+The single biggest thing you control about accuracy is what you plug in.
+
+Wired is best. 3.5 mm or USB-C headphones or earbuds, with your phone or laptop's own microphone, is the most reliable setup. No codec, no profile switching, low latency, full bandwidth.
+
+Avoid Bluetooth headsets. Classic Bluetooth cannot carry high-quality audio and microphone input at the same time — it uses one profile or the other. The moment any app opens the microphone, the headset drops from A2DP (stereo, full quality) to HFP (mono, call quality: 8 kHz narrowband or 16 kHz wideband). Two consequences here:
+
+The reference tone you are trying to match becomes muffled and mono. Your matching gets worse, and the app records that as your error.
+Quiet room stops meaning what it says. That setting turns off the browser's noise suppression and gain control, but a Bluetooth headset and the operating system apply their own speech-tuned processing underneath, which a web page cannot reach.
+
+Using Bluetooth headphones "only for listening" does not avoid this — opening the microphone switches the whole device. On iOS it is not possible to play via A2DP while capturing via HFP at all.
+
+Bluetooth LE Audio devices avoid the tradeoff, but support is uneven across phones and headsets, so it is not something to count on.
+
+Turn off noise cancelling and any "gaming mode" on your headset. Aggressive noise gates cut the quiet tail of a long note, so a perfectly steady hold gets measured as a short one — which matters in the Hold it steady lesson, where duration is part of the criterion.
+
+A close boom microphone can clip. Excellent signal-to-noise, but with automatic gain control off (Quiet room), a loud singer very close to the mic can distort the waveform. Back off a few centimetres if readings look erratic on loud notes.
+
+The app makes a best-effort guess at a Bluetooth capture path and shows a single dismissible line when it sees one. Detection relies on the browser reporting the capture sample rate, which Safari often does not, so treat the absence of a warning as no information rather than an all-clear. The same guidance is in the app under Settings → Microphone → "Which headphones or mic should I use?".
+
+What is not affected
+
+Band-limited audio does not cause octave errors here. Pitch detection uses the McLeod Pitch Method, which recovers the period from harmonic spacing, so a telephone-band path that strips everything below 300 Hz still reads low notes correctly — verified down to E2 at full clarity in the test suite.
+
 ## Sound: tone vs. piano
 
 The **pure tone** is generated with the Web Audio oscillator and works fully offline.
