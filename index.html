@@ -126,7 +126,6 @@
   .path-card.path-tried .path-mark{border-color:var(--ok);color:var(--ok)}
   .path-title{font-weight:700;font-size:15px}
   .path-flavor{font-size:12.5px;color:var(--muted);font-style:italic;margin-top:2px}
-  .path-purpose{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.4}
   .path-fb-note{font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:6px}
 
   /* ---- the two-mode switch ---- */
@@ -139,8 +138,6 @@
   .app-mode-panel{display:none}
   .shared-active-seq{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-bottom:14px}
   .back-to-path{font-size:12.5px;color:var(--accent);cursor:pointer;margin:0 0 10px;text-decoration:underline;text-underline-offset:2px;width:fit-content}
-  .to-path-link{font-size:12.5px;color:var(--accent);cursor:pointer;margin:6px 0 0;text-decoration:underline;text-underline-offset:2px;width:fit-content}
-  .to-path-link.hidden{display:none}
   .challenge-prompt{margin-top:6px}
   .self-assess{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
   #perception-panel.hidden{display:none}
@@ -158,6 +155,8 @@
   .self-assess .sa-options button{flex:1}
   .challenge-prompt #challenge-try-btn{margin-left:8px;font-size:12px;padding:4px 12px}
   .back-to-path.hidden{display:none}
+  .to-path-link{font-size:12.5px;color:var(--accent);cursor:pointer;margin:6px 0 0;text-decoration:underline;text-underline-offset:2px;width:fit-content}
+  .to-path-link.hidden{display:none}
   .app-mode-panel.active{display:block}
 
   /* ---- Learning Path: next-lesson card ---- */
@@ -428,6 +427,11 @@
 
   /* beginners vocabulary */
   .vocab{margin-bottom:14px}
+  .mic-help{margin:8px 0 0}
+  .mic-help summary{font-size:12px;padding:8px 12px}
+  .mic-path-note{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dim);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 10px;margin:0 0 10px}
+  .mic-path-note.hidden{display:none}
+  .mic-path-x{background:none;border:none;color:var(--dim);font-size:15px;line-height:1;cursor:pointer;padding:0 2px;margin-left:auto}
   .vocab summary{cursor:pointer;list-style:none;font-family:var(--mono);font-size:13px;color:var(--accent);padding:12px 16px;background:var(--panel);border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;gap:8px;user-select:none}
   .vocab summary::-webkit-details-marker{display:none}
   .vocab summary .chev{transition:transform .2s;color:var(--dim)}
@@ -557,7 +561,7 @@
     <p class="onboard-hint" id="onboard-hint"><span data-i18n="Select tones below">Select tones below</span> <span class="arrow">→</span> <span data-i18n="Add">Add</span> <span class="arrow">→</span> <span data-i18n="Play">Play</span></p>
     <p class="drag-hint hidden" id="drag-hint"><span data-i18n="Drag to reorder · × to remove">Drag to reorder · × to remove</span></p>
     <div class="seq-text-row hidden" id="seq-text-row">
-      <span class="seq-text-label"><span data-i18n="As text (copy all, or select part to reuse in Custom Phrase):">As text (copy all, or select part to reuse in Custom Phrase):</span></span>
+      <span class="seq-text-label"><span data-i18n="As text (copy all, or select part to paste back above):">As text (copy all, or select part to paste back above):</span></span>
       <input type="text" id="seq-text-out" class="paste-input" readonly aria-label="Current sequence as text">
     </div>
     <label class="updown-row hidden" id="updown-row">
@@ -731,6 +735,15 @@
         <button data-room="noisy"><span data-i18n="Noisy room">Noisy room</span></button>
       </div>
       <span class="set-note" id="room-note"><span data-i18n="The most accurate read on your real pitch — use this whenever your space allows it.">The most accurate read on your real pitch — use this whenever your space allows it.</span></span>
+      <details class="vocab mic-help" id="mic-help">
+        <summary><span class="chev">›</span> <span data-i18n="Which headphones or mic should I use?">Which headphones or mic should I use?</span></summary>
+        <div class="vocab-body">
+          <p><span data-i18n="Wired headphones or earbuds are best — 3.5 mm or USB-C. Your phone or laptop's own mic is fine alongside them.">Wired headphones or earbuds are best — 3.5 mm or USB-C. Your phone or laptop's own mic is fine alongside them.</span></p>
+          <p><span data-i18n="Avoid Bluetooth headsets. As soon as any app opens the mic, Bluetooth drops to call quality — the reference tone you are matching sounds muffled, and your headset applies its own processing that this app cannot switch off.">Avoid Bluetooth headsets. As soon as any app opens the mic, Bluetooth drops to call quality — the reference tone you are matching sounds muffled, and your headset applies its own processing that this app cannot switch off.</span></p>
+          <p><span data-i18n="Using Bluetooth headphones only for listening doesn't avoid this — opening the mic switches the whole device.">Using Bluetooth headphones only for listening doesn't avoid this — opening the mic switches the whole device.</span></p>
+          <p><span data-i18n="Turn off noise cancelling or any gaming mode on your headset. Noise gates can cut the quiet end of a long note, so a steady hold gets measured as a short one.">Turn off noise cancelling or any gaming mode on your headset. Noise gates can cut the quiet end of a long note, so a steady hold gets measured as a short one.</span></p>
+        </div>
+      </details>
     </div>
 
     <div class="set-row">
@@ -777,6 +790,7 @@
   </details>
 
   <section class="panel" id="play-sing-panel">
+    <p class="mic-path-note hidden" id="mic-path-note"><span id="mic-path-text"></span> <button class="mic-path-x" id="mic-path-dismiss" aria-label="Dismiss">×</button></p>
     <div class="panel-label"><span data-i18n="Play &amp; sing">Play &amp; sing</span></div>
 
     <div class="stage-row">
@@ -806,16 +820,6 @@
       </div>
     </div>
 
-    <section class="panel hidden" id="perception-panel">
-      <div class="panel-label"><span data-i18n="Listen">Listen</span></div>
-      <p class="perception-question" id="perception-question"></p>
-      <p class="perception-instruction" id="perception-instruction"></p>
-      <button class="btn arp-gen" id="perception-play-btn">▶ <span id="perception-play-label">Play the two tones</span></button>
-      <div class="perception-answers hidden" id="perception-answers"></div>
-      <p class="perception-feedback" id="perception-feedback"></p>
-    </section>
-
-
     <div class="meter" id="meter">
       <div class="band"></div>
       <div class="grid-line" style="left:20%"></div>
@@ -828,6 +832,17 @@
       <span class="scale" style="right:8px"><span data-i18n="sharp +50¢">sharp +50¢</span></span>
     </div>
     <p class="loud-distance-note hidden" id="loud-distance-note"><span data-i18n="Try to keep about the same distance from the mic while loudness is being tracked, so the comparison stays fair.">Try to keep about the same distance from the mic while loudness is being tracked, so the comparison stays fair.</span></p>
+  </section>
+
+  <!-- Must stay a SIBLING of #play-sing-panel, never a child: setPerceptionModeVisible()
+       hides #play-sing-panel, and a nested panel would be hidden along with its parent. -->
+  <section class="panel hidden" id="perception-panel">
+    <div class="panel-label"><span data-i18n="Listen">Listen</span></div>
+    <p class="perception-question" id="perception-question"></p>
+    <p class="perception-instruction" id="perception-instruction"></p>
+    <button class="btn arp-gen" id="perception-play-btn">▶ <span id="perception-play-label">Play the two tones</span></button>
+    <div class="perception-answers hidden" id="perception-answers"></div>
+    <p class="perception-feedback" id="perception-feedback"></p>
   </section>
 
   <section class="panel results hidden" id="results">
@@ -1153,7 +1168,6 @@
   "Cents": "Центи",
   "A fine ruler for pitch: one semitone is divided into 100 cents, so a whole tone is 200 cents. A difference under about 15 cents is so small most ears hear it as \"in tune.\"": "Тонка шкала для вимірювання висоти звуку: один півтон поділяється на 100 центів, тож цілий тон — це 200 центів. Різниця менша за приблизно 15 центів настільки мала, що більшість людей чують це як «чисто».",
   "Tones": "Ноти",
-  "Custom Phrase": "Власна фраза",
   "Use this sequence": "Використати цю послідовність",
   "Learning Path — guided lessons from basic pitch matching onward": "Навчальний шлях — покрокові уроки, починаючи з базового відповідання висоти звуку",
   "Feedback: live for the first ": "Зворотний зв'язок: наживо для перших ",
@@ -1269,6 +1283,9 @@
   "All lessons complete": "Усі уроки завершено",
   "Nice work — you've been through every lesson.": "Чудова робота — ви пройшли всі уроки.",
   "Keep sharpening any of them below, or head to Free Practice for open-ended work.": "Продовжуйте вдосконалювати будь-який з них нижче або перейдіть до «Вільної практики» для довільної роботи.",
+  "Hear Pitch": "Чути висоту",
+  "That's twice in a row — lesson complete.": "Двічі поспіль — урок завершено.",
+  "One more run like that and this lesson is done.": "Ще один такий підхід — і урок буде завершено.",
   "Find the Note": "Знайти ноту",
   "Move Between Notes": "Рухатися між нотами",
   "Build Patterns": "Будувати патерни",
@@ -1298,7 +1315,7 @@
   "Find the note and hold it there.": "Знайдіть ноту й утримайте її.",
   "Learn to land exactly on a single pitch -- the foundation everything else builds on.": "Навчіться точно влучати в одну ноту — основа, на якій тримається все інше.",
   "Hold it steady": "Тримати рівно",
-  "How long can you hang on?": "Наскільки довго ви втримаєтесь?",
+  "Straight and steady — no wobble.": "Рівно і стабільно — без коливань.",
   "Builds pitch stability over time, not just a quick touch -- steadiness is what makes a note sound truly in tune.": "Розвиває стабільність висоти звуку з часом, а не лише миттєве влучання — саме стабільність робить ноту по-справжньому чистою.",
   "A simple interval": "Простий інтервал",
   "Two notes, one clean jump.": "Дві ноти, один чіткий стрибок.",
@@ -1312,7 +1329,7 @@
   "On": "Увімкнено",
   "Hidden while singing": "Приховано під час співу",
   "Watching the meter helps while you're still finding a note — try hiding it once matching pitch feels automatic, so you're relying on your ear rather than the display.": "Спостереження за індикатором допомагає, поки ви ще шукаєте ноту — спробуйте приховати його, коли влучання в ноту стане звичним, щоб покладатися на слух, а не на екран.",
-  "As text (copy all, or select part to reuse in Custom Phrase):": "У вигляді тексту (скопіюйте все або частину, щоб використати у режимі «Власна фраза»):",
+  "As text (copy all, or select part to paste back above):": "У вигляді тексту (скопіюйте все або частину, щоб вставити назад вище):",
   "Type or paste a sequence first, e.g. C2-C#3-E2": "Спочатку введіть або вставте послідовність, напр. C2-C#3-E2",
   "Couldn't read \"": "Не вдалося розпізнати «",
   "\" — use note names like C2-C#3-E2, within ": "» — використовуйте назви нот, напр. C2-C#3-E2, у межах ",
@@ -1399,6 +1416,7 @@
   "take a breath — you sing when the dots run out": "зробіть вдих — співайте, коли крапки закінчаться",
   "Sing!": "Співайте!",
   "hold the tone for at least half a second": "тримайте ноту щонайменше півсекунди",
+  "hold the tone steadily for 3 seconds": "тримайте ноту стабільно протягом 3 секунд",
   "your turn — hold the note": "ваша черга — тримайте ноту",
   "sing the phrase at your pace — hold each tone briefly": "співайте фразу у своєму темпі — тримайте кожну ноту недовго",
   "repeat the whole phrase — keep going": "повторіть усю фразу — продовжуйте",
@@ -1450,7 +1468,18 @@
   "Good ear!": "Гарний слух!",
   "Today: ": "Сьогодні: ",
   "% on target": "% влучань",
-  "median error ": "медіанна похибка ",
+  "typically ": "зазвичай ",
+  "Which headphones or mic should I use?": "Які навушники чи мікрофон обрати?",
+  "Wired headphones or earbuds are best — 3.5 mm or USB-C. Your phone or laptop's own mic is fine alongside them.": "Найкраще підходять дротові навушники — 3,5 мм або USB-C. Вбудований мікрофон телефона чи ноутбука разом з ними цілком годиться.",
+  "Avoid Bluetooth headsets. As soon as any app opens the mic, Bluetooth drops to call quality — the reference tone you are matching sounds muffled, and your headset applies its own processing that this app cannot switch off.": "Уникайте Bluetooth-гарнітур. Щойно застосунок вмикає мікрофон, Bluetooth переходить у режим розмови — еталонний тон звучить приглушено, а гарнітура застосовує власну обробку, яку цей застосунок не може вимкнути.",
+  "Using Bluetooth headphones only for listening doesn't avoid this — opening the mic switches the whole device.": "Слухати через Bluetooth і записувати іншим мікрофоном не вийде — увімкнення мікрофона перемикає весь пристрій.",
+  "Turn off noise cancelling or any gaming mode on your headset. Noise gates can cut the quiet end of a long note, so a steady hold gets measured as a short one.": "Вимкніть шумозаглушення та ігрові режими гарнітури. Шумовий фільтр може обрізати тихий кінець довгої ноти, і рівне утримання зарахується як коротке.",
+  "Bluetooth mic detected — the reference tone drops to call quality. Wired is more accurate.": "Виявлено Bluetooth-мікрофон — еталонний тон переходить у якість розмови. Дротове підключення точніше.",
+  "avg deviation ": "середнє відхилення ",
+  "steadiness ": "стабільність ",
+  "drift ": "зміщення ",
+  "vibrato ": "вібрато ",
+  "That's vibrato rather than unsteadiness — this lesson asks for a straight tone.": "Це вібрато, а не нестабільність — у цьому уроці потрібен рівний тон.",
   "on pitch": "точно в ноту",
   "slightly higher (less than a quarter-tone)": "трохи вище (менше чверті тону)",
   "slightly lower (less than a quarter-tone)": "трохи нижче (менше чверті тону)",
@@ -1587,6 +1616,7 @@
     if(typeof refreshGenMsgText==="function") refreshGenMsgText();
     if(typeof renderChips==="function") renderChips();
     if(typeof renderPathList==="function") renderPathList();
+    if(typeof updateFreePracticeStatsDisplay==="function") updateFreePracticeStatsDisplay();
     const sel = $("lang-select");
     if(sel) sel.value = lang;
     // refresh the currently-shown stage message + button labels too -- but
@@ -1702,28 +1732,28 @@
   const STAGE_ORDER = ["hear","find","move","patterns"];
 
   const LESSONS = {
-    "higher-or-lower": { id:"higher-or-lower", order:-1, title:"Higher or lower?", flavor:"Just listen — no singing yet.",
+    "higher-or-lower": { id:"higher-or-lower", title:"Higher or lower?", flavor:"Just listen — no singing yet.",
       purpose:"Trains your ear to judge pitch direction before asking your voice to reproduce it.",
       trials:6, goalHits:5,
       goalTemplate:"Correctly judge {hits} of {trials} pairs.",
       whyMatters:"Recognizing whether a pitch moved up or down is the first building block of pitch matching -- you can't aim for a target you can't yet hear clearly.",
       stage:"hear", durationMin:2,
       mode:"perception", preset:{type:"higher-lower"} },
-    "same-or-different": { id:"same-or-different", order:-0.5, title:"Same or different?", flavor:"Two tones — matching or not.",
+    "same-or-different": { id:"same-or-different", title:"Same or different?", flavor:"Two tones — matching or not.",
       purpose:"Trains your ear to notice whether two pitches truly match or only sound close.",
       trials:6, goalHits:5,
       goalTemplate:"Correctly judge {hits} of {trials} pairs.",
       whyMatters:"Telling a genuine match from a near-miss is exactly the skill matching pitch depends on -- singing close isn't the same as singing the same note.",
       stage:"hear", durationMin:2,
       mode:"perception", preset:{type:"same-different"} },
-    "melodic-contour": { id:"melodic-contour", order:-0.25, title:"Melodic contour", flavor:"Three notes — what shape do they make?",
+    "melodic-contour": { id:"melodic-contour", title:"Melodic contour", flavor:"Three notes — what shape do they make?",
       purpose:"Trains your ear to follow a short melodic shape, not just a single pitch move.",
       trials:6, goalHits:4,
       goalTemplate:"Correctly identify the shape in {hits} of {trials} sequences.",
       whyMatters:"Real melodies are sequences of moves, not isolated jumps -- hearing the overall shape is what lets you anticipate where a tune is going next.",
       stage:"hear", durationMin:2,
       mode:"perception", preset:{type:"contour"} },
-    "match-note": { id:"match-note", order:0, title:"Match a note", flavor:"Find the note and hold it there.",
+    "match-note": { id:"match-note", title:"Match a note", flavor:"Find the note and hold it there.",
       purpose:"Learn to land exactly on a single pitch -- the foundation everything else builds on.",
       trials:6, goalHits:5,
       goalTemplate:"Match {hits} of {trials} notes into the target zone.",
@@ -1731,32 +1761,46 @@
       stage:"find", durationMin:3,
       mode:"free-practice", preset:{count:1},
       feedbackSchedule:{guided:3, delayed:2} },
-    "hold-steady": { id:"hold-steady", order:1, title:"Hold it steady", flavor:"How long can you hang on?",
+    "hold-steady": { id:"hold-steady", title:"Hold it steady", flavor:"Straight and steady — no wobble.",
       purpose:"Builds pitch stability over time, not just a quick touch -- steadiness is what makes a note sound truly in tune.",
       trials:6, goalHits:5,
       goalTemplate:"Hold {hits} of {trials} notes steadily for 3 seconds.",
       whyMatters:"Stable pitch helps you sustain notes reliably in melodies and prepares you for moving accurately between notes.",
       stage:"find", durationMin:3,
       mode:"free-practice", preset:{count:1},
-      scoringMode:"stability", maxSpread:15, maxDrift:20,
+      // 3s is the standard sustained-tone duration in voice research, and it is
+      // what the goal text has always promised; MIN_HOLD's 0.5s was never a
+      // sustained-tone test. Tolerances scale with the window: holding to a
+      // 15-cent SD for three seconds is beyond what trained singers manage on
+      // sustained tones, so spread/drift widen to 25 cents. That is still
+      // inside the ~25-cent perceptibility threshold, so a note that passes
+      // genuinely sounds steady. It is deliberately a STRAIGHT-TONE criterion:
+      // a developed vibrato (50-100 cents extent) will not pass, which is why
+      // the flavor text now says so out loud.
+      scoringMode:"stability", maxSpread:25, maxDrift:25, minHoldMs:3000,
       feedbackSchedule:{guided:3, delayed:2} },
-    "simple-interval": { id:"simple-interval", order:2, title:"A simple interval", flavor:"Two notes, one clean jump.",
+    "simple-interval": { id:"simple-interval", title:"A simple interval", flavor:"Two notes, one clean jump.",
       purpose:"Trains your ear and voice to reproduce the distance between two notes, not just a single pitch in isolation.",
       scoringMode:"perAttemptPair", trials:6, goalHits:4,
       goalTemplate:"Sing both notes accurately in {hits} of {trials} interval attempts.",
       whyMatters:"Real singing constantly jumps between notes -- training the distance between two pitches, not just one pitch alone, is what makes those jumps land correctly.",
-      stage:"move", durationMin:3,
+      stage:"patterns", durationMin:3,
       mode:"sequences", preset:{pattern:"Thirds", scaleType:"major"},
       feedbackSchedule:{guided:3, delayed:3} },
-    "short-scale": { id:"short-scale", order:3, title:"A short scale", flavor:"Up the stairs, one step at a time.",
+    "short-scale": { id:"short-scale", title:"A short scale", flavor:"Up the stairs, one step at a time.",
       purpose:"Builds accuracy and control across a connected run of notes -- the foundation for singing real melodies in tune.",
-      repeats:3, trials:24, goalHits:18,
+      repeats:2, trials:18, goalHits:13,
       goalTemplate:"Sing the scale {repeats} times, landing at least {hits} of {trials} notes on pitch overall.",
       whyMatters:"Scales connect single notes into a smooth, accurate run -- the same skill you need to sing a real melodic phrase in tune from start to finish.",
-      stage:"patterns", durationMin:3,
-      mode:"scales", preset:{scaleType:"major", span:1, direction:"up"},
-      feedbackSchedule:{guided:2, delayed:1} },
-    "simple-arpeggio": { id:"simple-arpeggio", order:4, title:"A simple arpeggio", flavor:"Bigger leaps, same accuracy.",
+      stage:"move", durationMin:3,
+      // The five-note turn (do-re-mi-fa-sol-fa-mi-re-do), not the full octave:
+      // the standard beginner unit in the classical exercise literature. It
+      // stays inside a fifth, so it doesn't drag a beginner across a register
+      // transition the way an octave climb does, and 2 x 9 notes is a gentler
+      // step up from the 6-trial lessons before it than 3 x 8 was.
+      mode:"sequences", preset:{pattern:"5-note turn", scaleType:"major"},
+      feedbackSchedule:{guided:1, delayed:1} },
+    "simple-arpeggio": { id:"simple-arpeggio", title:"A simple arpeggio", flavor:"Bigger leaps, same accuracy.",
       purpose:"Trains landing correctly on notes that aren't right next to each other -- a natural next step once steps feel solid.",
       repeats:3, trials:12, goalHits:9,
       goalTemplate:"Sing the arpeggio {repeats} times, landing at least {hits} of {trials} notes on pitch overall.",
@@ -1764,25 +1808,32 @@
       stage:"patterns", durationMin:3,
       mode:"arpeggios", preset:{chordType:"Major triad", span:1, direction:"up"},
       feedbackSchedule:{guided:2, delayed:1} },
-    "glide-keep-moving": { id:"glide-keep-moving", order:5, title:"Keep moving", flavor:"Glide smoothly — don't stop.",
+    "glide-keep-moving": { id:"glide-keep-moving", title:"Keep moving", flavor:"Glide smoothly — don't stop.",
       purpose:"Builds continuous pitch control -- moving smoothly between notes, not jumping between them.",
       trials:6, goalHits:4,
       goalTemplate:"Complete {hits} of {trials} smooth glides.",
       whyMatters:"Real singing moves continuously between pitches far more often than it jumps between them -- this builds the control that connecting notes smoothly depends on.",
-      stage:"patterns", durationMin:3,
+      stage:"move", durationMin:3,
       mode:"glide", scoringMode:"glide-move",
       feedbackSchedule:{guided:3, delayed:3} },
-    "glide-and-land": { id:"glide-and-land", order:6, title:"Glide and land", flavor:"Glide smoothly, then land precisely.",
+    "glide-and-land": { id:"glide-and-land", title:"Glide and land", flavor:"Glide smoothly, then land precisely.",
       purpose:"Adds accurate landing to continuous movement -- finishing exactly where you meant to.",
       trials:6, goalHits:4,
       goalTemplate:"Complete {hits} of {trials} glides that land accurately.",
       whyMatters:"Continuous movement and accurate landing are genuinely different skills -- this connects glide control back to the precise pitch-matching the rest of the path builds.",
-      stage:"patterns", durationMin:3,
+      stage:"move", durationMin:3,
       mode:"glide", scoringMode:"glide-land",
       feedbackSchedule:{guided:3, delayed:3} },
   };
-  const DEFAULT_PATH = ["higher-or-lower","same-or-different","melodic-contour","match-note","hold-steady","simple-interval","short-scale","simple-arpeggio","glide-keep-moving","glide-and-land"];
+  // The single source of truth for lesson ordering (there is deliberately no
+  // per-lesson `order` field to drift out of sync with it). Order follows the
+  // classical exercise literature: perception first, then a sustained single
+  // tone, then sirens/glides (continuous flow, no pitch targeting required),
+  // then stepwise motion, then accurate landing, and only then discrete leaps.
+  const DEFAULT_PATH = ["higher-or-lower","same-or-different","melodic-contour","match-note","hold-steady","glide-keep-moving","short-scale","glide-and-land","simple-interval","simple-arpeggio"];
   const NOTE_WINDOW = 5, NOTE_MISS_MAJORITY = 3;
+  // Where a singer is sent back to when one specific note keeps missing.
+  const FOUNDATIONAL_PRODUCTION_LESSON = "match-note";
 
   // A lesson's pass threshold and its displayed goal text are now both
   // derived from the SAME trials/goalHits numbers -- they cannot drift out
@@ -1803,17 +1854,25 @@
   // BEFORE the measured result is revealed -- develops the singer's own
   // pitch perception directly, per the pedagogy review's point that this is
   // "the ability VPT ultimately wants to stop replacing."
+  // Resolvable from outside (abandonLesson) so leaving a lesson mid-prompt
+  // can't strand the awaiting caller with the panel still on screen.
+  let selfAssessResolve=null;
   function waitForSelfAssess(){
     return new Promise(resolve=>{
       const promptEl=$("self-assess-prompt");
       promptEl.classList.remove("hidden");
+      function finish(value){
+        promptEl.classList.add("hidden");
+        promptEl.removeEventListener("click", handler);
+        selfAssessResolve=null;
+        resolve(value);
+      }
       function handler(e){
         const btn=e.target.closest("[data-guess]");
         if(!btn) return;
-        promptEl.classList.add("hidden");
-        promptEl.removeEventListener("click", handler);
-        resolve(btn.dataset.guess);
+        finish(btn.dataset.guess);
       }
+      selfAssessResolve=finish;
       promptEl.addEventListener("click", handler);
     });
   }
@@ -1835,9 +1894,22 @@
     const onPitch = Math.abs(cap.cents)<=15;
     const lesson=LESSONS[lessonId];
     if(lesson && lesson.scoringMode==="stability" && cap.stabilitySpread!==undefined){
-      return onPitch && cap.stabilitySpread<=lesson.maxSpread && Math.abs(cap.driftCents)<=lesson.maxDrift;
+      // duration is part of the criterion now -- a steady 0.5s touch is not a
+      // sustained tone. holdMs comes from the chosen run in segmentTake.
+      const longEnough = !lesson.minHoldMs || (cap.holdMs!==undefined && cap.holdMs>=lesson.minHoldMs);
+      // The lesson asks for a STRAIGHT tone, so a detected vibrato fails
+      // regardless of how wide it is. Threshold-only scoring couldn't enforce
+      // that: at maxSpread 25 a 70-cent vibrato measured 24.7 and passed, which
+      // contradicted the lesson's own description. This leaves maxSpread (and
+      // therefore everyone else's pass rate) untouched.
+      if(isVibrato(cap)) return false;
+      return onPitch && longEnough && cap.stabilitySpread<=lesson.maxSpread && Math.abs(cap.driftCents)<=lesson.maxDrift;
     }
     return onPitch;
+  }
+  // Shared so scoring and feedback can never disagree about what counts.
+  function isVibrato(cap){
+    return !!cap && cap.vibratoStrength!==undefined && cap.vibratoStrength>=0.5;
   }
   // Separate from isTrialHit deliberately -- a glide result (direction/
   // coverage/continuity/landingOk) is a different shape entirely from a cap
@@ -1921,10 +1993,32 @@
   // mode doesn't need to behave like a course... it can show session
   // statistics"). Day-keyed, so it naturally reads as "today" and resets on
   // its own without any explicit reset logic -- old days' keys just go unused.
+  // Local calendar date, NOT toISOString() -- that yields the UTC date, so east
+  // of Greenwich the counter rolled over mid-evening-plus-one and anything sung
+  // after local midnight landed in the previous day's bucket.
+  function localDateStamp(d){
+    d=d||new Date();
+    return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  }
   function freePracticeStatsKey(){
     const active=lsGet(LS_ACTIVE);
-    const today=new Date().toISOString().slice(0,10);
-    return "vpt:freePracticeStats:"+(active||"_session")+":"+today;
+    return "vpt:freePracticeStats:"+(active||"_session")+":"+localDateStamp();
+  }
+  // Free Practice deliberately keeps no history, so yesterday's key is dead
+  // weight the moment the date changes. Nothing pruned them before and they are
+  // ~2 KB each when full, which is roughly 730 KB per profile per year of daily
+  // use, with no way for anyone to clear it. Yesterday is kept so a session
+  // running through local midnight doesn't lose the take in progress.
+  function pruneOldFreePracticeStats(){
+    const keep=[localDateStamp(), localDateStamp(new Date(Date.now()-864e5))];
+    try{
+      const doomed=[];
+      for(let i=0;i<localStorage.length;i++){
+        const k=localStorage.key(i);
+        if(k && k.indexOf("vpt:freePracticeStats:")===0 && !keep.some(d=>k.endsWith(":"+d))) doomed.push(k);
+      }
+      doomed.forEach(k=>localStorage.removeItem(k));
+    }catch(e){}
   }
   function loadFreePracticeStats(){
     try{ return JSON.parse(lsGet(freePracticeStatsKey())||"null") || {tones:0, onTarget:0, deviations:[]}; }
@@ -1958,9 +2052,14 @@
     const pct=Math.round((stats.onTarget/stats.tones)*100);
     const med=medianOf(stats.deviations);
     const toneWord = currentLang==="uk" ? ukPlural(stats.tones, "тон", "тони", "тонів") : ("tone"+(stats.tones===1?"":"s"));
+    // `med` is the median of SIGNED deviations, so it reports which way you
+    // habitually miss, not how far off you are -- a singer scattered +/-35
+    // cents medians to 0 and used to read "median error 0". Accuracy is
+    // already carried by the on-target percentage next to it; this figure
+    // answers the different and equally useful question of systematic bias.
     el.textContent=t("Today: ")+stats.tones+" "+toneWord
       +" · "+pct+t("% on target")
-      +" · "+t("median error ")+(med>0?"+":"")+med+t(" ¢");
+      +" · "+t("typically ")+(med>0?"+":"")+med+t(" ¢");
   }
   function lpNoteAccKey(){ const active=lsGet(LS_ACTIVE); return "vpt:noteAccuracy:"+(active||"_session"); }
   function loadLpProgress(){ try{ return JSON.parse(lsGet(lpProgressKey())||"{}"); }catch(e){ return {}; } }
@@ -2020,7 +2119,10 @@
         if(!lessonPassed(id, rec)){ forward=id; break; } }
     }
     let backward=null, troublesomeNote=null;
-    const foundationalId=path[0];
+    // Explicitly the foundational PRODUCTION lesson, not path[0] -- path[0] is
+    // now a listen-only perception lesson, and sending someone who kept missing
+    // a specific note back to an exercise with no singing in it wouldn't help.
+    const foundationalId=FOUNDATIONAL_PRODUCTION_LESSON;
     if(justPlayedLessonId!==foundationalId && progress[foundationalId] && justPlayedNotes && justPlayedNotes.length){
       troublesomeNote=justPlayedNotes.find(n=>{ const a=getNoteAccuracyLp(n); return a && a.samples>=NOTE_MISS_MAJORITY && a.ratio<0.5; }) || null;
       if(troublesomeNote) backward=foundationalId;
@@ -2031,12 +2133,27 @@
   // ---------- resolving a lesson's preset into real key/octave choices ----------
   // Reuses the vocal-range suggestion machinery already built for the manual
   // generator panes, rather than a second copy of the same overlap logic.
-  function lpPickKeyAndOctave(scaleTypeOrChordTypeFn){
+  // A lesson declares a fixed `trials` count, and its goal text quotes it. If
+  // the chosen octave sits near the instrument's E2-C6 limits the generators
+  // stop early and produce a shorter pattern, so the goal would promise more
+  // notes than the exercise contains. Scoring already divides by what was
+  // actually generated, so this only ever misled the DISPLAY -- but preferring
+  // a candidate where the pattern fits whole fixes it at the source instead of
+  // patching the text afterwards. Falls back to the best-overlap candidate when
+  // nothing fits, which is the old behaviour.
+  function lpPickKeyAndOctave(scaleTypeOrChordTypeFn, expectedNotes){
     const vr=loadVocalRange();
     if(!vr) return {keyIdx:0, octave:3};   // C, a safe generic default
     const ranked=rankKeys(scaleTypeOrChordTypeFn);
-    if(ranked.length) return {keyIdx:ranked[0].idx, octave:ranked[0].octave};
-    return {keyIdx:0, octave:3};
+    if(!ranked.length) return {keyIdx:0, octave:3};
+    if(expectedNotes){
+      const whole=ranked.find(r=>{
+        const notes=scaleTypeOrChordTypeFn(r.idx, r.octave);
+        return notes && notes.length===expectedNotes;
+      });
+      if(whole) return {keyIdx:whole.idx, octave:whole.octave};
+    }
+    return {keyIdx:ranked[0].idx, octave:ranked[0].octave};
   }
   function lpPickSingleNote(){
     const vr=loadVocalRange();
@@ -2073,11 +2190,18 @@
   }
   // A note the lesson's own 3-note practice set never touched -- for the
   // optional post-lesson challenge, a genuine transfer task rather than a
-  // repeat of something already drilled.
+  // repeat of something already drilled. On a narrow vocal range a single
+  // fixed offset clamps straight back onto a practised note, so this walks
+  // outward through candidates and returns null rather than offering a note
+  // the prompt would then wrongly call "one you haven't practiced yet".
   function lpPickChallengeNote(){
-    const base=lpPickSingleNote();
-    const baseMidi=noteToMidi(base);
-    return clampToVocalRange(midiToName(baseMidi+4));
+    const practised=lpPickVariedNoteSet();
+    const baseMidi=noteToMidi(lpPickSingleNote());
+    for(const offset of [4,-4,5,-5,3,-3,6,-6,7,-7]){
+      const candidate=clampToVocalRange(midiToName(baseMidi+offset));
+      if(practised.indexOf(candidate)===-1) return candidate;
+    }
+    return null;
   }
   // Generates one Higher-or-Lower pair. If a random direction would push the
   // second tone outside the singable range, flips direction rather than
@@ -2105,15 +2229,27 @@
     }
     return { notes:[base, midiToName(secondMidi)], correctAnswer: direction>0 ? "higher" : "lower" };
   }
-  // Reuses perceptionGeneratePair's already-tested, range-safe "different"
-  // pair directly for the "different" half -- no need to re-derive that logic.
-  function perceptionGenerateSameOrDifferentPair(){
-    if(Math.random()<0.5){
-      const base=lpPickSingleNote();
-      return { notes:[base, base], correctAnswer:"same" };
-    }
-    const diffPair=perceptionGeneratePair();
-    return { notes:diffPair.notes, correctAnswer:"different" };
+  // Difficulty ladder by trial index. The lesson's stated purpose is telling a
+  // genuine match from a near-miss, but generating "different" as a 2-7
+  // semitone step made every trial trivially wide. Widths are in cents and
+  // narrow across the six trials; the final band sits just above the app's own
+  // +/-15 cent "in tune" threshold, so the lesson ends up training exactly the
+  // tolerance everything else grades against.
+  const SAME_DIFF_BANDS=[[150,300],[150,300],[60,100],[60,100],[25,40],[25,40]];
+  function perceptionGenerateSameOrDifferentPair(trialIdx){
+    const base=lpPickSingleNote();
+    if(Math.random()<0.5) return { notes:[base, base], centsOffsets:[0,0], correctAnswer:"same" };
+    const band=SAME_DIFF_BANDS[Math.min(trialIdx||0, SAME_DIFF_BANDS.length-1)];
+    const magnitude=band[0]+Math.random()*(band[1]-band[0]);
+    const baseMidi=noteToMidi(base);
+    const vr=loadVocalRange();
+    const lo=vr ? noteToMidi(vr.lo) : RANGE_LO;
+    const hi=vr ? noteToMidi(vr.hi) : RANGE_HI;
+    let dir=Math.random()<0.5 ? 1 : -1;
+    // flip rather than clamp, exactly as perceptionGeneratePair does: clamping
+    // would shrink the offset and could put the pair inside the "same" band
+    if(baseMidi+(magnitude/100)*dir<lo || baseMidi+(magnitude/100)*dir>hi) dir=-dir;
+    return { notes:[base, base], centsOffsets:[0, magnitude*dir], correctAnswer:"different" };
   }
   // Tries each of the four 3-note contour shapes in random order and returns
   // the first that fits entirely within the singable range -- avoids the
@@ -2161,6 +2297,11 @@
       question:"Were the two tones the same, or different?",
       playLabel:"Play the two tones",
       generate: perceptionGenerateSameOrDifferentPair,
+      // Always a pure tone, both tones: a detuned piano sample and a sampled
+      // one would differ in timbre as well as pitch, handing over the answer.
+      // A pure tone is also the fairer test at 25-40 cents -- sample
+      // inharmonicity and decay muddy fine discrimination.
+      pureTone: true,
       answers: [ {value:"same", label:"Same"}, {value:"different", label:"Different"} ],
     },
     "contour": {
@@ -2180,7 +2321,7 @@
   // since those are already generic (just trials/goalHits), not singing-specific.
   function runPerceptionTrial(){
     const typeConfig=PERCEPTION_TYPES[LESSONS[currentLessonId].preset.type];
-    currentPerceptionPair=typeConfig.generate();
+    currentPerceptionPair=typeConfig.generate(perceptionTrialResults.length);
     const totalTrials=LESSONS[currentLessonId].trials;
     const answersEl=$("perception-answers");
     answersEl.classList.add("hidden");
@@ -2198,14 +2339,25 @@
     $("perception-instruction").textContent=t("Trial ")+(perceptionTrialResults.length+1)+t(" of ")+totalTrials;
     $("perception-play-btn").disabled=false;
   }
+  // playNote only accepts note names, so a sub-semitone offset needs its own
+  // path. The synth takes a raw frequency, which is exact; the CDN piano
+  // exposes no detune, so any detuned tone falls through to the synth anyway.
+  async function playPerceptionTone(noteName, centsOffset, forcePure){
+    await ensureAudioCtx();
+    const cents=centsOffset||0;
+    if(!cents && !forcePure) return playNote(noteName, 0.9);
+    return playSynth(noteToFreq(noteName)*Math.pow(2, cents/1200), 0.9);
+  }
   async function playPerceptionSequence(){
     const btn=$("perception-play-btn");
     if(btn.disabled) return;
     btn.disabled=true;
     await ensureAudioCtx();
+    const typeConfig=PERCEPTION_TYPES[LESSONS[currentLessonId].preset.type];
     const notes=currentPerceptionPair.notes;
+    const offsets=currentPerceptionPair.centsOffsets||[];
     for(let i=0;i<notes.length;i++){
-      await playNote(notes[i], 0.9);
+      await playPerceptionTone(notes[i], offsets[i], typeConfig.pureTone);
       if(i<notes.length-1) await new Promise(r=>setTimeout(r,220));
     }
     $("perception-answers").classList.remove("hidden");
@@ -2345,8 +2497,13 @@
     lessonRoundResults=[];
     liveFeedbackHidden=false;
     setPerceptionModeVisible(false);   // default: singing UI visible, overridden below for perception lessons
-    renderNextLessonCard(lessonId, false);   // keep the hero card in sync with whatever's actually running
+    renderPathList(lessonId, false);   // keep the hero card, stage progress AND the lesson list in sync
     if(lesson.mode==="perception"){
+      // This branch never calls resetFlow(), so without an explicit clear the
+      // previous exercise's results stay in #score and the next lesson's
+      // summary is appended underneath them.
+      resultsGrid.innerHTML=""; results.classList.add("hidden");
+      scoreEl.innerHTML=""; scoreEl.classList.add("hidden");
       setPerceptionModeVisible(true);
       perceptionTrialResults=[];
       runPerceptionTrial();
@@ -2365,7 +2522,8 @@
       markManual(); renderChips(); resetFlow();
     } else if(lesson.mode==="scales"){
       activateSourceTab("scales");
-      const picked=lpPickKeyAndOctave((i,oct)=>scaleNotesForOctave(i, lesson.preset.scaleType, oct));
+      const picked=lpPickKeyAndOctave((i,oct)=>scaleNotesForOctave(i, lesson.preset.scaleType, oct),
+                                      lesson.repeats ? lesson.trials/lesson.repeats : 0);
       $("scale-type").value=lesson.preset.scaleType;
       $("scale-key").value=picked.keyIdx;
       $("scale-octave").value=picked.octave;
@@ -2375,7 +2533,8 @@
       if(lesson.feedbackSchedule) replicateRoundsForLesson(lesson.repeats);
     } else if(lesson.mode==="arpeggios"){
       activateSourceTab("arpeggios");
-      const picked=lpPickKeyAndOctave((i,oct)=>chordNotesForOctave(i, lesson.preset.chordType, oct));
+      const picked=lpPickKeyAndOctave((i,oct)=>chordNotesForOctave(i, lesson.preset.chordType, oct),
+                                      lesson.repeats ? lesson.trials/lesson.repeats : 0);
       $("arp2-chord").value=lesson.preset.chordType;
       $("arp2-key").value=picked.keyIdx;
       $("arp2-octave").value=picked.octave;
@@ -2391,12 +2550,43 @@
       $("seq2-octave").value=picked.octave;
       $("seq2-pattern").value=lesson.preset.pattern;
       runSequenceGenerate(true);
+      if(lesson.repeats) replicateRoundsForLesson(lesson.repeats);
     }
     const backLink=$("back-to-path-link");
     if(backLink) backLink.classList.remove("hidden");
     const scrollTarget = lesson.mode==="perception" ? $("perception-panel") : $("shared-active-seq");
     if(scrollTarget) scrollTarget.scrollIntoView({behavior:"smooth", block:"start"});
     updateLessonControlledNotes();
+  }
+
+  // Leaving a lesson. Previously nothing cleared currentLessonId except
+  // finishLesson, so "Back to Learning Path" and the mode switch left the
+  // lesson live: Free Practice singing was still scored as lesson trials, and
+  // recordFreePracticeNote's `if(currentLessonId) return` guard silently
+  // dropped Free Practice stats. Abandoning discards the partial attempt --
+  // it is never recorded, so it can't count against the singer.
+  function abandonLesson(){
+    if(!currentLessonId) return false;
+    currentLessonId=null;
+    lessonAttemptCount=0;
+    lessonTrialResults=[];
+    lessonRoundResults=[];
+    lessonNotePlan=null;
+    perceptionTrialResults=[];
+    currentPerceptionPair=null;
+    glideTrialPlan=null;
+    glideTrialResults=[];
+    liveFeedbackHidden=false;
+    if(selfAssessResolve) selfAssessResolve(null);   // don't strand an awaiting attempt
+    setPerceptionModeVisible(false);
+    const backLink=$("back-to-path-link");
+    if(backLink) backLink.classList.add("hidden");
+    // mid-take, resetFlow would fight the in-flight capture; that attempt just
+    // finishes as an ordinary Free Practice take now that the lesson is gone
+    if(!running) resetFlow();
+    updateLessonControlledNotes();
+    renderPathList();
+    return true;
   }
 
   function lessonStatusLabel(lessonId){
@@ -2438,8 +2628,15 @@
     const steady = withStability.filter(r=>isTrialHit(lessonId, r.cap)).length;
     let line = t("Pitch center: ")+centered+t(" of ")+withCap.length+t(" accurate")+" · "+t("Stability: ")+steady+t(" of ")+withStability.length+t(" steady")+".";
     const avgDrift = withStability.reduce((s,r)=>s+r.cap.driftCents,0)/withStability.length;
-    if(avgDrift < -8) line += " "+t("Your pitch tended to fall as the hold went on.");
-    else if(avgDrift > 8) line += " "+t("Your pitch tended to rise as the hold went on.");
+    const driftStr = " ("+(avgDrift>0?"+":"")+Math.round(avgDrift)+t(" ¢")+")";
+    if(avgDrift < -8) line += " "+t("Your pitch tended to fall as the hold went on.")+driftStr;
+    else if(avgDrift > 8) line += " "+t("Your pitch tended to rise as the hold went on.")+driftStr;
+    // Failing for vibrato is not the same as failing for unsteadiness, and a
+    // singer with a developing vibrato would otherwise see only "not steady"
+    // and reasonably conclude something was wrong with their technique.
+    const vibratoTrials = withStability.filter(r=>isVibrato(r.cap)).length;
+    if(vibratoTrials > withStability.length/2)
+      line += " "+t("That's vibrato rather than unsteadiness — this lesson asks for a straight tone.");
     return line;
   }
 
@@ -2453,8 +2650,12 @@
     const hits = withCap.filter(r=>Math.abs(r.cap.cents)<=15).length;
     let line = t("Matched: ")+hits+t(" of ")+withCap.length+".";
     const avgCents = withCap.reduce((s,r)=>s+r.cap.cents,0)/withCap.length;
-    if(avgCents < -8) line += " "+t("You usually landed slightly below the target.");
-    else if(avgCents > 8) line += " "+t("You usually landed slightly above the target.");
+    // The number was computed and thrown away. Showing it costs nothing and
+    // gives something that visibly moves between attempts.
+    const avg = Math.round(avgCents);
+    const avgStr = " ("+(avg>0?"+":"")+avg+t(" ¢")+")";
+    if(avgCents < -8) line += " "+t("You usually landed slightly below the target.")+avgStr;
+    else if(avgCents > 8) line += " "+t("You usually landed slightly above the target.")+avgStr;
     return line;
   }
 
@@ -2489,14 +2690,16 @@
       const capsAtPos = validRounds.map(r=>r.caps[pos]).filter(c=>c);
       if(!capsAtPos.length) continue;
       const hits = capsAtPos.filter(c=>Math.abs(c.cents)<=15).length;
-      posStats.push({hits, total:capsAtPos.length, note: capsAtPos[0].note && capsAtPos[0].note.name});
+      posStats.push({hits, total:capsAtPos.length, note: capsAtPos[0].note && capsAtPos[0].note.name,
+                     avg: Math.round(capsAtPos.reduce((s,c)=>s+c.cents,0)/capsAtPos.length)});
     }
     if(!posStats.length) return null;
     const totalHits=posStats.reduce((s,p)=>s+p.hits,0);
     const totalCount=posStats.reduce((s,p)=>s+p.total,0);
     let line = t("On pitch: ")+totalHits+t(" of ")+totalCount+".";
     const consistentMiss = posStats.find(p=>p.hits===0 && p.total>=2 && p.note);
-    if(consistentMiss) line += " "+t("The note that tended to miss was ")+consistentMiss.note+".";
+    if(consistentMiss) line += " "+t("The note that tended to miss was ")+consistentMiss.note
+      +" ("+(consistentMiss.avg>0?"+":"")+consistentMiss.avg+t(" ¢")+").";
     return line;
   }
 
@@ -2507,15 +2710,30 @@
     const prevLast=before ? before.lastScore : undefined;
     recordLessonAttempt(lessonId, ratio);
     const msg=encouragingSummary(lessonId, ratio, prevBest, prevLast);
+    // #score lives inside #results, which is only unhidden by the step-through
+    // and whole-phrase play paths -- neither of which runs for perception or
+    // glide lessons. Without this, half the lessons wrote their summary,
+    // challenge prompt and practice link into a hidden container.
+    results.classList.remove("hidden");
     scoreEl.classList.remove("hidden");
     scoreEl.innerHTML += '<div class="exercise-done lesson-encourage">'+msg+'</div>';
+
+    // Passing needs the last TWO attempts over threshold. Nothing said so, so a
+    // singer who just scored 6 of 6 saw the same lesson offered again and read
+    // it as the app not noticing they'd succeeded.
+    const isNowPassed=lessonPassed(lessonId, loadLpProgress()[lessonId]);
+    const clearedThisTime = ratio>=lessonThreshold(lessonId);
+    const progressNote = (!wasPassed && isNowPassed) ? t("That's twice in a row — lesson complete.")
+      : (!isNowPassed && clearedThisTime) ? t("One more run like that and this lesson is done.")
+      : null;
+    if(progressNote) scoreEl.innerHTML += '<div class="exercise-done lesson-progress-note">'+progressNote+'</div>';
 
     const lesson=LESSONS[lessonId];
     let detail=null;
     if(lesson.scoringMode==="stability" && lessonTrialResults.length) detail=stabilityFeedback(lessonId, lessonTrialResults);
     else if(lessonId==="match-note" && lessonTrialResults.length) detail=matchNoteFeedback(lessonTrialResults);
     else if(lesson.scoringMode==="perAttemptPair" && lessonRoundResults.length) detail=intervalFeedback(lessonRoundResults);
-    else if(lesson.repeats && lessonRoundResults.length) detail=patternPositionFeedback(lessonRoundResults);
+    else if(lessonRoundResults.length) detail=patternPositionFeedback(lessonRoundResults);
     if(detail) scoreEl.innerHTML += '<div class="exercise-done lesson-stability-detail">'+detail+'</div>';
 
     // Optional challenge: only offered the moment this attempt is what
@@ -2524,18 +2742,19 @@
     // extra note to offer. Doesn't touch currentLessonId/lessonAttemptCount at
     // all, so it genuinely cannot affect scoring, matching the reviewer's
     // explicit "without making the pass criterion harder".
-    const isNowPassed=lessonPassed(lessonId, loadLpProgress()[lessonId]);
     if(!wasPassed && isNowPassed && lesson.mode==="free-practice"){
       const challengeNote=lpPickChallengeNote();
-      scoreEl.innerHTML += '<div class="exercise-done challenge-prompt" id="challenge-prompt">🎯 '
-        +t("Challenge: try ")+'<b>'+challengeNote+'</b> — '+t("a note you haven't practiced yet. Doesn't affect your score.")
-        +' <button class="btn ghost" id="challenge-try-btn">'+t("Try it")+'</button></div>';
-      const tryBtn=$("challenge-try-btn");
-      if(tryBtn) tryBtn.addEventListener("click",()=>{
-        seq=[challengeNote]; markManual(); renderChips(); resetFlow();
-        const promptEl=$("challenge-prompt");
-        if(promptEl) promptEl.remove();
-      });
+      if(challengeNote){
+        scoreEl.innerHTML += '<div class="exercise-done challenge-prompt" id="challenge-prompt">🎯 '
+          +t("Challenge: try ")+'<b>'+challengeNote+'</b> — '+t("a note you haven't practiced yet. Doesn't affect your score.")
+          +' <button class="btn ghost" id="challenge-try-btn">'+t("Try it")+'</button></div>';
+        const tryBtn=$("challenge-try-btn");
+        if(tryBtn) tryBtn.addEventListener("click",()=>{
+          seq=[challengeNote]; markManual(); renderChips(); resetFlow();
+          const promptEl=$("challenge-prompt");
+          if(promptEl) promptEl.remove();
+        });
+      }
     }
 
     const {forward, backward, troublesomeNote}=suggestNextLesson(lessonId, notesInvolved);
@@ -2803,6 +3022,47 @@
   // mic was "avoid iOS earpiece routing while a reference tone plays" -- the
   // routing issue only cares whether the input is actively delivering audio
   // at that moment, not whether the whole stream still exists.
+  // Classic Bluetooth can't do high-quality output and mic capture at once: the
+  // moment getUserMedia opens, the OS drops the headset from A2DP to HFP, which
+  // is mono call quality (8 kHz narrowband, or 16 kHz wideband). What actually
+  // suffers is the REFERENCE TONE: the piano the singer is trying to match gets
+  // muffled and mono, so their matching is worse and the app records it as
+  // THEIR error.
+  //
+  // Note what is NOT a problem: narrowband is roughly telephone band, so
+  // fundamentals below ~300 Hz are attenuated, but the detector is MPM (pitchy),
+  // not plain autocorrelation, and MPM reads a missing fundamental from the
+  // harmonic spacing. Measured: E2-A4 with everything below 300 Hz stripped
+  // still returns the correct pitch at clarity 1.00. There is a test for it.
+  //
+  // It also silently breaks the Quiet room promise: those constraints turn off
+  // the BROWSER's processing, but a Bluetooth headset and the OS apply their own
+  // speech-tuned DSP underneath, which the page cannot reach.
+  //
+  // Detection is best-effort and advisory only -- it never blocks or changes
+  // grading. Safari doesn't reliably report sampleRate, so a miss is expected
+  // and fine; a false positive costs one dismissible line.
+  let micPathNoteDismissed=false;
+  function detectBluetoothMicPath(){
+    try{
+      const track=micStream && micStream.getAudioTracks && micStream.getAudioTracks()[0];
+      if(!track) return false;
+      const settings=(track.getSettings && track.getSettings()) || {};
+      // the strong signal: an HFP-rate capture path
+      if(typeof settings.sampleRate==="number" && settings.sampleRate<=16000) return true;
+      // the weaker one: labels naming a call-profile device. Deliberately not
+      // matching bare "headset" -- a wired USB gaming headset is not this.
+      return /bluetooth|airpods|hands-?free|\bhfp\b/i.test(track.label||"");
+    }catch(e){ return false; }
+  }
+  function updateMicPathNote(){
+    const note=$("mic-path-note"), txt=$("mic-path-text");
+    if(!note||!txt) return;
+    if(micPathNoteDismissed || !detectBluetoothMicPath()){ note.classList.add("hidden"); return; }
+    txt.textContent=t("Bluetooth mic detected — the reference tone drops to call quality. Wired is more accurate.");
+    note.classList.remove("hidden");
+  }
+
   function muteMic(){
     try{ if(micStream) micStream.getAudioTracks().forEach(t=>t.enabled=false); }catch(e){}
   }
@@ -3219,7 +3479,12 @@
           const passedAttempts=lessonRoundResults.filter(r=>r.fullPass).length;
           ratio = lessonRoundResults.length ? passedAttempts/lessonRoundResults.length : 0;
         } else {
-          const denom=genAllCaps.length || genRounds.flat().length;
+          // Every note the lesson ASKED for is the denominator -- genAllCaps
+          // holds only notes that produced a capture, so using its length let
+          // silence shrink the denominator instead of counting as a miss
+          // (sing 4 of 24 scale notes cleanly, skip the rest, score 100%).
+          // Matches the single-tone path, which already divides by totalTrials.
+          const denom=genRounds.flat().length || genAllCaps.length;
           const hits=genAllCaps.filter(c=>Math.abs(c.cents)<=15).length;
           ratio = denom ? hits/denom : 0;
         }
@@ -3950,6 +4215,32 @@ function ceilPow2(v) {
   // ===== FOLLOW-ME PIPELINE =====
   // Continuously record (pitch, time) samples for the whole window, updating a
   // simple live meter (no single target), then segment into held notes and align.
+  // Debug hook for building test fixtures from real voices. Pitch traces only
+  // ({t, freq}) -- no audio is recorded, kept or transmitted, and nothing runs
+  // unless a developer sets the flag by hand in the console:
+  //
+  //   window.__vptCaptureTakes = true              // capture, unlabelled
+  //   window.__vptCaptureTakes = "vibrato-late"    // capture, labelled
+  //
+  // Set it to a new string between takes to label what you are about to sing,
+  // then copy(JSON.stringify(window.__vptTakes)) when done. Covers the three
+  // paths that retain a full sample series; the on-the-clock path is NOT
+  // covered, because captureWindow only keeps the single best reading and never
+  // builds a trace -- and its grading uses pitch centre alone, none of the
+  // stability thresholds these fixtures exist to calibrate.
+  function captureTake(kind, target, samples){
+    if(!window.__vptCaptureTakes) return;
+    window.__vptTakes=(window.__vptTakes||[]).concat([{
+      kind,
+      target: target||null,
+      label: typeof window.__vptCaptureTakes==="string" ? window.__vptCaptureTakes : null,
+      lesson: currentLessonId||null,
+      index: (window.__vptTakes||[]).length+1,
+      at: new Date().toISOString(),
+      samples
+    }]);
+  }
+
   function recordTake(ms,targetFreq,phraseNotes){
     return new Promise(resolve=>{
       const samples=[];           // {t, freq}
@@ -4149,6 +4440,7 @@ function ceilPow2(v) {
     runDots(GLIDE_RECORD_MS);
     listening=true;
     const samples=await recordTake(GLIDE_RECORD_MS, null);
+    captureTake("glide", fromNote+"->"+toNote, samples);
     listening=false; cancelAnimationFrame(raf); parkNeedle();
     hideDots(); wave.classList.remove("on");
     muteMic();
@@ -4178,7 +4470,48 @@ function ceilPow2(v) {
       const secondHalf = centsFromCenter.slice(mid);
       const avgFirst = firstHalf.reduce((a,b)=>a+b,0)/firstHalf.length;
       const avgSecond = secondHalf.length ? secondHalf.reduce((a,b)=>a+b,0)/secondHalf.length : avgFirst;
-      return {spread, drift: avgSecond-avgFirst};
+      const vib = vibratoLikeness(r, centsFromCenter);
+      return {spread, drift: avgSecond-avgFirst,
+              vibratoStrength: vib ? vib.strength : 0,
+              vibratoHz: vib ? vib.hz : 0};
+    }
+    // Spread alone cannot tell vibrato from unsteadiness: a 70-cent vibrato and
+    // a 70-cent waver produce the same standard deviation, so no threshold
+    // separates them. What separates them is structure -- vibrato is periodic
+    // at roughly 4.5-6.5 Hz, wavering is not. Autocorrelating the detrended
+    // cents series over just that band tells the two apart, so the singer can
+    // be told which one they did instead of only that they failed.
+    //
+    // The band is deliberately narrow at the bottom: breath pulsing at 2-3 Hz
+    // is a common beginner fault and IS instability, so it must not be excused
+    // as slow vibrato. Detrending first stops a steady drift registering as a
+    // very slow oscillation.
+    const VIBRATO_LO_HZ=4.5, VIBRATO_HI_HZ=6.5, VIBRATO_MIN_STRENGTH=0.5;
+    function vibratoLikeness(r, centsFromCenter){
+      const n=r.length;
+      const dur=r[n-1].t-r[0].t;
+      if(n<16 || dur<800) return null;         // too short to establish a period
+      const meanT=r.reduce((a,s)=>a+s.t,0)/n;
+      const meanC=centsFromCenter.reduce((a,b)=>a+b,0)/n;
+      let num=0, den=0;
+      for(let i=0;i<n;i++){ const dt=r[i].t-meanT; num+=dt*(centsFromCenter[i]-meanC); den+=dt*dt; }
+      const slope=den ? num/den : 0;
+      const d=centsFromCenter.map((c,i)=>c-meanC-slope*(r[i].t-meanT));
+      const energy=d.reduce((a,x)=>a+x*x,0);
+      if(energy<1e-6) return null;             // a dead-flat line has no period
+      const msPerSample=dur/(n-1);
+      const lagFor=hz=>Math.round(1000/hz/msPerSample);
+      const loLag=Math.max(2, lagFor(VIBRATO_HI_HZ)), hiLag=lagFor(VIBRATO_LO_HZ);
+      if(hiLag>=Math.floor(n/2) || loLag>hiLag) return null;
+      let best=0, bestLag=0;
+      for(let lag=loLag; lag<=hiLag; lag++){
+        let sum=0;
+        for(let i=0;i+lag<n;i++) sum+=d[i]*d[i+lag];
+        // normalised by the overlap actually used, so long lags aren't penalised
+        const norm=sum/(energy*((n-lag)/n));
+        if(norm>best){ best=norm; bestLag=lag; }
+      }
+      return {strength:best, hz: bestLag ? 1000/(bestLag*msPerSample) : 0};
     }
     function flush(){
       if(run.length>=2){
@@ -4186,7 +4519,8 @@ function ceilPow2(v) {
         if(dur>=MIN_HOLD-HOLD_SLACK){
           const cf=centerFreq(run);
           const stats=stabilityStats(run, cf);
-          held.push({freq:cf, start:run[0].t, dur, stabilitySpread:stats.spread, driftCents:stats.drift});
+          held.push({freq:cf, start:run[0].t, dur, stabilitySpread:stats.spread, driftCents:stats.drift,
+                     vibratoStrength:stats.vibratoStrength, vibratoHz:stats.vibratoHz});
         }
       }
       run=[];
@@ -4235,13 +4569,24 @@ function ceilPow2(v) {
     if(!held) return null;
     const tf=noteToFreq(targetNote);
     const cents=Math.round(1200*Math.log2(held.freq/tf));
-    return {cents, note:freqToNoteData(held.freq), stabilitySpread:held.stabilitySpread, driftCents:held.driftCents};
+    return {cents, note:freqToNoteData(held.freq), stabilitySpread:held.stabilitySpread, driftCents:held.driftCents,
+            holdMs:held.dur, vibratoStrength:held.vibratoStrength, vibratoHz:held.vibratoHz};
   }
   // classify a single-tone follow-me take: returns {cap, reason}
   // reason: null (ok) · "none" (no signal at all) · "short" (signal but nothing held long enough)
   function classifyHeld(targetNote, samples, held){
     const voiced = samples.some(s=>s.freq!==null);
     if(held && held.length){
+      const lesson = currentLessonId ? LESSONS[currentLessonId] : null;
+      if(lesson && lesson.scoringMode==="stability"){
+        // A sustained-tone lesson has to grade the LONGEST run. Picking the run
+        // nearest the target rewarded exactly the wrong thing: fragmenting a
+        // note into several short touches and being scored on whichever
+        // fragment happened to land closest.
+        let li=0;
+        held.forEach((h,idx)=>{ if(h.dur>held[li].dur) li=idx; });
+        return {cap:heldToCap(targetNote,held[li]), reason:null};
+      }
       const tf=noteToFreq(targetNote);
       let bi=0,berr=Infinity;
       held.forEach((h,idx)=>{ const e=Math.abs(1200*Math.log2(h.freq/tf)); if(e<berr){berr=e;bi=idx;} });
@@ -4297,6 +4642,7 @@ function ceilPow2(v) {
       // slow to come up after repeated release/acquire). Wait for it to go live.
       const ok=await micLive(2500);
       if(!ok){ micError="notlive"; return false; }
+      updateMicPathNote();
       return true;
     }catch(e){ micError="failed"; return false; }
   }
@@ -4372,17 +4718,75 @@ function ceilPow2(v) {
     if(currentLang==="uk") return hits+"/"+denom+" "+t(" notes on pitch — see details below");
     return hits+"/"+denom+" notes on pitch — "+t("see details below");
   }
+  // segmentTake computes spread, drift and vibrato on every hold-graded take,
+  // and addResult threw all of it away -- so someone practising sustained notes
+  // in Free Practice saw pitch centre and nothing else. Reported as
+  // MEASUREMENTS rather than verdicts: no pass/fail, no new thresholds, no
+  // history. This mode is for singers who already know what they're working on,
+  // and a number they can act on serves that better than a judgement.
+  // Empty string when the take was graded on the clock -- captureWindow keeps
+  // only the best reading and never builds a trace to measure.
+  function steadinessLine(graded){
+    const withStab=graded.filter(c=>c.stabilitySpread!==undefined);
+    if(!withStab.length) return "";
+    const spread=medianOf(withStab.map(c=>Math.round(c.stabilitySpread)));
+    let out=' · '+t("steadiness ")+'<b>±'+spread+t(" ¢")+'</b>';
+    const drift=medianOf(withStab.map(c=>Math.round(c.driftCents)));
+    if(Math.abs(drift)>8) out+=' · '+t("drift ")+'<b>'+(drift>0?"+":"")+drift+t(" ¢")+'</b>';
+    const vib=withStab.filter(isVibrato);
+    if(vib.length>withStab.length/2){
+      const hz=(vib.reduce((s,c)=>s+(c.vibratoHz||0),0)/vib.length).toFixed(1);
+      out+=' · '+t("vibrato ")+'<b>'+hz+' Hz</b>';
+    }
+    return out;
+  }
   function showScore(caps,total){
     const graded=caps.filter(c=>c);
     if(!graded.length){ scoreEl.classList.add("hidden"); return; }
     const hits=graded.filter(c=>Math.abs(c.cents)<=15).length;
     const avg=Math.round(graded.reduce((s,c)=>s+Math.abs(c.cents),0)/graded.length);
     scoreEl.classList.remove("hidden");
-    scoreEl.innerHTML='On pitch: <b>'+hits+'/'+(total||caps.length)+'</b> · avg deviation <b>'+avg+' ¢</b>';
+    // was hardcoded English, so this line stayed untranslated in Ukrainian
+    scoreEl.innerHTML=t("On pitch: ")+'<b>'+hits+'/'+(total||caps.length)+'</b> · '
+      +t("avg deviation ")+'<b>'+avg+t(" ¢")+'</b>'
+      +steadinessLine(graded);
   }
+
+  // Screen sleep mid-session is a real interruption on a phone: iOS suspends the
+  // AudioContext when the screen locks, which kills a take outright. The lock is
+  // held only while practising and dropped after a few minutes without a take,
+  // so a phone left face-up on a piano doesn't burn battery all afternoon. The
+  // browser releases it automatically when the page is hidden, hence the
+  // visibilitychange re-acquire. Unsupported browsers (Firefox, Safari before
+  // 16.4) simply get today's behaviour -- this never blocks anything.
+  let wakeLock=null, wakeIdleTimer=null, wakeSessionActive=false;
+  const WAKE_IDLE_MS=180000;
+  async function acquireWakeLock(){
+    try{
+      if(!navigator.wakeLock || wakeLock) return;
+      wakeLock=await navigator.wakeLock.request("screen");
+      wakeLock.addEventListener("release",()=>{ wakeLock=null; });
+    }catch(e){ wakeLock=null; }
+  }
+  function releaseWakeLock(){
+    wakeSessionActive=false;
+    clearTimeout(wakeIdleTimer); wakeIdleTimer=null;
+    try{ if(wakeLock) wakeLock.release(); }catch(e){}
+    wakeLock=null;
+  }
+  function keepScreenAwake(){
+    wakeSessionActive=true;
+    acquireWakeLock();
+    clearTimeout(wakeIdleTimer);
+    wakeIdleTimer=setTimeout(releaseWakeLock, WAKE_IDLE_MS);
+  }
+  document.addEventListener("visibilitychange",()=>{
+    if(document.visibilityState==="visible" && wakeSessionActive) acquireWakeLock();
+  });
 
   function setBusy(b){
     running=b;
+    if(b) keepScreenAwake();
     document.querySelectorAll(".tab, .btn, #add-note, #timbre button, #sing-time button, #tempo-set button, #grade-mode button, .arp-box select, .arp-box input").forEach(el=>el.style.pointerEvents=b?"none":"");
     updatePlayButtons();
   }
@@ -4426,14 +4830,24 @@ function ceilPow2(v) {
     const winMs=singMsFor(true);      // one tone on its own
     if(effectiveGrade()==="follow"){
       // hold-based: only a tone held ~0.5s counts, so a quick sweep won't score
-      const holdWin=Math.max(winMs, MIN_HOLD+600);
-      stage(t("Sing!"),{cls:"",sub:t("hold the tone for at least half a second")});
+      const stabilityLesson = currentLessonId && LESSONS[currentLessonId] && LESSONS[currentLessonId].minHoldMs;
+      // A lesson that requires an N-second hold needs a window with room for
+      // onset and release on top of N, or the requirement is unmeetable no
+      // matter how well the singer sustains. Overrides the Sing time setting
+      // for this lesson only, the same way effectiveGrade overrides Grading.
+      const holdWin = stabilityLesson
+        ? LESSONS[currentLessonId].minHoldMs+900
+        : Math.max(winMs, MIN_HOLD+600);
+      stage(t("Sing!"),{cls:"",sub: stabilityLesson
+        ? t("hold the tone steadily for 3 seconds")
+        : t("hold the tone for at least half a second")});
       runDots(holdWin);
       listening=true;
       const samples=await recordTake(holdWin, tf);
       listening=false; cancelAnimationFrame(raf); parkNeedle();
       hideDots(); wave.classList.remove("on");
       muteMic();                       // free the mic so the next tone plays loud
+      captureTake("hold", note, samples);
       const held=segmentTake(samples);
       return classifyHeld(note, samples, held);   // {cap, reason}
     }
@@ -4479,7 +4893,7 @@ function ceilPow2(v) {
     let selfAssessLine=null;
     if(phase==="independent" && cap){
       const guess=await waitForSelfAssess();
-      selfAssessLine=selfAssessComparisonLine(guess, cap.cents);
+      if(guess) selfAssessLine=selfAssessComparisonLine(guess, cap.cents);   // null = lesson was abandoned mid-prompt
     }
 
     const fbLine=commitFeedback(seq[i],cap,reason);
@@ -4611,6 +5025,7 @@ function ceilPow2(v) {
       clearChipHighlights();
       listening=true;
       const samples=await recordTake(totalMs, null, pseq);
+      captureTake("phrase", pseq.join(" "), samples);
       listening=false; cancelAnimationFrame(raf); parkNeedle();
       hideDots(); muteMic();
       const held=segmentTake(samples);
@@ -4697,10 +5112,22 @@ function ceilPow2(v) {
       profileSelect.appendChild(o);
     });
   }
+  // Everything keyed by profile has to be re-read here. Previously only the
+  // range UI was, so after a switch the Free Practice line still showed the
+  // PREVIOUS profile's tone count and accuracy -- attributed to the new
+  // profile -- and the Learning Path still showed the previous profile's
+  // progress, both until the next sung note.
+  function refreshProfileScopedUI(){
+    refreshVocalRangeUI();
+    updateFreePracticeStatsDisplay();
+    renderPathList();
+    const tp=$("to-path-link");
+    if(tp) tp.classList.toggle("hidden", Object.keys(loadLpProgress()).length>0);
+  }
   profileSelect.addEventListener("change",()=>{
     if(!profileSelect.value) return;
     lsSet(LS_ACTIVE, profileSelect.value);
-    refreshVocalRangeUI();
+    refreshProfileScopedUI();
   });
 
   const profileBackdrop=$("profile-backdrop"), profileInput=$("profile-name-input");
@@ -4721,7 +5148,7 @@ function ceilPow2(v) {
     saveProfileList(list);
     lsSet(LS_ACTIVE,name);
     renderProfileSelect();
-    refreshVocalRangeUI();
+    refreshProfileScopedUI();
     closeProfileModal();
   }
 
@@ -4754,6 +5181,9 @@ function ceilPow2(v) {
       document.querySelectorAll(".mode-btn").forEach(x=>x.classList.remove("active"));
       b.classList.add("active");
       const mode=b.dataset.appmode;
+      abandonLesson();   // no-op when no lesson is running; otherwise leaving the
+                         // mode leaves the lesson too, rather than scoring the
+                         // singer's Free Practice takes as lesson trials
       $("app-mode-path").classList.toggle("active", mode==="path");
       $("app-mode-free").classList.toggle("active", mode==="free");
       if(mode==="free"){
@@ -4766,17 +5196,25 @@ function ceilPow2(v) {
       }
     });
   });
-  const backToPathLink=$("back-to-path-link");
-  if(backToPathLink) backToPathLink.addEventListener("click",()=>{
-    backToPathLink.classList.add("hidden");
-    $("next-lesson-card").scrollIntoView({behavior:"smooth", block:"start"});
-  });
   const toPathLink=$("to-path-link");
   if(toPathLink) toPathLink.addEventListener("click",()=>{
     document.querySelector('.mode-btn[data-appmode="path"]').click();
     window.scrollTo({top:0, behavior:"smooth"});
   });
+  const micPathDismiss=$("mic-path-dismiss");
+  if(micPathDismiss) micPathDismiss.addEventListener("click",()=>{
+    micPathNoteDismissed=true;
+    $("mic-path-note").classList.add("hidden");
+  });
+
+  const backToPathLink=$("back-to-path-link");
+  if(backToPathLink) backToPathLink.addEventListener("click",()=>{
+    abandonLesson();   // the link used to only scroll, leaving the lesson running
+    backToPathLink.classList.add("hidden");
+    $("next-lesson-card").scrollIntoView({behavior:"smooth", block:"start"});
+  });
   renderPathList();
+  pruneOldFreePracticeStats();
   updateFreePracticeStatsDisplay();
 
   // ================= VOCAL RANGE (Stage 6) =================
@@ -4842,6 +5280,7 @@ function ceilPow2(v) {
     if(!okMic) return {error:true, msg:micStatusSub()};
     listening=true;
     const samples=await recordTake(3000, null, null);   // no target -- tuner-style live read
+    captureTake("range", null, samples);   // free sustained-tone data during calibration
     listening=false; muteMic(); parkNeedle();
     const held=segmentTake(samples).filter(h=>h.dur>=VR_MIN_HOLD_MS);
     if(!held.length) return {error:true, msg:t("No note held long enough — try again, holding it steady for at least half a second.")};
