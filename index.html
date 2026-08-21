@@ -35,7 +35,40 @@
   .profile-switch{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
   .profile-label{font-family:var(--mono);font-size:11px;color:var(--dim)}
   .profile-switch select{padding:6px 10px;font-size:13px}
-  .lang-select{margin-left:4px}
+  .lang-select{margin-left:auto}
+  .my-progress-row{margin:10px 0 0}
+  .link-btn{background:none;border:none;padding:0;color:var(--accent);cursor:pointer;
+    font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase}
+  .link-btn:hover{text-decoration:underline}
+  .link-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  .prog-head{display:flex;gap:18px;margin:4px 0 14px}
+  .prog-head div{flex:1}
+  .prog-num{font-family:var(--mono);font-size:22px;color:var(--ink)}
+  .prog-cap{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em}
+  .prog-find{border-top:1px solid var(--line);padding:11px 0}
+  .prog-find b{display:block;font-size:14px;color:var(--ink);margin-bottom:3px}
+  .prog-find span{font-size:13px;color:var(--muted)}
+  .prog-pointer{border-top:1px solid var(--line);padding:11px 0;font-size:13px;color:var(--ok)}
+  .prog-empty{font-size:13px;color:var(--muted);padding:8px 0}
+  .fp-timing{margin:10px 0 4px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2)}
+  .fp-timing>summary{cursor:pointer;list-style:none;font-family:var(--mono);font-size:11px;
+    letter-spacing:0.12em;text-transform:uppercase;color:var(--dim);padding:9px 12px}
+  .fp-timing>summary::-webkit-details-marker{display:none}
+  .fp-timing>summary:hover{color:var(--ink)}
+  .fp-timing[open]>summary .chev{transform:rotate(90deg)}
+  .fp-timing .settings-body{padding:0 12px 10px}
+  .stage-list-wrap{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}
+  .stage-list-wrap>summary{cursor:pointer;list-style:none;font-family:var(--mono);font-size:11px;
+    letter-spacing:0.12em;text-transform:uppercase;color:var(--dim);padding:4px 0}
+  .stage-list-wrap>summary::-webkit-details-marker{display:none}
+  .stage-list-wrap>summary:hover{color:var(--ink)}
+  .stage-list-wrap[open]>summary .chev{transform:rotate(90deg)}
+  .range-tag{font-family:var(--mono);font-size:10px;letter-spacing:0.06em;color:var(--dim);
+    background:transparent;border:1px solid var(--line);border-radius:6px;padding:3px 7px;
+    cursor:pointer;text-transform:none}
+  .range-tag:hover{color:var(--ink);border-color:var(--accent)}
+  .range-tag:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .range-tag[hidden]{display:none}
   .uk-only.hidden{display:none}
   .profile-new{padding:6px 12px;font-size:13px}
   .vr-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -70,6 +103,22 @@
   .fb-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
   .fb-thanks{margin-top:16px;text-align:center;color:var(--accent);font-weight:600;font-size:15px}
   .fb-thanks[hidden]{display:none}
+
+  .modal.diag{max-height:86vh;overflow-y:auto}
+  #diag-dev{width:100%}
+  .diag-sec{font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);margin:16px 0 6px}
+  .diag-row{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .diag-row span:first-child{color:var(--muted);flex:none}
+  .diag-row span:last-child{font-family:var(--mono);font-size:12px;text-align:right;word-break:break-all}
+  .diag-row .v-good{color:var(--good)}
+  .diag-row .v-bad{color:var(--bad)}
+  .diag-meter{height:10px;background:var(--panel-2);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:10px 0 4px}
+  .diag-meter i{display:block;height:100%;width:0;background:var(--accent)}
+  .diag-hint{font-size:12px;color:var(--muted);margin:6px 0 0}
+  .diag-hint.diag-warn{color:var(--ok)}
+  .diag-hint.hidden{display:none}
+  #diag-report-out{margin-top:12px;font-family:var(--mono);font-size:11px}
+  @media (prefers-reduced-motion:reduce){.diag-meter i{transition:none}}
 
     .tab{flex:1;background:transparent;border:none;color:var(--muted);font-family:var(--sans);font-size:13px;font-weight:500;padding:10px 8px;border-radius:8px;cursor:pointer;transition:background .15s,color .15s}
   .tab:hover{color:var(--ink)}
@@ -261,10 +310,6 @@
   .paste-row{margin-top:10px}
   .paste-input{flex:1;min-width:180px;background:var(--panel-2);border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:9px 12px;font-family:var(--mono);font-size:13.5px}
   .paste-input:focus{outline:none;border-color:var(--accent)}
-  .seq-text-row{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
-  .seq-text-row.hidden{display:none}
-  .seq-text-label{font-size:12px;color:var(--dim)}
-  .seq-text-row .paste-input{flex:1;min-width:180px;color:var(--accent);cursor:text}
   select,button{font-family:var(--sans);font-size:14px}
   select{background:var(--panel-2);border:1px solid var(--line);color:var(--ink);padding:9px 12px;border-radius:8px;cursor:pointer;max-height:40px}
   select:focus{outline:2px solid var(--accent);outline-offset:1px}
@@ -474,19 +519,18 @@
 <body>
 <div class="wrap">
   <header>
-    <div class="eyebrow"><span data-i18n="ear training · voice · intonation">ear training · voice · intonation</span></div>
-    <div class="title-row"><img class="app-logo" src="data:image/png;base64,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" alt="Vocal Pitch Trainer icon" width="48" height="48"><h1>Vocal Pitch <span class="accent">Trainer</span><span class="version-tag"><span data-i18n="v3.4.0">v3.4.0</span></span></h1></div>
+    <div class="title-row"><img class="app-logo" src="data:image/png;base64,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" alt="Vocal Pitch Trainer icon" width="48" height="48"><h1>Vocal Pitch <span class="accent">Trainer</span><span class="version-tag">v3.9.2</span></h1>
+      <select id="lang-select" aria-label="Language" class="lang-select">
+        <option value="en">English</option>
+        <option value="uk">Українська</option>
+      </select></div>
     <p class="value-prop"><span data-i18n="Train vocal pitch accuracy through guided lessons or focused exercises.">Train vocal pitch accuracy through guided lessons or focused exercises.</span></p>
-    <p class="sub"><span data-i18n="Listen, sing, and get precise feedback on how closely your voice matches the target.">Listen, sing, and get precise feedback on how closely your voice matches the target.</span></p>
     <p class="byline"><span data-i18n="Created by">Created by</span> <b><span data-i18n="N. Scherbak">N. Scherbak</span></b> · <button class="feedback-link" id="feedback-open"><span data-i18n="send feedback">send feedback</span></button></p>
     <div class="profile-switch">
-      <span class="profile-label"><span data-i18n="Who's practicing?">Who's practicing?</span></span>
-      <select id="profile-select"></select>
+      <span class="profile-label"><span data-i18n="Profile">Profile</span></span>
+      <select id="profile-select" aria-label="Profile"></select>
+      <button class="range-tag" id="profile-range-tag" type="button"></button>
       <button class="btn ghost profile-new" id="profile-new-btn"><span data-i18n="+ New">+ New</span></button>
-      <select id="lang-select" aria-label="Language" class="lang-select">
-        <option value="en">EN</option>
-        <option value="uk">UK</option>
-      </select>
     </div>
   </header>
 
@@ -512,8 +556,8 @@
 
   <div class="mode-switch" id="mode-switch">
     <button class="mode-btn active" data-appmode="path">
-      <span class="mtitle"><span data-i18n="Learning Path">Learning Path</span></span>
-      <span class="msub"><span data-i18n="guided lessons">guided lessons</span></span>
+      <span class="mtitle"><span data-i18n="Guided lessons">Guided lessons</span></span>
+      <span class="msub" id="path-mode-sub"><span data-i18n="step by step">step by step</span></span>
     </button>
     <button class="mode-btn" data-appmode="free">
       <span class="mtitle"><span data-i18n="Free Practice">Free Practice</span></span>
@@ -534,11 +578,15 @@
     <div id="next-lesson-card"></div>
     <div id="path-progress-label" class="progress-label"></div>
     <div id="path-mini-progress" class="mini-progress"></div>
-    <div id="path-stage-list"></div>
+    <p class="my-progress-row"><button class="link-btn" id="my-progress-open"><span data-i18n="My progress">My progress</span> →</button></p>
+    <details class="stage-list-wrap" id="stage-list-wrap">
+      <summary><span class="chev">▶</span> <span data-i18n="Browse all lessons">Browse all lessons</span></summary>
+      <div id="path-stage-list"></div>
+    </details>
   </div>
 
   <div class="shared-active-seq" id="shared-active-seq">
-    <p class="back-to-path hidden" id="back-to-path-link">↑ <span data-i18n="Back to Learning Path">Back to Learning Path</span></p>
+    <p class="back-to-path hidden" id="back-to-path-link">↑ <span data-i18n="Back to Guided lessons">Back to Guided lessons</span></p>
     <p class="round-tag hidden" id="round-tag"></p>
     <div class="seq-row" id="seq-chips"></div>
   </div>
@@ -555,15 +603,35 @@
       <span class="voice-tag" id="voice-tag"><span data-i18n="E2–C6">E2–C6</span></span>
       <span class="hint" id="seq-hint">0 tones</span>
     </div>
+    <details class="fp-timing" id="fp-timing">
+      <summary><span class="chev">▶</span> <span data-i18n="Timing">Timing</span></summary>
+      <div class="settings-body">
+    <div class="set-row">
+      <div class="timing-cap"><span data-i18n="Grading">Grading</span></div>
+      <div class="radioset" id="grade-mode" role="group" aria-label="Grading mode">
+        <button data-grade="follow" class="active"><span data-i18n="Follow me">Follow me</span></button>
+        <button data-grade="clock"><span data-i18n="On the clock">On the clock</span></button>
+      </div>
+      <span class="set-note" id="grade-note"><span data-i18n="No timer — take as long as you need on each note.">No timer — take as long as you need on each note.</span></span>
+      <p class="lesson-controlled-note hidden" id="grade-lesson-note"><span data-i18n="This lesson sets its own grading style — this choice only applies in Free Practice.">This lesson sets its own grading style — this choice only applies in Free Practice.</span></p>
+    </div>
+
+    <div class="set-row" id="singtime-group">
+      <div class="timing-cap"><span data-i18n="Singing time">Singing time</span></div>
+      <div class="radioset" id="sing-time" role="group" aria-label="Singing time per tone">
+        <button data-t="default" class="active"><span data-i18n="Default">Default</span></button>
+        <button data-t="1000"><span data-i18n="1 s">1 s</span></button>
+        <button data-t="2000"><span data-i18n="2 s">2 s</span></button>
+        <button data-t="3000"><span data-i18n="3 s">3 s</span></button>
+      </div>
+      <span class="set-note"><span data-i18n="Adjusts how long you get per tone on the clock.">Adjusts how long you get per tone on the clock.</span></span>
+    </div>
+      </div>
+    </details>
     <p class="free-practice-stats hidden" id="free-practice-stats"></p>
-    <p class="to-path-link hidden" id="to-path-link"><span data-i18n="Want structured practice instead?">Want structured practice instead?</span> → <span data-i18n="Learning Path">Learning Path</span></p>
 
     <p class="onboard-hint" id="onboard-hint"><span data-i18n="Select tones below">Select tones below</span> <span class="arrow">→</span> <span data-i18n="Add">Add</span> <span class="arrow">→</span> <span data-i18n="Play">Play</span></p>
     <p class="drag-hint hidden" id="drag-hint"><span data-i18n="Drag to reorder · × to remove">Drag to reorder · × to remove</span></p>
-    <div class="seq-text-row hidden" id="seq-text-row">
-      <span class="seq-text-label"><span data-i18n="As text (copy all, or select part to paste back above):">As text (copy all, or select part to paste back above):</span></span>
-      <input type="text" id="seq-text-out" class="paste-input" readonly aria-label="Current sequence as text">
-    </div>
     <label class="updown-row hidden" id="updown-row">
       <input type="checkbox" id="updown"> <span data-i18n="Play up and down">Play up and down</span>
       <span class="updown-note" id="updown-note"></span>
@@ -670,8 +738,8 @@
         <label class="arp-field">
           <span><span data-i18n="Pattern">Pattern</span></span>
           <select id="seq2-pattern">
-            <option value="3-note ascending run"><span data-i18n="3-note ascending run">3-note ascending run</span></option><option value="3-note turn"><span data-i18n="3-note turn">3-note turn</span></option>
-            <option value="4-note ascending run"><span data-i18n="4-note ascending run">4-note ascending run</span></option><option value="Thirds"><span data-i18n="Thirds">Thirds</span></option><option value="5-note turn"><span data-i18n="5-note turn">5-note turn</span></option>
+            <option value="3-note descending run"><span data-i18n="3-note descending run">3-note descending run</span></option><option value="3-note ascending run"><span data-i18n="3-note ascending run">3-note ascending run</span></option><option value="3-note turn"><span data-i18n="3-note turn">3-note turn</span></option>
+            <option value="4-note ascending run"><span data-i18n="4-note ascending run">4-note ascending run</span></option><option value="Thirds"><span data-i18n="Thirds">Thirds</span></option><option value="5-note turn (from above)"><span data-i18n="5-note turn (from above)">5-note turn (from above)</span></option><option value="5-note turn"><span data-i18n="5-note turn">5-note turn</span></option>
           </select>
         </label>
         <button class="btn arp-gen" id="seq2-gen"><span data-i18n="Generate">Generate</span></button>
@@ -686,6 +754,17 @@
   <details class="settings" id="settings">
     <summary><span class="chev">▶</span> <span data-i18n="Settings">Settings</span> <span class="settings-sum" id="settings-sum"><span data-i18n="pure tone · default tempo · follow me">pure tone · default tempo · follow me</span></span></summary>
     <div class="settings-body">
+
+    <div class="set-row">
+      <div class="timing-cap"><span data-i18n="Vocal range">Vocal range</span> <span class="vr-tag" id="vr-profile-tag"></span></div>
+      <div class="vr-controls">
+        <select id="vr-low" aria-label="Lowest comfortable note"></select>
+        <span class="arp-dash"><span data-i18n="to">to</span></span>
+        <select id="vr-high" aria-label="Highest comfortable note"></select>
+        <button class="btn ghost" id="vr-detect-btn"><span data-i18n="🎤 Detect">🎤 Detect</span></button>
+      </div>
+      <span class="set-note" id="vr-note"><span data-i18n="Lets exercises suggest keys that suit your voice. Every key stays available.">Lets exercises suggest keys that suit your voice. Every key stays available.</span></span>
+    </div>
 
     <div class="set-row">
       <div class="timing-cap"><span data-i18n="Sound">Sound</span></div>
@@ -704,28 +783,36 @@
         <button data-tempo="medium"><span data-i18n="Medium">Medium</span></button>
         <button data-tempo="high"><span data-i18n="High">High</span></button>
       </div>
-      <span class="set-note"><span data-i18n="Slower gives you more time to really listen before singing back — useful while your ear is still learning a pattern; speed up once matching pitch starts feeling automatic.">Slower gives you more time to really listen before singing back — useful while your ear is still learning a pattern; speed up once matching pitch starts feeling automatic.</span></span>
+      <span class="set-note"><span data-i18n="Slower while you are learning a pattern; faster once it feels automatic.">Slower while you are learning a pattern; faster once it feels automatic.</span></span>
     </div>
 
     <div class="set-row">
-      <div class="timing-cap"><span data-i18n="Grading">Grading</span></div>
-      <div class="radioset" id="grade-mode" role="group" aria-label="Grading mode">
-        <button data-grade="follow" class="active"><span data-i18n="Follow me">Follow me</span></button>
-        <button data-grade="clock"><span data-i18n="On the clock">On the clock</span></button>
+      <div class="timing-cap"><span data-i18n="Live feedback">Live feedback</span></div>
+      <div class="radioset" id="live-fb-set" role="group" aria-label="Live feedback in Free Practice">
+        <button data-fb="on" class="active"><span data-i18n="On">On</span></button>
+        <button data-fb="hidden"><span data-i18n="Hidden while singing">Hidden while singing</span></button>
       </div>
-      <span class="set-note" id="grade-note"><span data-i18n="Sing at your own pace — this is the more natural way to build real pitch memory, since you're not racing a clock while your ear works out the note.">Sing at your own pace — this is the more natural way to build real pitch memory, since you're not racing a clock while your ear works out the note.</span></span>
-      <p class="lesson-controlled-note hidden" id="grade-lesson-note"><span data-i18n="This lesson sets its own grading style — this choice only applies in Free Practice.">This lesson sets its own grading style — this choice only applies in Free Practice.</span></p>
+      <span class="set-note"><span data-i18n="Hide it to rely on your ear instead of the screen.">Hide it to rely on your ear instead of the screen.</span></span>
+      <p class="lesson-controlled-note hidden" id="live-fb-lesson-note"><span data-i18n="This lesson fades feedback on its own schedule — this choice only applies in Free Practice.">This lesson fades feedback on its own schedule — this choice only applies in Free Practice.</span></p>
     </div>
 
-    <div class="set-row" id="singtime-group">
-      <div class="timing-cap"><span data-i18n="Singing time">Singing time</span></div>
-      <div class="radioset" id="sing-time" role="group" aria-label="Singing time per tone">
-        <button data-t="default" class="active"><span data-i18n="Default">Default</span></button>
-        <button data-t="1000"><span data-i18n="1 s">1 s</span></button>
-        <button data-t="2000"><span data-i18n="2 s">2 s</span></button>
-        <button data-t="3000"><span data-i18n="3 s">3 s</span></button>
+    <div class="set-row">
+      <div class="timing-cap"><span data-i18n="Control loudness">Control loudness</span></div>
+      <label class="loud-toggle">
+        <input type="checkbox" id="loudness-on">
+        <span data-i18n="Check to also track evenness of volume">Check to also track evenness of volume</span>
+      </label>
+      <span class="set-note"><span data-i18n="Shows whether your volume stays even as pitch rises.">Shows whether your volume stays even as pitch rises.</span></span>
+    </div>
+
+    <div class="set-row hidden" id="loud-sensitivity-group">
+      <div class="timing-cap"><span data-i18n="Sensitivity">Sensitivity</span></div>
+      <div class="radioset" id="loud-sensitivity" role="group" aria-label="Loudness sensitivity">
+        <button data-sens="low"><span data-i18n="Low (sensitivity)">Low</span></button>
+        <button data-sens="medium" class="active"><span data-i18n="Medium (sensitivity)">Medium</span></button>
+        <button data-sens="high"><span data-i18n="High (sensitivity)">High</span></button>
       </div>
-      <span class="set-note"><span data-i18n="A touch more (or less) time per tone in On the clock mode — more if you're still finding your footing, less once you want the extra challenge.">A touch more (or less) time per tone in On the clock mode — more if you're still finding your footing, less once you want the extra challenge.</span></span>
+      <span class="set-note"><span data-i18n="How forgiving the loudness box is. Start at Medium.">How forgiving the loudness box is. Start at Medium.</span></span>
     </div>
 
     <div class="set-row">
@@ -734,7 +821,7 @@
         <button data-room="quiet" class="active"><span data-i18n="Quiet room">Quiet room</span></button>
         <button data-room="noisy"><span data-i18n="Noisy room">Noisy room</span></button>
       </div>
-      <span class="set-note" id="room-note"><span data-i18n="The most accurate read on your real pitch — use this whenever your space allows it.">The most accurate read on your real pitch — use this whenever your space allows it.</span></span>
+      <span class="set-note" id="room-note"><span data-i18n="Most accurate reading. Use it when your room is quiet.">Most accurate reading. Use it when your room is quiet.</span></span>
       <details class="vocab mic-help" id="mic-help">
         <summary><span class="chev">›</span> <span data-i18n="Which headphones or mic should I use?">Which headphones or mic should I use?</span></summary>
         <div class="vocab-body">
@@ -747,44 +834,19 @@
     </div>
 
     <div class="set-row">
-      <div class="timing-cap"><span data-i18n="Control loudness">Control loudness</span></div>
-      <label class="loud-toggle">
-        <input type="checkbox" id="loudness-on">
-        <span data-i18n="Check to also track evenness of volume">Check to also track evenness of volume</span>
-      </label>
-      <span class="set-note"><span data-i18n="Many singers push louder as pitch rises without meaning to — this helps you notice it and train even volume across your whole range.">Many singers push louder as pitch rises without meaning to — this helps you notice it and train even volume across your whole range.</span></span>
+      <div class="timing-cap"><span data-i18n="Diagnostics">Diagnostics</span></div>
+      <button class="btn ghost" id="diag-open"><span data-i18n="Check microphone">Check microphone</span></button>
+      <span class="set-note"><span data-i18n="Open this if nothing happens when you sing.">Open this if nothing happens when you sing.</span></span>
     </div>
 
-    <div class="set-row hidden" id="loud-sensitivity-group">
-      <div class="timing-cap"><span data-i18n="Sensitivity">Sensitivity</span></div>
-      <div class="radioset" id="loud-sensitivity" role="group" aria-label="Loudness sensitivity">
-        <button data-sens="low"><span data-i18n="Low (sensitivity)">Low</span></button>
-        <button data-sens="medium" class="active"><span data-i18n="Medium (sensitivity)">Medium</span></button>
-        <button data-sens="high"><span data-i18n="High (sensitivity)">High</span></button>
-      </div>
-      <span class="set-note"><span data-i18n="Controls how forgiving the loudness box is — start at Medium, then tighten it once staying even feels natural, or loosen it if it feels distracting.">Controls how forgiving the loudness box is — start at Medium, then tighten it once staying even feels natural, or loosen it if it feels distracting.</span></span>
-    </div>
 
-    <div class="set-row">
-      <div class="timing-cap"><span data-i18n="Live feedback">Live feedback</span></div>
-      <div class="radioset" id="live-fb-set" role="group" aria-label="Live feedback in Free Practice">
-        <button data-fb="on" class="active"><span data-i18n="On">On</span></button>
-        <button data-fb="hidden"><span data-i18n="Hidden while singing">Hidden while singing</span></button>
-      </div>
-      <span class="set-note"><span data-i18n="Watching the meter helps while you're still finding a note — try hiding it once matching pitch feels automatic, so you're relying on your ear rather than the display.">Watching the meter helps while you're still finding a note — try hiding it once matching pitch feels automatic, so you're relying on your ear rather than the display.</span></span>
-      <p class="lesson-controlled-note hidden" id="live-fb-lesson-note"><span data-i18n="This lesson fades feedback on its own schedule — this choice only applies in Free Practice.">This lesson fades feedback on its own schedule — this choice only applies in Free Practice.</span></p>
-    </div>
 
-    <div class="set-row">
-      <div class="timing-cap"><span data-i18n="Vocal range">Vocal range</span> <span class="vr-tag" id="vr-profile-tag"></span></div>
-      <div class="vr-controls">
-        <select id="vr-low" aria-label="Lowest comfortable note"></select>
-        <span class="arp-dash"><span data-i18n="to">to</span></span>
-        <select id="vr-high" aria-label="Highest comfortable note"></select>
-        <button class="btn ghost" id="vr-detect-btn"><span data-i18n="🎤 Detect">🎤 Detect</span></button>
-      </div>
-      <span class="set-note" id="vr-note"><span data-i18n="Once set, exercises can suggest keys that sit comfortably in your own voice — so you spend less effort straining outside your range and more building real accuracy. It's only ever a suggestion — every key stays available.">Once set, exercises can suggest keys that sit comfortably in your own voice — so you spend less effort straining outside your range and more building real accuracy. It's only ever a suggestion — every key stays available.</span></span>
-    </div>
+
+
+
+
+
+
 
     </div>
   </details>
@@ -808,6 +870,14 @@
         <div class="stage-text">
           <div class="stage-status muted" id="stage-status"><span data-i18n="Ready — press Play.">Ready — press Play.</span></div>
           <div class="stage-sub" id="stage-sub"></div>
+        </div>
+      </div>
+      <div class="self-assess hidden" id="round-assess-prompt">
+        <p class="sa-question"><span data-i18n="How did that round feel?">How did that round feel?</span></p>
+        <div class="sa-options">
+          <button class="btn ghost" data-round-guess="in-tune"><span data-i18n="In tune">In tune</span></button>
+          <button class="btn ghost" data-round-guess="unsure"><span data-i18n="Not sure">Not sure</span></button>
+          <button class="btn ghost" data-round-guess="off"><span data-i18n="Off">Off</span></button>
         </div>
       </div>
       <div class="self-assess hidden" id="self-assess-prompt">
@@ -857,6 +927,52 @@
     <span class="credit"><span data-i18n="Piano samples: Salamander Grand Piano V3 by Alexander Holm · MP3 packaging by">Piano samples: Salamander Grand Piano V3 by Alexander Holm · MP3 packaging by</span> <a href="https://github.com/darosh/samples-piano-mp3" target="_blank" rel="noopener"><span data-i18n="darosh">darosh</span></a> <span data-i18n="· MIT licensed">· MIT licensed</span></span>
   </footer>
 
+  <div class="modal-backdrop" id="prog-backdrop" hidden>
+    <div class="modal diag" role="dialog" aria-modal="true" aria-labelledby="prog-title">
+      <button class="modal-close" id="prog-close" aria-label="Close">✕</button>
+      <h3 id="prog-title"><span data-i18n="My progress">My progress</span></h3>
+      <p class="modal-note"><span data-i18n="What your singing so far suggests. This stays on your device.">What your singing so far suggests. This stays on your device.</span></p>
+      <div id="prog-body"></div>
+      <div class="fb-actions">
+        <button class="btn-go" id="prog-done"><span data-i18n="Done">Done</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="diag-backdrop" hidden>
+    <div class="modal diag" role="dialog" aria-modal="true" aria-labelledby="diag-title">
+      <button class="modal-close" id="diag-close" aria-label="Close">✕</button>
+      <h3 id="diag-title"><span data-i18n="Microphone check">Microphone check</span></h3>
+      <p class="modal-note"><span data-i18n="What the app is receiving right now. Nothing here is recorded or sent anywhere.">What the app is receiving right now. Nothing here is recorded or sent anywhere.</span></p>
+
+      <label class="fb-label" for="diag-dev"><span data-i18n="Microphone">Microphone</span></label>
+      <select id="diag-dev"></select>
+      <p class="diag-hint hidden" id="diag-dev-hint"></p>
+
+      <div class="diag-sec"><span data-i18n="Input level">Input level</span></div>
+      <div class="diag-meter"><i id="diag-meter-fill"></i></div>
+      <div id="diag-level"></div>
+      <p class="diag-hint"><span data-i18n="Sing or speak — the bar should move. If it stays flat, no sound is reaching the app: try another microphone above.">Sing or speak — the bar should move. If it stays flat, no sound is reaching the app: try another microphone above.</span></p>
+
+      <div class="diag-sec"><span data-i18n="Audio engine">Audio engine</span></div>
+      <div id="diag-engine"></div>
+
+      <div class="diag-sec"><span data-i18n="Microphone track">Microphone track</span></div>
+      <div id="diag-track"></div>
+
+      <div class="diag-sec"><span data-i18n="Sound processing">Sound processing</span></div>
+      <div id="diag-proc"></div>
+      <p class="diag-hint diag-warn hidden" id="diag-proc-note"></p>
+
+      <div class="fb-actions">
+        <button class="btn ghost" id="diag-resume" hidden><span data-i18n="Start audio">Start audio</span></button>
+        <button class="btn ghost" id="diag-copy"><span data-i18n="Copy report">Copy report</span></button>
+        <button class="btn-go" id="diag-done"><span data-i18n="Done">Done</span></button>
+      </div>
+      <textarea id="diag-report-out" rows="7" readonly hidden></textarea>
+    </div>
+  </div>
+
   <div class="modal-backdrop" id="fb-backdrop" hidden>
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="fb-title">
       <button class="modal-close" id="fb-close" aria-label="Close">✕</button>
@@ -879,7 +995,7 @@
       <button class="modal-close" id="profile-close" aria-label="Close">✕</button>
       <h3 id="profile-title"><span data-i18n="Welcome to Vocal Pitch Trainer 👋">Welcome to Vocal Pitch Trainer 👋</span></h3>
       <p class="modal-note"><span data-i18n="Train your pitch with guided lessons or focused practice. Add a nickname to save your progress on this device — or skip for now.">Train your pitch with guided lessons or focused practice. Add a nickname to save your progress on this device — or skip for now.</span></p>
-      <input type="text" id="profile-name-input" placeholder="Your nickname" maxlength="24" autocomplete="off">
+      <input type="text" id="profile-name-input" placeholder="Your nickname" maxlength="16" autocomplete="off">
       <div class="fb-actions">
         <button class="btn ghost" id="profile-skip"><span data-i18n="Skip for now">Skip for now</span></button>
         <button class="btn-go" id="profile-save"><span data-i18n="Save">Save</span></button>
@@ -1077,10 +1193,12 @@
   // Sequence patterns as scale-degree formulas (grounded in standard vocal
   // pedagogy -- verified against real training sources in discussion).
   const SEQUENCE_PATTERNS={
+    "3-note descending run":(top)=>{ const g=[]; for(let s=1;s+2<=top;s++) g.push([s+2,s+1,s]); return g; },
     "3-note ascending run":(top)=>{ const g=[]; for(let s=1;s+2<=top;s++) g.push([s,s+1,s+2]); return g; },
     "3-note turn":(top)=>{ const g=[]; for(let s=1;s+2<=top;s++) g.push([s,s+1,s+2,s+1]); return g; },
     "4-note ascending run":(top)=>{ const g=[]; for(let s=1;s+3<=top;s++) g.push([s,s+1,s+2,s+3]); return g; },
     "Thirds":(top)=>{ const g=[]; for(let s=1;s+2<=top;s++) g.push([s,s+2]); return g; },
+    "5-note turn (from above)":()=>[[5,4,3,2,1,2,3,4,5]],
     "5-note turn":()=>[[1,2,3,4,5,4,3,2,1]],
   };
   function generateSequence(keySlotIndex, scaleType, rootNoteName, patternName, topDegree){
@@ -1169,9 +1287,9 @@
   "A fine ruler for pitch: one semitone is divided into 100 cents, so a whole tone is 200 cents. A difference under about 15 cents is so small most ears hear it as \"in tune.\"": "Тонка шкала для вимірювання висоти звуку: один півтон поділяється на 100 центів, тож цілий тон — це 200 центів. Різниця менша за приблизно 15 центів настільки мала, що більшість людей чують це як «чисто».",
   "Tones": "Ноти",
   "Use this sequence": "Використати цю послідовність",
-  "Learning Path — guided lessons from basic pitch matching onward": "Навчальний шлях — покрокові уроки, починаючи з базового відповідання висоти звуку",
-  "Feedback: live for the first ": "Зворотний зв'язок: наживо для перших ",
-  "Learning Path": "Навчальний шлях",
+  "Guided lessons — step by step from basic pitch matching onward": "Покрокові уроки — крок за кроком, починаючи з базового відповідання висоти звуку",
+  "Guided lessons": "Покрокові уроки",
+  "step by step": "крок за кроком",
   "Want structured practice instead?": "Хочете структуровану практику?",
   "Want to practice ": "Хочете попрактикувати ",
   " directly?": " окремо?",
@@ -1243,7 +1361,7 @@
   "glide smoothly downward from ": "плавно ковзайте вниз від ",
   " to ": " до ",
   " so far": " поки що",
-  "Back to Learning Path": "Назад до навчального шляху",
+  "Back to Guided lessons": "Назад до покрокових уроків",
   "This lesson sets its own grading style — this choice only applies in Free Practice.": "Цей урок сам визначає стиль оцінювання — цей вибір стосується лише вільної практики.",
   "This lesson fades feedback on its own schedule — this choice only applies in Free Practice.": "Цей урок сам визначає, коли послаблюється зворотний зв'язок — цей вибір стосується лише вільної практики.",
   "Before we start": "Перш ніж почати",
@@ -1271,7 +1389,6 @@
   "a note you haven't practiced yet. Doesn't affect your score.": "ноту, яку ви ще не тренували. Не впливає на ваш результат.",
   "Try it": "Спробувати",
   "Free Practice": "Вільна практика",
-  "guided lessons": "покрокові уроки",
   "choose an exercise": "оберіть вправу",
   "Your next lesson": "Ваш наступний урок",
   "Worth revisiting": "Варто повторити",
@@ -1307,9 +1424,6 @@
   "Select tones here — add one at a time:": "Оберіть ноти тут — додавайте по одній:",
   "Write or paste a whole sequence:": "Напишіть або вставте цілу послідовність:",
   "OR": "АБО",
-  ", then shown after each note": ", потім показується після кожної ноти",
-  ", then shown after each attempt": ", потім показується після кожної спроби",
-  ", then shown after each repeat": ", потім показується після кожного повтору",
   "Live feedback": "Зворотний зв'язок наживо",
   "Match a note": "Впіймати ноту",
   "Find the note and hold it there.": "Знайдіть ноту й утримайте її.",
@@ -1328,8 +1442,7 @@
   "Trains landing correctly on notes that aren't right next to each other -- a natural next step once steps feel solid.": "Тренує точне влучання в ноти, які не стоять поруч одна з одною — природний наступний крок, коли кроки вже даються впевнено.",
   "On": "Увімкнено",
   "Hidden while singing": "Приховано під час співу",
-  "Watching the meter helps while you're still finding a note — try hiding it once matching pitch feels automatic, so you're relying on your ear rather than the display.": "Спостереження за індикатором допомагає, поки ви ще шукаєте ноту — спробуйте приховати його, коли влучання в ноту стане звичним, щоб покладатися на слух, а не на екран.",
-  "As text (copy all, or select part to paste back above):": "У вигляді тексту (скопіюйте все або частину, щоб вставити назад вище):",
+  "Hide it to rely on your ear instead of the screen.": "Приховайте, щоб покладатися на слух, а не на екран.",
   "Type or paste a sequence first, e.g. C2-C#3-E2": "Спочатку введіть або вставте послідовність, напр. C2-C#3-E2",
   "Couldn't read \"": "Не вдалося розпізнати «",
   "\" — use note names like C2-C#3-E2, within ": "» — використовуйте назви нот, напр. C2-C#3-E2, у межах ",
@@ -1413,7 +1526,88 @@
   "one tone selected": "обрано одну ноту",
   "play tones one at a time, or the whole phrase": "відтворюйте ноти по одній або цілу фразу",
   "Get ready": "Приготуйтеся",
+  "Sing each tone the moment it lights up, against a fixed timer.": "Співайте кожен тон, щойно він засвітиться, за фіксованим таймером.",
+  "Filters background sound. Less accurate — switch back when it is quiet.": "Фільтрує фоновий шум. Менш точно — поверніться, коли стане тихо.",
+  "Diagnostics": "Діагностика",
+  "Check microphone": "Перевірити мікрофон",
+  "Microphone check": "Перевірка мікрофона",
+  "What the app is receiving right now. Nothing here is recorded or sent anywhere.": "Що застосунок отримує просто зараз. Нічого не записується й нікуди не надсилається.",
+  "Input level": "Рівень сигналу",
+  "Sing or speak — the bar should move. If it stays flat, no sound is reaching the app: try another microphone above.": "Заспівайте або скажіть щось — смужка має рухатися. Якщо вона нерухома, звук не доходить до застосунку: спробуйте інший мікрофон вище.",
+  "Audio engine": "Аудіорушій",
+  "Microphone track": "Доріжка мікрофона",
+  "Sound processing": "Обробка звуку",
+  "Start audio": "Запустити звук",
+  "Copy report": "Копіювати звіт",
+  "Done": "Готово",
+  "Open this if nothing happens when you sing.": "Відкрийте, якщо нічого не відбувається під час співу.",
+  "Timing": "Час",
+  "3-note descending run": "низхідний рух із 3 нот",
+  "Three notes, stepwise": "Три ноти поспіль",
+  "Three neighbouring notes, moving down.": "Три сусідні ноти, рух униз.",
+  "Bridges single notes and full scales -- the smallest movement that is still a melody.": "Місток між окремими нотами й гамами — найменший рух, який усе ще є мелодією.",
+  "Land at least {hits} of {trials} notes on pitch.": "Влучте щонайменше {hits} із {trials} нот у висоту.",
+  "Going from one note straight to a nine-note scale is a big jump. Three neighbouring notes let you practise moving without losing the note you are on.": "Перехід від однієї ноти одразу до гами з дев'яти нот — великий стрибок. Три сусідні ноти дають змогу вчитися рухатися, не втрачаючи ноту, на якій ви є.",
+  "5-note turn (from above)": "оберт із 5 нот (згори)",
+  "Down the stairs, then back up.": "Сходами вниз, потім назад угору.",
+  "How did that round feel?": "Як відчувався цей раунд?",
+  "Not sure": "Не впевнений",
+  "Off": "Мимо",
+  "You said: ": "Ви сказали: ",
+  "all on pitch": "усі влучили",
+  " on pitch": " влучили",
+  "My progress": "Мій прогрес",
+  "What your singing so far suggests. This stays on your device.": "Що показує ваш спів дотепер. Ці дані лишаються на вашому пристрої.",
+  "Nothing stands out yet — no single weak point is showing above the noise.": "Поки нічого не виділяється — жодне окреме слабке місце не проступає.",
+  "average lean": "середній нахил",
+  "notes sung": "проспівано нот",
+  " done": " виконано",
+  "You tend to sing flat": "Ви схильні співати нижче",
+  "You tend to sing sharp": "Ви схильні співати вище",
+  "Your pitch is inconsistent rather than consistently off": "Ваша висота нестабільна, а не стабільно зміщена",
+  "You search for the note before settling": "Ви шукаєте ноту, перш ніж на ній зупинитися",
+  "You land on notes directly": "Ви одразу влучаєте в ноту",
+  "You rely on the on-screen meter": "Ви покладаєтеся на екранний індикатор",
+  "Averaging {n} ¢ below the target. A consistent lean is easier to correct than random scatter.": "У середньому на {n} ¢ нижче цілі. Стабільний нахил виправити легше, ніж випадковий розкид.",
+  "Averaging {n} ¢ above the target. A consistent lean is easier to correct than random scatter.": "У середньому на {n} ¢ вище цілі. Стабільний нахил виправити легше, ніж випадковий розкид.",
+  "Notes land on both sides of the target. Slow, repeated work on single notes helps more than range or interval work here.": "Ноти лягають по обидва боки від цілі. Тут більше допоможе повільна робота над окремими нотами, ніж діапазон чи інтервали.",
+  "Typically {n} ms to arrive. Hearing the note in your head during the silence, before singing, is what shortens this.": "Зазвичай {n} мс до влучання. Скоротити це допомагає внутрішнє чуття ноти під час паузи, ще до співу.",
+  "Typically {n} ms to arrive — a confident onset.": "Зазвичай {n} мс до влучання — упевнений початок.",
+  "Your lower range is less accurate": "Ваш нижній діапазон менш точний",
+  "Your middle range is less accurate": "Ваш середній діапазон менш точний",
+  "Your upper range is less accurate": "Ваш верхній діапазон менш точний",
+  "{a}% on pitch there, versus {b}% elsewhere.": "Там {a}% влучань проти {b}% в інших місцях.",
+  "Off by {a} ¢ with the meter, {b} ¢ without it. The aim is for those to converge.": "Похибка {a} ¢ з індикатором і {b} ¢ без нього. Мета — щоб ці числа зблизилися.",
+  "Not enough sung notes yet — keep going and this will fill in. ({a} of {b})": "Ще замало проспіваних нот — продовжуйте, і тут з'явиться більше. ({a} з {b})",
+  "Your pitch drifts during long notes. That is usually about breath support, which this app cannot measure — a teacher, or breathing work, is the next step there.": "Висота «пливе» на довгих нотах. Зазвичай це пов'язано з опорою дихання, яку цей застосунок виміряти не може — далі варто звернутися до викладача або попрацювати над диханням.",
+  "piano ready (local samples)": "фортепіано готове (локальні семпли)",
+  "piano ready (online)": "фортепіано готове (онлайн)",
+  "State": "Стан",
+  "Sample rate": "Частота дискретизації",
+  "Device in use": "Використовується пристрій",
+  "Track state": "Стан доріжки",
+  "Delivering audio": "Передає звук",
+  "Muted by system": "Вимкнено системою",
+  "Echo cancellation": "Придушення відлуння",
+  "Noise suppression": "Придушення шуму",
+  "Automatic gain": "Автопідсилення",
+  "Capture rate": "Частота запису",
+  "Level now": "Рівень зараз",
+  "Loudest so far": "Найгучніше дотепер",
+  "Browser default": "Типовий у браузері",
+  "Copied": "Скопійовано",
+  "not started": "не запущено",
+  "silence": "тиша",
+  "unnamed": "без назви",
+  "start the microphone first": "спершу увімкніть мікрофон",
+  "Device names appear once the microphone has been allowed.": "Назви пристроїв з'являться після надання доступу до мікрофона.",
+  "The browser applied different processing than this app asked for. That usually means another tab or app opened the microphone first and its settings won. Close it, then reload this page.": "Браузер застосував іншу обробку, ніж просив застосунок. Зазвичай це означає, що мікрофон першою відкрила інша вкладка або програма, і її налаштування перемогли. Закрийте її та перезавантажте цю сторінку.",
+  "Profile": "Профіль",
+  "Browse all lessons": "Переглянути всі уроки",
+  "Set range": "Задати діапазон",
   "take a breath — you sing when the dots run out": "зробіть вдих — співайте, коли крапки закінчаться",
+  "Keep hearing it": "Продовжуйте чути її",
+  "hold the note silently — sing when the dots run out": "утримуйте ноту подумки — співайте, коли крапки закінчаться",
   "Sing!": "Співайте!",
   "hold the tone for at least half a second": "тримайте ноту щонайменше півсекунди",
   "hold the tone steadily for 3 seconds": "тримайте ноту стабільно протягом 3 секунд",
@@ -1423,15 +1617,13 @@
   "Ready for tone ": "Готово до ноти ",
   "Round ": "Раунд ",
   "Path": "Шлях",
-  "Slower gives you more time to really listen before singing back — useful while your ear is still learning a pattern; speed up once matching pitch starts feeling automatic.": "Повільніше дає більше часу справді прислухатися, перш ніж заспівати у відповідь — корисно, поки ваш слух ще вивчає патерн; прискорюйте, коли влучання в ноту почне відчуватися природно.",
-  "A touch more (or less) time per tone in On the clock mode — more if you're still finding your footing, less once you want the extra challenge.": "Трохи більше (або менше) часу на ноту в режимі «За таймером» — більше, якщо ви ще освоюєтеся, менше, коли захочете додаткового виклику.",
-  "Many singers push louder as pitch rises without meaning to — this helps you notice it and train even volume across your whole range.": "Багато співаків мимоволі співають гучніше з підвищенням висоти — це допомагає це помітити й тренувати рівну гучність у всьому діапазоні.",
-  "Controls how forgiving the loudness box is — start at Medium, then tighten it once staying even feels natural, or loosen it if it feels distracting.": "Визначає, наскільки поблажлива зона гучності — почніть із «Середньої», потім звужуйте, коли рівна гучність почне відчуватися природно, або розширюйте, якщо це відволікає.",
-  "Once set, exercises can suggest keys that sit comfortably in your own voice — so you spend less effort straining outside your range and more building real accuracy. It's only ever a suggestion — every key stays available.": "Щойно встановлено, вправи можуть підказувати тональності, які зручно лежать у вашому власному голосі — тож менше зусиль йде на напруження за межами діапазону і більше на розвиток справжньої точності. Це лише підказка — кожна тональність залишається доступною.",
-  "Sing each tone the moment it's highlighted — the fixed timer builds the kind of quick, confident pitch recall that's useful once matching pitch already feels natural.": "Співайте кожну ноту в момент, коли вона підсвічується — фіксований таймер розвиває швидке, впевнене пригадування висоти звуку, корисне тоді, коли влучання в ноту вже відчувається природно.",
-  "Sing at your own pace — this is the more natural way to build real pitch memory, since you're not racing a clock while your ear works out the note.": "Співайте у своєму темпі — це природніший спосіб розвинути справжню пам'ять на висоту звуку, адже ви не змагаєтеся з таймером, поки ваш слух опрацьовує ноту.",
-  "Use this in noisy spaces so background sound doesn't throw off your results — switch back to Quiet room when you can, for the most accurate read on your pitch.": "Використовуйте це в шумних місцях, щоб фоновий звук не спотворював результати — повертайтеся до «Тихої кімнати», коли зможете, для найточнішого визначення вашої висоти звуку.",
-  "The most accurate read on your real pitch — use this whenever your space allows it.": "Найточніше визначення вашої справжньої висоти звуку — використовуйте це, коли дозволяє простір.",
+  "Slower while you are learning a pattern; faster once it feels automatic.": "Повільніше, поки ви вчите послідовність; швидше, коли це стане звичним.",
+  "Adjusts how long you get per tone on the clock.": "Змінює, скільки часу дається на кожен тон із таймером.",
+  "Shows whether your volume stays even as pitch rises.": "Показує, чи залишається гучність рівною, коли висота зростає.",
+  "How forgiving the loudness box is. Start at Medium.": "Наскільки суворою є рамка гучності. Почніть із середньої.",
+  "Lets exercises suggest keys that suit your voice. Every key stays available.": "Дозволяє добирати тональності під ваш голос. Усі тональності лишаються доступними.",
+  "No timer — take as long as you need on each note.": "Без таймера — витрачайте на кожну ноту стільки часу, скільки потрібно.",
+  "Most accurate reading. Use it when your room is quiet.": "Найточніше вимірювання. Використовуйте в тихій кімнаті.",
   "Control loudness": "Контроль гучності",
   "Check to also track evenness of volume": "Позначте, щоб також відстежувати рівність гучності",
   "Sensitivity": "Чутливість",
@@ -1617,6 +1809,10 @@
     if(typeof renderChips==="function") renderChips();
     if(typeof renderPathList==="function") renderPathList();
     if(typeof updateFreePracticeStatsDisplay==="function") updateFreePracticeStatsDisplay();
+    // JS-written text is not covered by the data-i18n sweep above, so anything
+    // set with textContent has to be re-rendered here by hand.
+    if(typeof refreshProfileRangeTag==="function") refreshProfileRangeTag();
+    if(typeof refreshPathModeSub==="function") refreshPathModeSub();
     const sel = $("lang-select");
     if(sel) sel.value = lang;
     // refresh the currently-shown stage message + button labels too -- but
@@ -1708,15 +1904,21 @@
   function updateUpDownRow(){
     const row=$("updown-row"), box=$("updown"), note=$("updown-note");
     if(!row) return;
-    row.classList.toggle("hidden", seq.length<2);
+    // Generated exercises already carry their direction: scales and arpeggios
+    // have their own Direction dropdown, and a sequence pattern like the
+    // five-note turn has the shape baked in. Offering the checkbox there is a
+    // second control for the same decision -- and on a turn it would just
+    // double a phrase that already comes back down. Manual and pasted
+    // sequences have no direction control, so it stays for them.
+    row.classList.toggle("hidden", seq.length<2 || seqIsGenerated);
     // played length = 2n-1; keep it within the 9-tone limit
     const played=seq.length*2-1;
     const tooLong=played>9;
     box.disabled=tooLong || running;
     if(tooLong && upDown){ upDown=false; box.checked=false; }
     row.classList.toggle("disabled",tooLong);
-    if(tooLong) note.textContent="— max 5 tones (would play "+played+")";
-    else if(upDown) note.textContent="— plays "+playSeq().join(" ");
+    if(tooLong) note.textContent=t("— max 5 tones (would play ")+played+")";
+    else if(upDown) note.textContent=t("— plays ")+playSeq().join(" ");
     else note.textContent="";
   }
 
@@ -1760,7 +1962,12 @@
       whyMatters:"Landing accurately on a single pitch is the foundation every other skill here builds on -- scales, arpeggios, and eventually real melodies.",
       stage:"find", durationMin:3,
       mode:"free-practice", preset:{count:1},
-      feedbackSchedule:{guided:3, delayed:2} },
+      // 2 guided / 2 delayed / 2 independent. guided+delayed must stay BELOW
+      // trials or computeFeedbackPhase never reaches "independent" -- and the
+      // self-assessment prompt is gated on that phase, so a lesson that never
+      // gets there also never asks the singer to judge their own pitch.
+      preHear:{fromTrial:2},
+      feedbackSchedule:{guided:2, delayed:2} },
     "hold-steady": { id:"hold-steady", title:"Hold it steady", flavor:"Straight and steady — no wobble.",
       purpose:"Builds pitch stability over time, not just a quick touch -- steadiness is what makes a note sound truly in tune.",
       trials:6, goalHits:5,
@@ -1778,7 +1985,11 @@
       // a developed vibrato (50-100 cents extent) will not pass, which is why
       // the flavor text now says so out loud.
       scoringMode:"stability", maxSpread:25, maxDrift:25, minHoldMs:3000,
-      feedbackSchedule:{guided:3, delayed:2} },
+      // Pre-hearing from trial 0 here: the singer already learned it in
+      // Match a note, so re-teaching it would make this lesson easier than
+      // the one before it and the path would go backwards.
+      preHear:{fromTrial:0},
+      feedbackSchedule:{guided:2, delayed:2} },
     "simple-interval": { id:"simple-interval", title:"A simple interval", flavor:"Two notes, one clean jump.",
       purpose:"Trains your ear and voice to reproduce the distance between two notes, not just a single pitch in isolation.",
       scoringMode:"perAttemptPair", trials:6, goalHits:4,
@@ -1786,8 +1997,20 @@
       whyMatters:"Real singing constantly jumps between notes -- training the distance between two pitches, not just one pitch alone, is what makes those jumps land correctly.",
       stage:"patterns", durationMin:3,
       mode:"sequences", preset:{pattern:"Thirds", scaleType:"major"},
-      feedbackSchedule:{guided:3, delayed:3} },
-    "short-scale": { id:"short-scale", title:"A short scale", flavor:"Up the stairs, one step at a time.",
+      feedbackSchedule:{guided:2, delayed:2} },
+    "three-notes-stepwise": { id:"three-notes-stepwise", title:"Three notes, stepwise", flavor:"Three neighbouring notes, moving down.",
+      purpose:"Bridges single notes and full scales -- the smallest movement that is still a melody.",
+      trials:18, goalHits:13,
+      goalTemplate:"Land at least {hits} of {trials} notes on pitch.",
+      whyMatters:"Going from one note straight to a nine-note scale is a big jump. Three neighbouring notes let you practise moving without losing the note you are on.",
+      stage:"move", durationMin:2,
+      // Descending, per the beginner convention above. The lesson that follows
+      // (the five-note turn) opens ascending, so ascending motion arrives
+      // immediately afterwards without needing a second pattern here.
+      mode:"sequences", preset:{pattern:"3-note descending run", scaleType:"major"},
+      // 6 natural groups from the pattern -> 2 guided / 2 delayed / 2 independent
+      feedbackSchedule:{guided:2, delayed:2} },
+    "short-scale": { id:"short-scale", title:"A short scale", flavor:"Down the stairs, then back up.",
       purpose:"Builds accuracy and control across a connected run of notes -- the foundation for singing real melodies in tune.",
       repeats:2, trials:18, goalHits:13,
       goalTemplate:"Sing the scale {repeats} times, landing at least {hits} of {trials} notes on pitch overall.",
@@ -1798,8 +2021,13 @@
       // stays inside a fifth, so it doesn't drag a beginner across a register
       // transition the way an octave climb does, and 2 x 9 notes is a gentler
       // step up from the 6-trial lessons before it than 3 x 8 was.
-      mode:"sequences", preset:{pattern:"5-note turn", scaleType:"major"},
-      feedbackSchedule:{guided:1, delayed:1} },
+      // Starts on the fifth and descends first, matching the bridge lesson
+      // before it and the beginner convention generally.
+      mode:"sequences", preset:{pattern:"5-note turn (from above)", scaleType:"major"},
+      // Only two rounds, so there is no room for guided/delayed/independent.
+      // delayed and independent both hide the live meter, so dropping delayed
+      // is what buys a real unassisted round.
+      feedbackSchedule:{guided:1, delayed:0} },
     "simple-arpeggio": { id:"simple-arpeggio", title:"A simple arpeggio", flavor:"Bigger leaps, same accuracy.",
       purpose:"Trains landing correctly on notes that aren't right next to each other -- a natural next step once steps feel solid.",
       repeats:3, trials:12, goalHits:9,
@@ -1807,7 +2035,7 @@
       whyMatters:"Arpeggios jump between notes that aren't next to each other -- training bigger, accurate leaps prepares your ear and voice for the wider intervals real songs often use.",
       stage:"patterns", durationMin:3,
       mode:"arpeggios", preset:{chordType:"Major triad", span:1, direction:"up"},
-      feedbackSchedule:{guided:2, delayed:1} },
+      feedbackSchedule:{guided:1, delayed:1} },
     "glide-keep-moving": { id:"glide-keep-moving", title:"Keep moving", flavor:"Glide smoothly — don't stop.",
       purpose:"Builds continuous pitch control -- moving smoothly between notes, not jumping between them.",
       trials:6, goalHits:4,
@@ -1815,22 +2043,24 @@
       whyMatters:"Real singing moves continuously between pitches far more often than it jumps between them -- this builds the control that connecting notes smoothly depends on.",
       stage:"move", durationMin:3,
       mode:"glide", scoringMode:"glide-move",
-      feedbackSchedule:{guided:3, delayed:3} },
+      feedbackSchedule:{guided:2, delayed:2} },
     "glide-and-land": { id:"glide-and-land", title:"Glide and land", flavor:"Glide smoothly, then land precisely.",
       purpose:"Adds accurate landing to continuous movement -- finishing exactly where you meant to.",
       trials:6, goalHits:4,
       goalTemplate:"Complete {hits} of {trials} glides that land accurately.",
       whyMatters:"Continuous movement and accurate landing are genuinely different skills -- this connects glide control back to the precise pitch-matching the rest of the path builds.",
-      stage:"move", durationMin:3,
+      stage:"patterns", durationMin:3,
+      // Grouped with the leap lessons it scaffolds: approaching a target
+      // continuously is the classic preparation for jumping to it.
       mode:"glide", scoringMode:"glide-land",
-      feedbackSchedule:{guided:3, delayed:3} },
+      feedbackSchedule:{guided:2, delayed:2} },
   };
   // The single source of truth for lesson ordering (there is deliberately no
   // per-lesson `order` field to drift out of sync with it). Order follows the
   // classical exercise literature: perception first, then a sustained single
   // tone, then sirens/glides (continuous flow, no pitch targeting required),
   // then stepwise motion, then accurate landing, and only then discrete leaps.
-  const DEFAULT_PATH = ["higher-or-lower","same-or-different","melodic-contour","match-note","hold-steady","glide-keep-moving","short-scale","glide-and-land","simple-interval","simple-arpeggio"];
+  const DEFAULT_PATH = ["higher-or-lower","same-or-different","melodic-contour","match-note","hold-steady","glide-keep-moving","three-notes-stepwise","short-scale","glide-and-land","simple-interval","simple-arpeggio"];
   const NOTE_WINDOW = 5, NOTE_MISS_MAJORITY = 3;
   // Where a singer is sent back to when one specific note keeps missing.
   const FOUNDATIONAL_PRODUCTION_LESSON = "match-note";
@@ -1857,12 +2087,65 @@
   // Resolvable from outside (abandonLesson) so leaving a lesson mid-prompt
   // can't strand the awaiting caller with the panel still on screen.
   let selfAssessResolve=null;
+  // Asks once per round, before the score is revealed, during the independent
+  // phase of a round-based lesson. Returns a line to append to the result, or
+  // "" when it did not apply.
+  let roundAssessResolve=null;
+  function waitForRoundAssess(){
+    return new Promise(resolve=>{
+      const promptEl=$("round-assess-prompt");
+      promptEl.classList.remove("hidden");
+      // setBusy(true) is still in force here and disables every .btn, which
+      // would make this prompt unanswerable and hang the round.
+      const btns=[...promptEl.querySelectorAll("[data-round-guess]")];
+      btns.forEach(b=>b.style.pointerEvents="");
+      function finish(value){
+        promptEl.classList.add("hidden");
+        if(running) btns.forEach(b=>b.style.pointerEvents="none");
+        promptEl.removeEventListener("click", handler);
+        roundAssessResolve=null;
+        resolve(value);
+      }
+      function handler(e){
+        const btn=e.target.closest("[data-round-guess]");
+        if(btn) finish(btn.dataset.roundGuess);
+      }
+      promptEl.addEventListener("click", handler);
+      roundAssessResolve=finish;
+    });
+  }
+
+  async function maybeAskRoundAssess(caps, noteCount){
+    const lesson = currentLessonId ? LESSONS[currentLessonId] : null;
+    if(!lesson || !lesson.feedbackSchedule || !genRounds) return "";
+    if(computeFeedbackPhase(currentLessonId, genRoundIdx, seq[0])!=="independent") return "";
+    const guess=await waitForRoundAssess();
+    const hits=caps.filter(c=>c && Math.abs(c.cents)<=15).length;
+    const total=noteCount||caps.length;
+    // "actual" is deliberately coarse, to match the coarseness of the question
+    const actual = hits===total ? "in-tune" : hits>=Math.ceil(total*0.6) ? "mostly" : "off";
+    const said = guess==="in-tune" ? t("In tune") : guess==="unsure" ? t("Not sure") : t("Off");
+    const real = actual==="in-tune" ? t("all on pitch")
+      : actual==="mostly" ? (hits+t(" of ")+total+t(" on pitch"))
+      : (hits+t(" of ")+total+t(" on pitch"));
+    roundAssessLog.push({round:genRoundIdx, guess, hits, total});
+    return t("You said: ")+said+t(". Actual: ")+real+".";
+  }
+
   function waitForSelfAssess(){
     return new Promise(resolve=>{
       const promptEl=$("self-assess-prompt");
       promptEl.classList.remove("hidden");
+      // setBusy(true) disables every .btn for the duration of a take, and these
+      // buttons are .btn -- with pointer-events:none the click lands on the
+      // wrapper, closest("[data-guess]") returns null, and the prompt hangs
+      // forever waiting for an answer it can never receive. The take is still
+      // running at this point by design, so re-enable just these.
+      const btns=[...promptEl.querySelectorAll("[data-guess]")];
+      btns.forEach(b=>b.style.pointerEvents="");
       function finish(value){
         promptEl.classList.add("hidden");
+        if(running) btns.forEach(b=>b.style.pointerEvents="none");   // rest of the take stays locked
         promptEl.removeEventListener("click", handler);
         selfAssessResolve=null;
         resolve(value);
@@ -1958,7 +2241,14 @@
     setBusy(true);
     const totalTrials=LESSONS[currentLessonId].trials;
     const pair=glideTrialPlan[lessonAttemptCount];
+    // Glide lessons declared a feedbackSchedule but never consulted it, so the
+    // live meter stayed on for every trial and the fade never happened here.
+    if(LESSONS[currentLessonId].feedbackSchedule){
+      const phase=computeFeedbackPhase(currentLessonId, lessonAttemptCount, pair.to);
+      liveFeedbackHidden = (phase==="delayed" || phase==="independent");
+    }
     const result=await attemptGlide(pair.from, pair.to, pair.direction);
+    liveFeedbackHidden=false;   // never leave it hidden once the trial is over
     if(!result){ setBusy(false); return; }   // mic issue or the attempt was aborted (e.g. navigated away)
     lessonAttemptCount++;
     glideTrialResults.push(result);
@@ -2380,10 +2670,11 @@
   // the perception UI (listen-and-choose panel) -- avoids needing to hide/show
   // multiple elements separately in multiple call sites.
   function setPerceptionModeVisible(on){
-    const sharedSeq=$("shared-active-seq"), playSing=$("play-sing-panel"), perceptionPanel=$("perception-panel");
-    if(sharedSeq) sharedSeq.classList.toggle("hidden", on);
-    if(playSing) playSing.classList.toggle("hidden", on);
+    const perceptionPanel=$("perception-panel");
     if(perceptionPanel) perceptionPanel.classList.toggle("hidden", !on);
+    // The singing panel's visibility has exactly one owner, below: it depends
+    // on mode and on which lesson is running, not just on this flag.
+    syncPlaySingVisibility();
   }
   function finishPerceptionLesson(){
     const hits=perceptionTrialResults.filter(Boolean).length;
@@ -2466,11 +2757,29 @@
   // times, so there's something for guided->delayed to fade across (matching
   // "sing the whole scale/arpeggio several times, feedback fades each time"
   // rather than a single one-shot attempt).
+  // Shift a note name by n semitones. Equal temperament makes the round-trip
+  // through frequency exact, so no accumulating error.
+  function transposeNote(note, n){
+    if(!n) return note;
+    const f=noteToFreq(note);
+    if(!f) return note;
+    return freqToNoteData(f*Math.pow(2,n/12)).name;
+  }
+
   function replicateRoundsForLesson(repeatCount){
     if(!genRounds || !genRounds.length) return;
     const base=genRounds[0].slice();
     const repeated=[];
-    for(let i=0;i<repeatCount;i++) repeated.push(base.slice());
+    for(let i=0;i<repeatCount;i++){
+      // Round 1 establishes the pattern; each later round steps up a semitone,
+      // so the singer transfers it rather than memorising one key. If a shift
+      // would leave the app's usable range, that round stays where it was --
+      // better a repeat than an unsingable one.
+      const shifted=base.map(nm=>transposeNote(nm,i));
+      // inInstrumentRange takes a MIDI number, not a note name
+      const usable = shifted.every(nm=>inInstrumentRange(noteToMidi(nm)));
+      repeated.push(usable ? shifted : base.slice());
+    }
     genRounds=repeated; genRoundIdx=0; genAllCaps=[];
     seq=genRounds[0].slice();
     renderChips(); resetFlow(); updateRoundTag();
@@ -2495,6 +2804,7 @@
     lessonAttemptCount=0;
     lessonTrialResults=[];
     lessonRoundResults=[];
+    roundAssessLog=[];
     liveFeedbackHidden=false;
     setPerceptionModeVisible(false);   // default: singing UI visible, overridden below for perception lessons
     renderPathList(lessonId, false);   // keep the hero card, stage progress AND the lesson list in sync
@@ -2552,6 +2862,7 @@
       runSequenceGenerate(true);
       if(lesson.repeats) replicateRoundsForLesson(lesson.repeats);
     }
+    syncPlaySingVisibility();   // a lesson is live now, so the panel is needed
     const backLink=$("back-to-path-link");
     if(backLink) backLink.classList.remove("hidden");
     const scrollTarget = lesson.mode==="perception" ? $("perception-panel") : $("shared-active-seq");
@@ -2568,6 +2879,7 @@
   function abandonLesson(){
     if(!currentLessonId) return false;
     currentLessonId=null;
+    syncPlaySingVisibility();
     lessonAttemptCount=0;
     lessonTrialResults=[];
     lessonRoundResults=[];
@@ -2704,6 +3016,7 @@
   }
 
   function finishLesson(lessonId, ratio, notesInvolved){
+    setTimeout(syncPlaySingVisibility, 0);   // after currentLessonId is cleared below
     const before=loadLpProgress()[lessonId];
     const wasPassed=lessonPassed(lessonId, before);
     const prevBest=before ? before.bestScore : undefined;
@@ -2840,16 +3153,29 @@
     });
   }
 
+  function refreshPathModeSub(){
+    const el=$("path-mode-sub"); if(!el) return;
+    const done=DEFAULT_PATH.filter(id=>lessonStatusLabel(id)==="passed").length;
+    el.textContent = done>0 ? (done+t(" of ")+DEFAULT_PATH.length+t(" done")) : t("step by step");
+  }
+
   function renderStageList(){
     const container=$("path-stage-list");
-    container.innerHTML='<div class="section-eyebrow">'+t("All lessons, by stage")+'</div>';
+    container.innerHTML="";   // heading now lives in the <summary>
+    // Only the stage being worked on starts open. Groups already collapsed
+    // once complete, but a beginner has completed nothing, so they used to
+    // meet all four stages expanded at once.
+    const currentStageId = (function(){
+      for(const id of DEFAULT_PATH){ if(lessonStatusLabel(id)!=="passed") return LESSONS[id].stage; }
+      return null;
+    })();
     STAGE_ORDER.forEach(stageId=>{
       const stage=STAGES[stageId];
       const lessonsInStage=DEFAULT_PATH.filter(id=>LESSONS[id].stage===stageId);
       if(!lessonsInStage.length) return;
       const doneCount=lessonsInStage.filter(id=>lessonStatusLabel(id)==="passed").length;
       const group=document.createElement("div");
-      group.className="stage-group"+(doneCount===lessonsInStage.length ? " collapsed" : "");
+      group.className="stage-group"+((doneCount===lessonsInStage.length || (currentStageId && stageId!==currentStageId)) ? " collapsed" : "");
       const header=document.createElement("div");
       header.className="stage-header";
       header.innerHTML='<span class="stitle">'+t(stage.title)+'</span><span class="scount">'+doneCount+'/'+lessonsInStage.length+' <span class="schev">▾</span></span>';
@@ -2862,18 +3188,14 @@
         const card=document.createElement("div");
         card.className="path-card path-"+status;
         const mark = status==="passed" ? "✓" : status==="tried" ? "•" : "";
-        const fbUnit = lesson.scoringMode==="perAttemptPair" ? t(", then shown after each attempt")
-          : lesson.repeats ? t(", then shown after each repeat")
-          : t(", then shown after each note");
-        const fbNote = lesson.feedbackSchedule
-          ? '<div class="path-fb-note">'+t("Feedback: live for the first ")+lesson.feedbackSchedule.guided+fbUnit+'</div>'
-          : '';
+        // No feedback-schedule line here: it described how the fade is timed,
+        // which means nothing to someone who has not done the lesson and is
+        // never asked for during it.
         card.innerHTML =
           '<div class="path-mark">'+mark+'</div>'+
           '<div class="path-body">'+
             '<div class="path-title">'+t(lesson.title)+'</div>'+
             '<div class="path-flavor">'+t(lesson.flavor)+'</div>'+
-            fbNote+
           '</div>';
         card.addEventListener("click",()=>startLesson(lessonId));
         body.appendChild(card);
@@ -2885,6 +3207,7 @@
   }
 
   function renderPathList(preferredLessonId, isRevisit){
+    refreshPathModeSub();
     const lessonId = preferredLessonId!==undefined ? preferredLessonId : getNextLessonId();
     renderNextLessonCard(lessonId, !!isRevisit);
     renderStageProgress(lessonId);
@@ -2967,7 +3290,7 @@
 
   // ---------- recording environment (mic constraints) ----------
   function refreshRoomNoteText(){
-    return t(room==="noisy" ? "Use this in noisy spaces so background sound doesn't throw off your results — switch back to Quiet room when you can, for the most accurate read on your pitch." : "The most accurate read on your real pitch — use this whenever your space allows it.");
+    return t(room==="noisy" ? "Filters background sound. Less accurate — switch back when it is quiet." : "Most accurate reading. Use it when your room is quiet.");
   }
   document.querySelectorAll("#room-set button").forEach(b=>{
     b.addEventListener("click",()=>{
@@ -2985,6 +3308,7 @@
     });
   });
   function releaseMic(){
+    if(micStream) diagEvent("mic-released","app closed the stream");
     try{ if(micSrc) micSrc.disconnect(); }catch(e){}
     try{ if(micStream) micStream.getTracks().forEach(t=>t.stop()); }catch(e){}
     micSrc=null; micStream=null; analyser=null; buf=null;
@@ -3069,8 +3393,8 @@
 
   // ---------- grading mode ----------
   const GRADE_NOTE={
-    clock:"Sing each tone the moment it's highlighted — the fixed timer builds the kind of quick, confident pitch recall that's useful once matching pitch already feels natural.",
-    follow:"Sing at your own pace — this is the more natural way to build real pitch memory, since you're not racing a clock while your ear works out the note."
+    clock:"Sing each tone the moment it lights up, against a fixed timer.",
+    follow:"No timer — take as long as you need on each note."
   };
   function applyGradeUI(){
     // singing-time only matters On the clock; fade + disable it in Follow me
@@ -3144,11 +3468,6 @@
       : seq.length+" tone"+(seq.length===1?"":"s");
     const dh=document.getElementById("drag-hint");
     if(dh) dh.classList.toggle("hidden", seq.length<2);
-    const str=document.getElementById("seq-text-row"), sto=document.getElementById("seq-text-out");
-    if(str && sto){
-      str.classList.toggle("hidden", seq.length===0);
-      sto.value=seq.join("-");
-    }
     const oh=document.getElementById("onboard-hint");
     if(oh) oh.classList.toggle("hidden", seq.length>0);
     updateUpDownRow();
@@ -3174,9 +3493,6 @@
     if(!inInstrumentRange(midi)) return null;
     return name;
   }
-  const seqTextOutEl=$("seq-text-out");
-  if(seqTextOutEl) seqTextOutEl.addEventListener("click",()=>seqTextOutEl.select());
-
   $("paste-seq-btn").onclick=()=>{
     if(running) return;
     const msgEl=$("paste-seq-msg");
@@ -3222,7 +3538,18 @@
     const rt=$("round-tag"); if(!rt) return;
     if(!genRounds){ rt.classList.add("hidden"); return; }
     rt.classList.remove("hidden");
-    const rangeTxt = genRange ? (" · "+genRange.lo+"–"+genRange.hi) : "";
+    // Rounds are transposed in lessons, so report THIS round's own span rather
+    // than the range the exercise was generated in -- otherwise the tag keeps
+    // claiming the starting key after the round has moved.
+    const cur=genRounds[genRoundIdx];
+    let rangeTxt = genRange ? (" · "+genRange.lo+"–"+genRange.hi) : "";
+    if(cur && cur.length){
+      const midis=cur.map(noteToMidi).filter(m=>typeof m==="number" && !isNaN(m));
+      if(midis.length){
+        const lo=cur[midis.indexOf(Math.min(...midis))], hi=cur[midis.indexOf(Math.max(...midis))];
+        rangeTxt = " · "+lo+"–"+hi;
+      }
+    }
     rt.textContent = t("Round ")+(genRoundIdx+1)+t(" of ")+genRounds.length+rangeTxt;
   }
   // Confirm-before-overwrite, shared by all three generators (same UX the old
@@ -3439,15 +3766,21 @@
   };
   // Called after a round's practice completes. No-op outside a generated
   // multi-round exercise -- Manual mode's behavior is entirely untouched.
+  let roundAssessLog=[];
   function roundFinished(caps){
     if(!genRounds) return;
     // per-note accuracy: pair this round's caps with its own note list, correct
     // order, before genRoundIdx advances to the next round
     if(currentLessonId){
       const roundNotes=genRounds[genRoundIdx];
+      const roundPhase=LESSONS[currentLessonId].feedbackSchedule
+        ? computeFeedbackPhase(currentLessonId, genRoundIdx, roundNotes && roundNotes[0]) : null;
       caps.forEach((cap,i)=>{
         const note=roundNotes && roundNotes[i];
-        if(note) recordNoteOutcome(note, !!cap && Math.abs(cap.cents)<=15);
+        if(note){
+          recordNoteOutcome(note, !!cap && Math.abs(cap.cents)<=15);
+          logTrial(trialRecord(currentLessonId, note, cap, roundPhase));
+        }
       });
     }
     const isAttemptPairLesson = currentLessonId && LESSONS[currentLessonId].scoringMode==="perAttemptPair";
@@ -3636,9 +3969,9 @@
 
   function setPianoStatus(){
     if(timbre!=="piano"){ pianoStatus.textContent=""; return; }
-    if(pianoState==="loading") pianoStatus.textContent="loading piano…";
-    else if(pianoState==="ready") pianoStatus.textContent= pianoMode==="local" ? "piano ready (local samples)" : "piano ready (online)";
-    else if(pianoState==="failed") pianoStatus.textContent="piano unavailable — using synth tone";
+    if(pianoState==="loading") pianoStatus.textContent=t("loading piano…");
+    else if(pianoState==="ready") pianoStatus.textContent= pianoMode==="local" ? t("piano ready (local samples)") : t("piano ready (online)");
+    else if(pianoState==="failed") pianoStatus.textContent=t("piano unavailable — using synth tone");
     else pianoStatus.textContent="";
   }
 
@@ -4190,8 +4523,15 @@ function ceilPow2(v) {
   // "Get ready" pause. Runs the three dots, and waits for the mic to actually be
   // live before letting the caller start recording. If the mic is slow, the last
   // dot blinks and we hold rather than record into a dead stream.
-  async function readyBeat(ms, micPromise){
-    stage(t("Get ready"),{cls:"",sub:t("take a breath — you sing when the dots run out")});
+  // preHear: frame the gap as "keep hearing the note", not "take a breath".
+  // Same silence, same dots -- the instruction is the whole intervention.
+  // Beginners phonate first and correct afterwards; hearing the target
+  // internally before producing it is what the feedback fade later relies on.
+  async function readyBeat(ms, micPromise, preHear){
+    stage(preHear ? t("Keep hearing it") : t("Get ready"),
+          {cls:"", sub: preHear
+            ? t("hold the note silently — sing when the dots run out")
+            : t("take a breath — you sing when the dots run out")});
     runDots(ms, 3);
     await wait(ms);
     if(!micPromise){ hideDots(); return true; }
@@ -4565,6 +4905,27 @@ function ceilPow2(v) {
   }
 
   // convert an aligned held note (or null) into the {cents,note} result shape
+  // ms from capture opening until pitch first settles within TOL of target.
+  // A confident onset lands in a few hundred ms; a scoop wanders first, so a
+  // large value separates "searched for it" from "went straight to it" even
+  // when both end up on pitch. null = never settled.
+  const ONSET_TOL_CENTS=50, ONSET_STAY_MS=150;
+  function timeToTarget(samples, targetNote){
+    if(!samples || !samples.length || !targetNote) return null;
+    const tf=noteToFreq(targetNote);
+    let inSince=null;
+    for(const sm of samples){
+      if(sm.freq){
+        const dev=Math.abs(1200*Math.log2(sm.freq/tf));
+        if(dev<=ONSET_TOL_CENTS){
+          if(inSince===null) inSince=sm.t;
+          else if(sm.t-inSince>=ONSET_STAY_MS) return Math.round(inSince);
+        } else inSince=null;
+      } else inSince=null;
+    }
+    return null;
+  }
+
   function heldToCap(targetNote, held){
     if(!held) return null;
     const tf=noteToFreq(targetNote);
@@ -4578,6 +4939,7 @@ function ceilPow2(v) {
     const voiced = samples.some(s=>s.freq!==null);
     if(held && held.length){
       const lesson = currentLessonId ? LESSONS[currentLessonId] : null;
+      const withOnset=(cap)=>{ if(cap) cap.onsetMs=timeToTarget(samples, targetNote); return cap; };
       if(lesson && lesson.scoringMode==="stability"){
         // A sustained-tone lesson has to grade the LONGEST run. Picking the run
         // nearest the target rewarded exactly the wrong thing: fragmenting a
@@ -4585,12 +4947,12 @@ function ceilPow2(v) {
         // fragment happened to land closest.
         let li=0;
         held.forEach((h,idx)=>{ if(h.dur>held[li].dur) li=idx; });
-        return {cap:heldToCap(targetNote,held[li]), reason:null};
+        return {cap:withOnset(heldToCap(targetNote,held[li])), reason:null};
       }
       const tf=noteToFreq(targetNote);
       let bi=0,berr=Infinity;
       held.forEach((h,idx)=>{ const e=Math.abs(1200*Math.log2(h.freq/tf)); if(e<berr){berr=e;bi=idx;} });
-      return {cap:heldToCap(targetNote,held[bi]), reason:null};
+      return {cap:withOnset(heldToCap(targetNote,held[bi])), reason:null};
     }
     return {cap:null, reason: voiced ? "short" : "none"};
   }
@@ -4621,16 +4983,31 @@ function ceilPow2(v) {
       if(!ac) ac=new (window.AudioContext||window.webkitAudioContext)();
       // Quiet room: raw signal (best for pitch). Noisy room: let the browser clean it up.
       const useProcessing = (room==="noisy");
-      const constraints={ audio:{
+      const baseAudio={
         echoCancellation: useProcessing,
         noiseSuppression: useProcessing,
         autoGainControl: useProcessing
-      }};
+      };
+      // A microphone picked in Settings -> Diagnostics wins over the browser
+      // default, which is often not the headset the singer is actually wearing.
+      const prefDev=lsGet(LS_MICDEV)||"";
+      const constraints={ audio: prefDev ? Object.assign({deviceId:{exact:prefDev}}, baseAudio) : baseAudio };
       try{
         micStream=await navigator.mediaDevices.getUserMedia(constraints);
+        diagEvent("mic-open", (prefDev?"saved device":"default")+" ok");
       }catch(e){
-        // some browsers reject the constraint object — fall back to plain audio
-        micStream=await navigator.mediaDevices.getUserMedia({audio:true});
+        diagEvent("mic-open-failed", (e && e.name) || "error");
+        // A saved device that has since been unplugged throws OverconstrainedError.
+        // Forget it rather than leaving the app with no microphone at all.
+        if(prefDev){ lsSet(LS_MICDEV,""); diagEvent("mic-saved-device-dropped"); }
+        try{
+          micStream=await navigator.mediaDevices.getUserMedia({audio:baseAudio});
+          diagEvent("mic-open", "fallback ok");
+        }catch(e2){
+          // some browsers reject the constraint object — fall back to plain audio
+          micStream=await navigator.mediaDevices.getUserMedia({audio:true});
+          diagEvent("mic-open", "plain-audio fallback ok");
+        }
       }
       // make sure the context is actually running before we wire the mic in
       await ensureAudioCtx();
@@ -4638,10 +5015,24 @@ function ceilPow2(v) {
       analyser=ac.createAnalyser(); analyser.fftSize=2048; buf=new Float32Array(analyser.fftSize);
       src.connect(analyser);
       micSrc=src;
+      // Track-level events are the highest-value entries in the log: they fire
+      // exactly when another app seizes the device or the headset is unplugged.
+      try{
+        const tr=micStream.getAudioTracks()[0];
+        if(tr){
+          let st={};
+          try{ st=(tr.getSettings && tr.getSettings())||{}; }catch(e){}
+          diagEvent("mic-track", (tr.label||"unnamed")+" | ns="+st.noiseSuppression+
+                                 " ec="+st.echoCancellation+" agc="+st.autoGainControl);
+          tr.addEventListener("mute",function(){ diagEvent("track-muted","system took the input"); });
+          tr.addEventListener("unmute",function(){ diagEvent("track-unmuted"); });
+          tr.addEventListener("ended",function(){ diagEvent("track-ended","device gone"); });
+        }
+      }catch(e){}
       // The stream can exist before the track is actually delivering audio (iOS is
       // slow to come up after repeated release/acquire). Wait for it to go live.
       const ok=await micLive(2500);
-      if(!ok){ micError="notlive"; return false; }
+      if(!ok){ micError="notlive"; diagEvent("mic-not-live","no samples within 2.5s"); return false; }
       updateMicPathNote();
       return true;
     }catch(e){ micError="failed"; return false; }
@@ -4683,8 +5074,12 @@ function ceilPow2(v) {
   }
 
   async function ensureAudioCtx(){
-    if(!ac) ac=new (window.AudioContext||window.webkitAudioContext)();
-    if(ac.state==="suspended") await ac.resume();
+    if(!ac){ ac=new (window.AudioContext||window.webkitAudioContext)(); diagEvent("context-created", Math.round(ac.sampleRate)+" Hz"); }
+    if(ac.state==="suspended"){
+      diagEvent("context-suspended");
+      await ac.resume();
+      diagEvent("context-resumed", ac.state);
+    }
   }
 
   // ---------- results ----------
@@ -4702,8 +5097,8 @@ function ceilPow2(v) {
     // No separate cents-only line: it duplicates the plain-words verdict. The cents
     // shown next to the sung note describe that note, and converge on the target
     // deviation exactly when it matters (a near miss).
-    cell.innerHTML='<div class="rk">target</div><div class="exp">'+expected+'</div>'+
-      '<div class="rk">you sang</div><div class="you">'+sang+'</div>'+
+    cell.innerHTML='<div class="rk">'+t("target")+'</div><div class="exp">'+expected+'</div>'+
+      '<div class="rk">'+t("you sang")+'</div><div class="you">'+sang+'</div>'+
       '<div class="plainmini">'+pw.txt+'</div>';
     resultsGrid.appendChild(cell);
   }
@@ -4806,6 +5201,21 @@ function ceilPow2(v) {
                             : "no sound detected — try singing a bit louder";
   }
 
+  // Whether THIS attempt asks the singer to hold the note internally across
+  // the gap. Deliberately not offered on a note they are repeatedly missing:
+  // stacking a retention demand on top of an unreliable target is two
+  // difficulties at once. Same evidence gate as computeFeedbackPhase.
+  function shouldPreHear(targetNote){
+    const l = currentLessonId ? LESSONS[currentLessonId] : null;
+    if(!l || !l.preHear) return false;
+    if(lessonAttemptCount < (l.preHear.fromTrial||0)) return false;
+    if(targetNote){
+      const acc=getNoteAccuracyLp(targetNote);
+      if(acc && acc.samples>=NOTE_MISS_MAJORITY && acc.ratio<0.5) return false;
+    }
+    return true;
+  }
+
   // ================= PLAY: single / step advance =================
   async function playOne(i){
     resetReadout();
@@ -4824,7 +5234,7 @@ function ceilPow2(v) {
     // The "Get ready" pause covers re-acquiring the mic (no re-prompt once granted).
     // readyBeat waits for the mic to actually be live before we start recording.
     const micP=startMic();
-    const okMic=await readyBeat(2000, micP);
+    const okMic=await readyBeat(2000, micP, shouldPreHear(note));
     if(!running) return null;
     if(!okMic){ stage(micStatusTitle(),{cls:"warn",sub:micStatusSub()}); return null; }
     const winMs=singMsFor(true);      // one tone on its own
@@ -4908,6 +5318,9 @@ function ceilPow2(v) {
       if(isSingleToneLesson){
         lessonAttemptCount++;
         lessonTrialResults.push({note:seq[0], cap:stepCaps[0]});
+        logTrial(trialRecord(currentLessonId, seq[0], stepCaps[0],
+          LESSONS[currentLessonId].feedbackSchedule
+            ? computeFeedbackPhase(currentLessonId, lessonAttemptCount-1, seq[0]) : null));
         if(seq[0]) recordNoteOutcome(seq[0], isTrialHit(currentLessonId, stepCaps[0]));
         const totalTrials=LESSONS[currentLessonId].trials;
         if(lessonAttemptCount < totalTrials){
@@ -5050,9 +5463,11 @@ function ceilPow2(v) {
           }
         }
       }
+      const raLine=await maybeAskRoundAssess(caps, pseq.length);
       if(caps.length) commitFeedback(pseq[pseq.length-1],caps[caps.length-1],missReason);
       stage(t("Complete"),{cls:"",sub:summaryLine(caps,pseq.length)+extra});
       roundFinished(caps);
+      if(raLine) scoreEl.innerHTML += '<div class="exercise-done self-assess-result">'+raLine+'</div>';
       return;
     }
 
@@ -5078,10 +5493,173 @@ function ceilPow2(v) {
     resultsGrid.innerHTML="";
     caps.forEach((c,i)=>addResult(pseq[i],c));
     showScore(caps,pseq.length);
+    const raLine2=await maybeAskRoundAssess(caps, pseq.length);
     if(caps.length) commitFeedback(pseq[pseq.length-1],caps[caps.length-1]);
     stage(t("Complete"),{cls:"",sub:summaryLine(caps,pseq.length)});
     roundFinished(caps);
+    if(raLine2) scoreEl.innerHTML += '<div class="exercise-done self-assess-result">'+raLine2+'</div>';
   }
+
+  // ---------- trial log (feeds My progress) ----------
+  // Deliberately small and flat: one record per sung note, holding only what
+  // a summary can actually say something honest about. No audio, ever.
+  const TRIAL_LOG_MAX=600;
+  function lpTrialKey(){ const a=lsGet(LS_ACTIVE); return "vpt:trials:"+(a||"_session"); }
+  function loadTrials(){
+    try{ const raw=lsGet(lpTrialKey()); return raw ? JSON.parse(raw) : []; }catch(e){ return []; }
+  }
+  function saveTrials(list){
+    try{ lsSet(lpTrialKey(), JSON.stringify(list.slice(-TRIAL_LOG_MAX))); }catch(e){}
+  }
+  function logTrial(rec){
+    if(!rec || !rec.n) return;   // field is n, not note
+    const list=loadTrials();
+    list.push(rec);
+    saveTrials(list);
+  }
+  // cap: {cents, holdMs, driftCents, stabilitySpread, onsetMs}
+  function trialRecord(lessonId, note, cap, phase){
+    const midi=(function(){ try{ return noteToMidi(note); }catch(e){ return null; } })();
+    return {
+      d: Date.now(),
+      l: lessonId||null,
+      n: note, m: midi,
+      c: cap ? cap.cents : null,          // null = nothing usable was sung
+      o: cap && typeof cap.onsetMs==="number" ? cap.onsetMs : null,
+      f: cap && typeof cap.driftCents==="number" ? cap.driftCents : null,
+      p: phase||null
+    };
+  }
+
+  const MIN_TRIALS_FOR_SUMMARY=20;
+  // t() the WHOLE sentence, then substitute numbers -- never t() the pieces.
+  function fill(str, map){
+    let out=t(str);
+    Object.keys(map).forEach(k=>{ out=out.split("{"+k+"}").join(map[k]); });
+    return out;
+  }
+  function median(arr){
+    if(!arr.length) return null;
+    const a=arr.slice().sort((x,y)=>x-y), h=Math.floor(a.length/2);
+    return a.length%2 ? a[h] : Math.round((a[h-1]+a[h])/2);
+  }
+  // Everything here is descriptive. Nothing claims a cause the app cannot see:
+  // drift is reported as drift, not as "weak breath support".
+  function progressFindings(){
+    const all=loadTrials();
+    const sung=all.filter(r=>typeof r.c==="number");
+    const out={count:all.length, sung:sung.length, findings:[], pointers:[]};
+    if(sung.length<MIN_TRIALS_FOR_SUMMARY) return out;
+
+    const cents=sung.map(r=>r.c);
+    const hits=cents.filter(c=>Math.abs(c)<=15).length;
+    out.accuracy=Math.round(100*hits/sung.length);
+
+    // bias vs scatter -- the single most useful thing a beginner can learn,
+    // because consistently flat and randomly off need opposite remedies
+    const mean=cents.reduce((a,c)=>a+c,0)/cents.length;
+    const sd=Math.sqrt(cents.reduce((a,c)=>a+(c-mean)*(c-mean),0)/cents.length);
+    out.bias=Math.round(mean); out.scatter=Math.round(sd);
+    if(Math.abs(mean)>=12 && Math.abs(mean)>sd*0.6){
+      out.findings.push({k:"bias", t: mean<0 ? t("You tend to sing flat") : t("You tend to sing sharp"),
+        d: fill(mean<0
+            ? "Averaging {n} ¢ below the target. A consistent lean is easier to correct than random scatter."
+            : "Averaging {n} ¢ above the target. A consistent lean is easier to correct than random scatter.",
+            {n:Math.abs(Math.round(mean))})});
+    } else if(sd>=35){
+      out.findings.push({k:"scatter", t:t("Your pitch is inconsistent rather than consistently off"),
+        d:t("Notes land on both sides of the target. Slow, repeated work on single notes helps more than range or interval work here.")});
+    }
+
+    // onset: landed on the note, or searched for it
+    const onsets=sung.map(r=>r.o).filter(v=>typeof v==="number");
+    if(onsets.length>=10){
+      const med=median(onsets);
+      out.onsetMs=med;
+      if(med>=800) out.findings.push({k:"onset", t:t("You search for the note before settling"),
+        d:fill("Typically {n} ms to arrive. Hearing the note in your head during the silence, before singing, is what shortens this.", {n:med})});
+      else if(med<=400) out.findings.push({k:"onset", t:t("You land on notes directly"),
+        d:fill("Typically {n} ms to arrive — a confident onset.", {n:med})});
+    }
+
+    // register: is one part of the range worse than the rest
+    const withMidi=sung.filter(r=>typeof r.m==="number");
+    if(withMidi.length>=MIN_TRIALS_FOR_SUMMARY){
+      const ms=withMidi.map(r=>r.m), lo=Math.min(...ms), hi=Math.max(...ms);
+      if(hi-lo>=7){
+        const third=(hi-lo)/3;
+        const band=r=> r.m < lo+third ? "low" : r.m < lo+2*third ? "mid" : "high";
+        const acc={};
+        ["low","mid","high"].forEach(b=>{
+          const g=withMidi.filter(r=>band(r)===b);
+          if(g.length>=8) acc[b]=Math.round(100*g.filter(r=>Math.abs(r.c)<=15).length/g.length);
+        });
+        const keys=Object.keys(acc);
+        if(keys.length>=2){
+          const worst=keys.reduce((a,b)=>acc[a]<acc[b]?a:b), best=keys.reduce((a,b)=>acc[a]>acc[b]?a:b);
+          if(acc[best]-acc[worst]>=20){
+            const head={low:"Your lower range is less accurate",
+                        mid:"Your middle range is less accurate",
+                        high:"Your upper range is less accurate"}[worst];
+            out.findings.push({k:"register", t:t(head),
+              d:fill("{a}% on pitch there, versus {b}% elsewhere.", {a:acc[worst], b:acc[best]})});
+          }
+        }
+      }
+    }
+
+    // independence: accuracy with the meter versus without it
+    const g=sung.filter(r=>r.p==="guided"), ind=sung.filter(r=>r.p==="independent");
+    if(g.length>=8 && ind.length>=8){
+      const mad=a=>Math.round(a.reduce((x,r)=>x+Math.abs(r.c),0)/a.length);
+      const gm=mad(g), im=mad(ind);
+      out.gap={guided:gm, independent:im};
+      if(im-gm>=20) out.findings.push({k:"gap", t:t("You rely on the on-screen meter"),
+        d:fill("Off by {a} ¢ with the meter, {b} ¢ without it. The aim is for those to converge.", {a:gm, b:im})});
+    }
+
+    // drift on sustained notes -- reported as what it is, plus where to look next
+    const drifts=sung.map(r=>r.f).filter(v=>typeof v==="number").map(Math.abs);
+    if(drifts.length>=8){
+      const md=median(drifts);
+      if(md>=25) out.pointers.push(t("Your pitch drifts during long notes. That is usually about breath support, which this app cannot measure — a teacher, or breathing work, is the next step there."));
+    }
+    return out;
+  }
+
+  function renderProgress(){
+    const body=$("prog-body"); if(!body) return;
+    const r=progressFindings();
+    if(r.sung<MIN_TRIALS_FOR_SUMMARY){
+      body.innerHTML='<p class="prog-empty">'+
+        fill("Not enough sung notes yet — keep going and this will fill in. ({a} of {b})",
+             {a:r.sung, b:MIN_TRIALS_FOR_SUMMARY})+'</p>';
+      return;
+    }
+    let html='<div class="prog-head">'+
+      '<div><div class="prog-num">'+r.accuracy+'%</div><div class="prog-cap">'+t("on pitch")+'</div></div>'+
+      '<div><div class="prog-num">'+(r.bias>0?"+":"")+r.bias+'¢</div><div class="prog-cap">'+t("average lean")+'</div></div>'+
+      '<div><div class="prog-num">'+r.sung+'</div><div class="prog-cap">'+t("notes sung")+'</div></div>'+
+      '</div>';
+    if(!r.findings.length){
+      html+='<p class="prog-empty">'+t("Nothing stands out yet — no single weak point is showing above the noise.")+'</p>';
+    }
+    r.findings.forEach(f=>{
+      html+='<div class="prog-find"><b>'+f.t+'</b><span>'+f.d+'</span></div>';
+    });
+    r.pointers.forEach(p=>{ html+='<div class="prog-pointer">'+p+'</div>'; });
+    body.innerHTML=html;
+  }
+  const progBackdrop=$("prog-backdrop");
+  if($("my-progress-open")) $("my-progress-open").addEventListener("click",()=>{
+    renderProgress(); progBackdrop.hidden=false;
+  });
+  if($("prog-close")) $("prog-close").addEventListener("click",()=>{ progBackdrop.hidden=true; });
+  if($("prog-done")) $("prog-done").addEventListener("click",()=>{ progBackdrop.hidden=true; });
+  if(progBackdrop) progBackdrop.addEventListener("click",e=>{ if(e.target===progBackdrop) progBackdrop.hidden=true; });
+  document.addEventListener("keydown",e=>{
+    if(e.key==="Escape" && progBackdrop && !progBackdrop.hidden) progBackdrop.hidden=true;
+  });
 
   // ================= PROFILES (Stage 5) =================
   // Lightweight name-tag system, no login, no backend -- just enough to keep
@@ -5090,6 +5668,9 @@ function ceilPow2(v) {
   // (current name), vpt:promptSeen ("1" once the welcome modal has been
   // shown+dismissed, so it only ever nudges once).
   const LS_PROFILES="vpt:profiles", LS_ACTIVE="vpt:activeProfile", LS_SEEN="vpt:promptSeen";
+  // chosen microphone, shared across profiles: it is a property of the device,
+  // not of the person practising on it
+  const LS_MICDEV="vpt:micDeviceId";
   function lsGet(key){ try{ return localStorage.getItem(key); }catch(e){ return null; } }
   function lsSet(key,val){ try{ localStorage.setItem(key,val); }catch(e){} }
   function loadProfileList(){
@@ -5107,7 +5688,10 @@ function ceilPow2(v) {
       return;
     }
     list.forEach(name=>{
-      const o=document.createElement("option"); o.value=name; o.textContent=name;
+      const o=document.createElement("option"); o.value=name;
+      // display-only truncation: o.value keeps the full name, which is what
+      // every profile-scoped localStorage key is built from
+      o.textContent = name.length>16 ? name.slice(0,15)+"…" : name;
       if(name===active) o.selected=true;
       profileSelect.appendChild(o);
     });
@@ -5117,7 +5701,18 @@ function ceilPow2(v) {
   // PREVIOUS profile's tone count and accuracy -- attributed to the new
   // profile -- and the Learning Path still showed the previous profile's
   // progress, both until the next sung note.
+  // The range tag doubles as the shortcut into range setup: unset it reads
+  // "Set range" and is an affordance rather than a label.
+  function refreshProfileRangeTag(){
+    const tag=$("profile-range-tag");
+    if(!tag) return;
+    const r=loadVocalRange();
+    tag.textContent = r ? (r.lo+"–"+r.hi) : t("Set range");
+    tag.title = r ? t("Vocal range") : t("Set range");
+  }
+
   function refreshProfileScopedUI(){
+    refreshProfileRangeTag();
     refreshVocalRangeUI();
     updateFreePracticeStatsDisplay();
     renderPathList();
@@ -5172,6 +5767,24 @@ function ceilPow2(v) {
   applyLanguage(currentLang);
   $("lang-select").addEventListener("change", e=>applyLanguage(e.target.value));
 
+  // The shared exercise panel is Free Practice furniture that Guided lessons
+  // borrows once a lesson is running. Before that it has nothing to say in
+  // this mode, so it stays out of the way rather than issuing an instruction
+  // that cannot be followed here.
+  function syncPlaySingVisibility(){
+    const panel=$("play-sing-panel"), sharedSeq=$("shared-active-seq");
+    if(!panel) return;
+    const inPath=$("app-mode-path").classList.contains("active");
+    const lesson = currentLessonId ? LESSONS[currentLessonId] : null;
+    // Free Practice always needs it. Guided lessons needs it only once a
+    // SINGING lesson is running: with no lesson it showed a disabled button
+    // and "pick tones above", pointing at a tone picker that lives in the
+    // other mode; perception lessons have their own panel instead.
+    const needed = !inPath || !!(lesson && lesson.mode!=="perception");
+    panel.classList.toggle("hidden", !needed);
+    if(sharedSeq) sharedSeq.classList.toggle("hidden", !needed);
+  }
+
   // Two exclusive top-level modes (Learning Path / Free Practice), per the
   // agreed two-mode redesign. Always defaults to Learning Path -- document
   // 9/10's explicit guidance was "default new users to Learning Path", and
@@ -5186,20 +5799,14 @@ function ceilPow2(v) {
                          // singer's Free Practice takes as lesson trials
       $("app-mode-path").classList.toggle("active", mode==="path");
       $("app-mode-free").classList.toggle("active", mode==="free");
+      syncPlaySingVisibility();
       if(mode==="free"){
         const bl=$("back-to-path-link"); if(bl) bl.classList.add("hidden");
         // a quiet nudge toward Learning Path, but only for someone who's never
         // engaged with it -- an experienced singer who came straight to
         // Free Practice on purpose shouldn't be nagged every time
-        const tp=$("to-path-link");
-        if(tp) tp.classList.toggle("hidden", Object.keys(loadLpProgress()).length>0);
       }
     });
-  });
-  const toPathLink=$("to-path-link");
-  if(toPathLink) toPathLink.addEventListener("click",()=>{
-    document.querySelector('.mode-btn[data-appmode="path"]').click();
-    window.scrollTo({top:0, behavior:"smooth"});
   });
   const micPathDismiss=$("mic-path-dismiss");
   if(micPathDismiss) micPathDismiss.addEventListener("click",()=>{
@@ -5250,6 +5857,7 @@ function ceilPow2(v) {
     ALL_NOTES.forEach(n=>{ const o=document.createElement("option"); o.textContent=n; sel.appendChild(o); });
   });
   function refreshVocalRangeUI(){
+    refreshProfileRangeTag();   // header tag follows the range everywhere it changes
     const active=lsGet(LS_ACTIVE);
     $("vr-profile-tag").textContent = active ? "("+active+")" : "";
     const range=loadVocalRange();
@@ -5295,6 +5903,7 @@ function ceilPow2(v) {
   }
 
   const vrBackdrop=$("vr-backdrop");
+  $("profile-range-tag").addEventListener("click",()=>openVrModal());
   let vrDetectedHigh=null, vrDetectedLow=null;
   function vrShowStep(step){
     $("vr-step-high").hidden = step!=="high";
@@ -5501,11 +6110,227 @@ function ceilPow2(v) {
   fbBackdrop.addEventListener("click",e=>{ if(e.target===fbBackdrop) closeFeedback(); });
   document.addEventListener("keydown",e=>{ if(e.key==="Escape" && !fbBackdrop.hidden) closeFeedback(); });
 
+  // ---------- diagnostics (Settings -> Diagnostics) ----------
+  // A read-only view of what the microphone path is actually delivering, for
+  // the case where the browser says the mic is live but the app never reacts.
+  // It reads the app's OWN analyser rather than opening a second tap on the
+  // microphone, and reports device metadata plus an instantaneous level --
+  // no audio is buffered, stored or sent.
+  // Ring buffer of transport events since page load. A snapshot taken after a
+  // problem cannot distinguish "this mic never worked" from "this mic worked
+  // until 40 seconds ago" -- device loss and context suspension are events, and
+  // they leave behind a state that merely looks wrong. Memory only, capped, and
+  // it records nothing about what was sung.
+  const DIAG_LOG_MAX=200;
+  const diagLogStart=Date.now();
+  const diagLog=[];
+  function diagEvent(tag, detail){
+    diagLog.push({ t:(Date.now()-diagLogStart)/1000, tag:tag, detail:detail||"" });
+    if(diagLog.length>DIAG_LOG_MAX) diagLog.shift();
+  }
+  function diagLogText(){
+    if(!diagLog.length) return "(no events)";
+    return diagLog.map(function(e){
+      return "  +"+e.t.toFixed(1)+"s  "+e.tag+(e.detail?"  "+e.detail:"");
+    }).join("\n");
+  }
+  // Fires when a device is plugged in or pulled out -- the event a snapshot
+  // taken afterwards can never reconstruct.
+  try{
+    if(navigator.mediaDevices && "ondevicechange" in navigator.mediaDevices){
+      navigator.mediaDevices.addEventListener("devicechange",function(){
+        diagEvent("devicechange");
+      });
+    }
+  }catch(e){}
+
+  const diagBackdrop=$("diag-backdrop");
+  let diagRaf=null, diagPeakDb=-100, diagProbe=null, diagDevices=[], diagOpenedAt=0;
+
+  function diagRows(el, pairs){
+    el.innerHTML="";
+    pairs.forEach(function(p){
+      const row=document.createElement("div"); row.className="diag-row";
+      const a=document.createElement("span"); a.textContent=p[0];
+      const b=document.createElement("span"); b.textContent=p[1];
+      if(p[2]===true) b.className="v-good"; else if(p[2]===false) b.className="v-bad";
+      row.appendChild(a); row.appendChild(b); el.appendChild(row);
+    });
+  }
+
+  function diagTrack(){
+    try{ return (micStream && micStream.getAudioTracks) ? micStream.getAudioTracks()[0] : null; }
+    catch(e){ return null; }
+  }
+
+  async function diagListDevices(){
+    const sel=$("diag-dev"), hint=$("diag-dev-hint");
+    let devs=[];
+    try{ devs=(await navigator.mediaDevices.enumerateDevices()).filter(function(d){ return d.kind==="audioinput"; }); }
+    catch(e){}
+    diagDevices=devs.map(function(d,i){ return d.label || ("input "+(i+1)); });
+    const pref=lsGet(LS_MICDEV)||"";
+    sel.innerHTML="";
+    const def=document.createElement("option");
+    def.value=""; def.textContent=t("Browser default"); sel.appendChild(def);
+    devs.forEach(function(d,i){
+      const o=document.createElement("option");
+      o.value=d.deviceId; o.textContent=d.label || (t("Microphone")+" "+(i+1));
+      sel.appendChild(o);
+    });
+    sel.value = devs.some(function(d){ return d.deviceId===pref; }) ? pref : "";
+    const unnamed = devs.length>0 && !devs[0].label;
+    hint.textContent = unnamed ? t("Device names appear once the microphone has been allowed.") : "";
+    hint.classList.toggle("hidden", !unnamed);
+  }
+
+  function diagTick(){
+    const track=diagTrack();
+
+    // engine
+    const st = ac ? ac.state : t("not started");
+    diagRows($("diag-engine"), [
+      [t("State"), st, ac ? (st==="running") : false],
+      [t("Sample rate"), ac ? Math.round(ac.sampleRate)+" Hz" : "\u2014"]
+    ]);
+    $("diag-resume").hidden = !(ac && ac.state!=="running");
+
+    // track
+    if(track){
+      diagRows($("diag-track"), [
+        [t("Device in use"), track.label || t("unnamed"), null],
+        [t("Track state"), track.readyState, track.readyState==="live"],
+        [t("Delivering audio"), String(track.enabled), track.enabled===true],
+        [t("Muted by system"), String(track.muted), track.muted===false]
+      ]);
+      let s={};
+      try{ s=(track.getSettings && track.getSettings()) || {}; }catch(e){}
+      const want=(room==="noisy");
+      const shown=function(v){ return v===undefined ? "\u2014" : String(v); };
+      const ok=function(v){ return v===undefined ? null : (v===want); };
+      diagRows($("diag-proc"), [
+        [t("Echo cancellation"), shown(s.echoCancellation), ok(s.echoCancellation)],
+        [t("Noise suppression"), shown(s.noiseSuppression), ok(s.noiseSuppression)],
+        [t("Automatic gain"), shown(s.autoGainControl), ok(s.autoGainControl)],
+        [t("Capture rate"), s.sampleRate ? s.sampleRate+" Hz" : "\u2014",
+          (typeof s.sampleRate==="number") ? (s.sampleRate>16000) : null]
+      ]);
+      const mismatch=["echoCancellation","noiseSuppression","autoGainControl"].some(function(k){
+        return s[k]!==undefined && s[k]!==want;
+      });
+      const pnote=$("diag-proc-note");
+      pnote.textContent = mismatch
+        ? t("The browser applied different processing than this app asked for. That usually means another tab or app opened the microphone first and its settings won. Close it, then reload this page.")
+        : "";
+      pnote.classList.toggle("hidden", !mismatch);
+    }else{
+      diagRows($("diag-track"), [[t("Track state"), t("not started"), false]]);
+      diagRows($("diag-proc"), [[t("Sound processing"), t("start the microphone first"), null]]);
+      $("diag-proc-note").classList.add("hidden");
+    }
+
+    // level, straight off the app's own analyser
+    let db=-100;
+    if(analyser && ac && ac.state==="running" && track && track.enabled){
+      if(!diagProbe || diagProbe.length!==analyser.fftSize) diagProbe=new Float32Array(analyser.fftSize);
+      analyser.getFloatTimeDomainData(diagProbe);
+      let sum=0;
+      for(let i=0;i<diagProbe.length;i++) sum+=diagProbe[i]*diagProbe[i];
+      const rms=Math.sqrt(sum/diagProbe.length);
+      if(rms>0) db=20*Math.log10(rms);
+    }
+    if(db>diagPeakDb) diagPeakDb=db;
+    $("diag-meter-fill").style.width = Math.max(0, Math.min(100, (db+60)/60*100))+"%";
+    // Silence is only a fault once there has been time to sing into it -- a red
+    // reading in the first seconds would accuse the tester of a problem they
+    // have not had a chance to rule out yet.
+    const settled = (performance.now()-diagOpenedAt) > 4000;
+    const peakOk = diagPeakDb>-60 ? true : (settled ? false : null);
+    diagRows($("diag-level"), [
+      [t("Level now"), db<=-99 ? t("silence") : db.toFixed(1)+" dB", db>-60 ? true : null],
+      [t("Loudest so far"), diagPeakDb<=-99 ? t("silence") : diagPeakDb.toFixed(1)+" dB", peakOk]
+    ]);
+
+    diagRaf=requestAnimationFrame(diagTick);
+  }
+
+  function diagReport(){
+    const track=diagTrack();
+    let s={};
+    try{ s=(track && track.getSettings) ? track.getSettings() : {}; }catch(e){}
+    const vEl=document.querySelector(".version-tag");
+    return [
+      "VPT diagnostics "+(vEl?vEl.textContent.trim():"")+" \u2014 "+new Date().toISOString(),
+      "UA: "+navigator.userAgent,
+      "Room setting: "+room,
+      "Engine: "+(ac ? ac.state+" @ "+Math.round(ac.sampleRate)+" Hz" : "not started"),
+      "Track: "+(track ? (track.label||"unnamed")+" | "+track.readyState+
+                 " | enabled="+track.enabled+" | muted="+track.muted : "not started"),
+      "Applied: "+JSON.stringify(s),
+      "Loudest level: "+(diagPeakDb<=-99 ? "silence" : diagPeakDb.toFixed(1)+" dB"),
+      "Inputs seen: "+(diagDevices.join(", ")||"none"),
+      "",
+      "Session log (since page load):",
+      diagLogText()
+    ].join("\n");
+  }
+
+  async function openDiag(){
+    diagPeakDb=-100; diagOpenedAt=performance.now();
+    $("diag-report-out").hidden=true;
+    $("diag-proc-note").classList.add("hidden");
+    diagBackdrop.hidden=false;
+    // opening the panel is itself a user gesture, so this is a legal moment to
+    // ask for the mic -- otherwise the panel would report "not started" and be
+    // useless to exactly the tester who needs it
+    if(!running){ try{ await startMic(); }catch(e){} }
+    await diagListDevices();
+    if(!diagRaf) diagTick();
+  }
+  function closeDiag(){
+    if(diagRaf) cancelAnimationFrame(diagRaf);
+    diagRaf=null;
+    diagBackdrop.hidden=true;
+  }
+
+  $("diag-open").addEventListener("click",openDiag);
+  $("diag-close").addEventListener("click",closeDiag);
+  $("diag-done").addEventListener("click",closeDiag);
+  diagBackdrop.addEventListener("click",function(e){ if(e.target===diagBackdrop) closeDiag(); });
+  document.addEventListener("keydown",function(e){
+    if(e.key==="Escape" && !diagBackdrop.hidden) closeDiag();
+  });
+  $("diag-resume").addEventListener("click",function(){ ensureAudioCtx(); });
+  $("diag-dev").addEventListener("change", async function(){
+    lsSet(LS_MICDEV, $("diag-dev").value || "");
+    if(running) return;   // never yank the mic out from under a take
+    releaseMic();
+    diagPeakDb=-100; diagOpenedAt=performance.now();
+    try{ await startMic(); }catch(e){}
+    await diagListDevices();
+  });
+  $("diag-copy").addEventListener("click", async function(){
+    const btn=this, label=btn.querySelector("span"), txt=diagReport();
+    try{
+      await navigator.clipboard.writeText(txt);
+      label.textContent=t("Copied");
+      setTimeout(function(){ label.textContent=t("Copy report"); },1500);
+    }catch(e){
+      // clipboard blocked (older browsers, permissions) -- show the text so it
+      // can still be selected and pasted by hand
+      const out=$("diag-report-out");
+      out.value=txt; out.hidden=false; out.focus(); out.select();
+      label.textContent=t("Copy report");
+    }
+  });
+
   // iOS suspends the AudioContext on interruptions (calls, Siri, route changes) and
   // when the tab is backgrounded. Resume it when the page becomes visible again,
   // otherwise playback is silent and the meter reads nothing.
   document.addEventListener("visibilitychange",()=>{
-    if(!document.hidden && ac && ac.state==="suspended"){ ac.resume().catch(()=>{}); }
+    if(document.hidden){ diagEvent("tab-hidden"); return; }
+    diagEvent("tab-visible", ac ? ac.state : "no context");
+    if(ac && ac.state==="suspended"){ ac.resume().catch(()=>{}); }
   });
   window.addEventListener("pageshow",()=>{
     if(ac && ac.state==="suspended") ac.resume().catch(()=>{});
@@ -5515,6 +6340,8 @@ function ceilPow2(v) {
   resetFlow();
   applyGradeUI();
   updateSettingsSummary();
+  // Last in init: earlier calls get overwritten by resetFlow()/renderChips().
+  syncPlaySingVisibility();
 })();
 </script>
 </body>
