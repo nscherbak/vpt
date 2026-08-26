@@ -300,11 +300,6 @@
   }
   .drag-hint{font-family:var(--mono);font-size:11px;color:var(--dim);margin:-4px 0 10px}
   .drag-hint.hidden{display:none}
-  .updown-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink);cursor:pointer;margin:0 0 12px;user-select:none;flex-wrap:wrap}
-  .updown-row.hidden{display:none}
-  .updown-row.disabled{opacity:0.5;cursor:default}
-  .updown-row input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
-  .updown-note{font-family:var(--mono);font-size:11px;color:var(--dim)}
   
   .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
   .paste-row{margin-top:10px}
@@ -519,7 +514,7 @@
 <body>
 <div class="wrap">
   <header>
-    <div class="title-row"><img class="app-logo" src="data:image/png;base64,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" alt="Vocal Pitch Trainer icon" width="48" height="48"><h1>Vocal Pitch <span class="accent">Trainer</span><span class="version-tag">v3.9.2</span></h1>
+    <div class="title-row"><img class="app-logo" src="data:image/png;base64,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" alt="Vocal Pitch Trainer icon" width="48" height="48"><h1>Vocal Pitch <span class="accent">Trainer</span><span class="version-tag">v3.13.0</span></h1>
       <select id="lang-select" aria-label="Language" class="lang-select">
         <option value="en">English</option>
         <option value="uk">Українська</option>
@@ -632,10 +627,6 @@
 
     <p class="onboard-hint" id="onboard-hint"><span data-i18n="Select tones below">Select tones below</span> <span class="arrow">→</span> <span data-i18n="Add">Add</span> <span class="arrow">→</span> <span data-i18n="Play">Play</span></p>
     <p class="drag-hint hidden" id="drag-hint"><span data-i18n="Drag to reorder · × to remove">Drag to reorder · × to remove</span></p>
-    <label class="updown-row hidden" id="updown-row">
-      <input type="checkbox" id="updown"> <span data-i18n="Play up and down">Play up and down</span>
-      <span class="updown-note" id="updown-note"></span>
-    </label>
 
     <div class="src-pane" id="pane-manual">
       <p class="method-label"><span data-i18n="Select tones here — add one at a time:">Select tones here — add one at a time:</span></p>
@@ -737,10 +728,11 @@
       <div class="arp-controls">
         <label class="arp-field">
           <span><span data-i18n="Pattern">Pattern</span></span>
-          <select id="seq2-pattern">
-            <option value="3-note descending run"><span data-i18n="3-note descending run">3-note descending run</span></option><option value="3-note ascending run"><span data-i18n="3-note ascending run">3-note ascending run</span></option><option value="3-note turn"><span data-i18n="3-note turn">3-note turn</span></option>
-            <option value="4-note ascending run"><span data-i18n="4-note ascending run">4-note ascending run</span></option><option value="Thirds"><span data-i18n="Thirds">Thirds</span></option><option value="5-note turn (from above)"><span data-i18n="5-note turn (from above)">5-note turn (from above)</span></option><option value="5-note turn"><span data-i18n="5-note turn">5-note turn</span></option>
-          </select>
+          <select id="seq2-pattern"></select>
+        </label>
+        <label class="arp-field">
+          <span><span data-i18n="Direction">Direction</span></span>
+          <select id="seq2-direction"><option value="up"><span data-i18n="Up">Up</span></option><option value="down"><span data-i18n="Down">Down</span></option></select>
         </label>
         <button class="btn arp-gen" id="seq2-gen"><span data-i18n="Generate">Generate</span></button>
         <button class="btn ghost gen-clear-btn" id="seq2-clear-btn"><span data-i18n="Clear">Clear</span></button>
@@ -763,7 +755,7 @@
         <select id="vr-high" aria-label="Highest comfortable note"></select>
         <button class="btn ghost" id="vr-detect-btn"><span data-i18n="🎤 Detect">🎤 Detect</span></button>
       </div>
-      <span class="set-note" id="vr-note"><span data-i18n="Lets exercises suggest keys that suit your voice. Every key stays available.">Lets exercises suggest keys that suit your voice. Every key stays available.</span></span>
+      <span class="set-note" id="vr-note"><span data-i18n="Generated exercises stay inside this range. Every key stays available.">Generated exercises stay inside this range. Every key stays available.</span></span>
     </div>
 
     <div class="set-row">
@@ -1148,13 +1140,42 @@
   }
   function inInstrumentRange(midi){ return midi>=RANGE_LO && midi<=RANGE_HI; }
 
+  // The singer's own range once they have set one, otherwise the instrument's.
+  // A malformed or inverted stored range falls back rather than generating
+  // nothing at all.
+  // Range setup captures TOTAL range -- the highest and lowest notes someone
+  // could reach once. Pedagogy works in the tessitura: comfortable, repeatable,
+  // inset from both extremes. Exercises pressed against a ceiling you can touch
+  // but not use are the ones that invite pushing.
+  // WORKING_INSET is convention, not measurement -- a default to tune once the
+  // trial log shows whether accuracy really collapses in the top two semitones.
+  const WORKING_INSET=2;
+  const MIN_WORKING_SPAN=7;   // below this, insetting leaves nothing usable
+  function singableLimit(){
+    const vr=(typeof loadVocalRange==="function") ? loadVocalRange() : null;
+    if(!vr || !vr.lo || !vr.hi) return {lo:RANGE_LO, hi:RANGE_HI};
+    const lo=noteToMidi(vr.lo), hi=noteToMidi(vr.hi);
+    if(!(typeof lo==="number") || !(typeof hi==="number") || hi<=lo) return {lo:RANGE_LO, hi:RANGE_HI};
+    const totLo=Math.max(RANGE_LO,lo), totHi=Math.min(RANGE_HI,hi);
+    const wLo=totLo+WORKING_INSET, wHi=totHi-WORKING_INSET;
+    // Insetting a small range would leave nothing; keep the total range there.
+    if(wHi-wLo < MIN_WORKING_SPAN) return {lo:totLo, hi:totHi};
+    return {lo:wLo, hi:wHi};
+  }
+  function workingSpanSemitones(){ const L=singableLimit(); return L.hi-L.lo; }
+  function genLimit(){ return singableLimit(); }
+  function inGenRange(midi){ const L=genLimit(); return midi>=L.lo && midi<=L.hi; }
+  // No fallback to the instrument's range: an exercise made of notes above the
+  // singer's stated top is exactly the thing that makes no pedagogical sense
+  // and invites pushing, so when it will not fit we refuse and explain.
+
   function generateScale(keySlotIndex, scaleType, rootNoteName, numOctaves){
     const degrees=getScaleDegrees(keySlotIndex, scaleType);
     const steps = scaleType==="minor" ? MINOR_STEPS : MAJOR_STEPS;
     const notes=[]; const total=numOctaves*7+1;
     for(let d=1; d<=total; d++){
       const n=degreeToNote(degrees, steps, rootNoteName, d);
-      if(!inInstrumentRange(n.midi)) break;
+      if(!inGenRange(n.midi)) break;
       notes.push(n.name);
     }
     return notes;
@@ -1184,7 +1205,7 @@
     for(let i=0;i<total;i++){
       const idx=i%n, cycle=Math.floor(i/n);
       const midi=rootMidi+toneOffsets[idx]+cycle*12;
-      if(!inInstrumentRange(midi)) break;
+      if(!inGenRange(midi)) break;
       notes.push(toneLetters[idx]+midiToOctaveNumber(midi));
     }
     return notes;
@@ -1193,6 +1214,17 @@
   // Sequence patterns as scale-degree formulas (grounded in standard vocal
   // pedagogy -- verified against real training sources in discussion).
   const SEQUENCE_PATTERNS={
+    // --- graded interval family: out and back to the tonic. These are the
+    // backbone of the classic methods, and the small-span members are what
+    // make useful practice possible for a narrow range. They also fill the
+    // gap below Thirds, which the curriculum previously jumped straight to.
+    "Neighbour (1-2-1)":(top)=>{ const g=[]; for(let s=1;s+1<=top;s++) g.push([s,s+1,s]); return g; },
+    "Lower neighbour (1-7-1)":(top)=>{ const g=[]; for(let s=2;s<=top;s++) g.push([s,s-1,s]); return g; },
+    "Third (1-3-1)":(top)=>{ const g=[]; for(let s=1;s+2<=top;s++) g.push([s,s+2,s]); return g; },
+    "Fourth (1-4-1)":(top)=>{ const g=[]; for(let s=1;s+3<=top;s++) g.push([s,s+3,s]); return g; },
+    "Fifth (1-5-1)":(top)=>{ const g=[]; for(let s=1;s+4<=top;s++) g.push([s,s+4,s]); return g; },
+    "Broken triad (1-3-5-3-1)":(top)=>{ const g=[]; for(let s=1;s+4<=top;s++) g.push([s,s+2,s+4,s+2,s]); return g; },
+    // --- runs and turns ---
     "3-note descending run":(top)=>{ const g=[]; for(let s=1;s+2<=top;s++) g.push([s+2,s+1,s]); return g; },
     "3-note ascending run":(top)=>{ const g=[]; for(let s=1;s+2<=top;s++) g.push([s,s+1,s+2]); return g; },
     "3-note turn":(top)=>{ const g=[]; for(let s=1;s+2<=top;s++) g.push([s,s+1,s+2,s+1]); return g; },
@@ -1201,13 +1233,38 @@
     "5-note turn (from above)":()=>[[5,4,3,2,1,2,3,4,5]],
     "5-note turn":()=>[[1,2,3,4,5,4,3,2,1]],
   };
-  function generateSequence(keySlotIndex, scaleType, rootNoteName, patternName, topDegree){
+  // Span in SEMITONES that each figure needs. Used to pick a figure that fits
+  // the singer's working range instead of generating one and then refusing it.
+  // Major-scale worst case, so a figure never turns out bigger than declared.
+  const PATTERN_SPAN={
+    "Neighbour (1-2-1)":2, "Lower neighbour (1-7-1)":2,
+    "Third (1-3-1)":4, "Fourth (1-4-1)":5, "Fifth (1-5-1)":7,
+    "Broken triad (1-3-5-3-1)":7,
+    "3-note descending run":4, "3-note ascending run":4, "3-note turn":4,
+    "4-note ascending run":5, "Thirds":4,
+    "5-note turn (from above)":7, "5-note turn":7,
+  };
+  // Smallest-first, so "the largest that fits" is a scan from the end.
+  const PATTERN_BY_SPAN=Object.keys(PATTERN_SPAN).sort((a,b)=>PATTERN_SPAN[a]-PATTERN_SPAN[b]);
+  function largestPatternThatFits(semitones){
+    for(let i=PATTERN_BY_SPAN.length-1;i>=0;i--){
+      if(PATTERN_SPAN[PATTERN_BY_SPAN[i]]<=semitones) return PATTERN_BY_SPAN[i];
+    }
+    return null;
+  }
+  // direction here means something different from Scales/Arpeggios: the shape
+  // of each group is fixed by the pattern, so this reverses the ORDER the
+  // groups climb through the scale -- thirds working up from the bottom, or
+  // working down from the top. Descending through the scale is the more
+  // common beginner form, for the same reason Short scale descends.
+  function generateSequence(keySlotIndex, scaleType, rootNoteName, patternName, topDegree, direction){
     const degrees=getScaleDegrees(keySlotIndex, scaleType);
     const steps = scaleType==="minor" ? MINOR_STEPS : MAJOR_STEPS;
-    const groups=SEQUENCE_PATTERNS[patternName](topDegree);
+    let groups=SEQUENCE_PATTERNS[patternName](topDegree);
+    if(direction==="down") groups=groups.slice().reverse();
     return groups.map(degList=>{
       const notes=degList.map(d=>degreeToNote(degrees, steps, rootNoteName, d));
-      if(notes.some(n=>!inInstrumentRange(n.midi))) return null;
+      if(notes.some(n=>!inGenRange(n.midi))) return null;
       return notes.map(n=>n.name);
     }).filter(g=>g!==null);
   }
@@ -1455,7 +1512,6 @@
   "Add": "Додати",
   "Play": "Відтворити",
   "Drag to reorder · × to remove": "Перетягніть, щоб змінити порядок · × щоб видалити",
-  "Play up and down": "Відтворити вгору і вниз",
   "+ Add": "+ Додати",
   "Clear": "Очистити",
   "Scale type": "Тип гами",
@@ -1602,6 +1658,22 @@
   "start the microphone first": "спершу увімкніть мікрофон",
   "Device names appear once the microphone has been allowed.": "Назви пристроїв з'являться після надання доступу до мікрофона.",
   "The browser applied different processing than this app asked for. That usually means another tab or app opened the microphone first and its settings won. Close it, then reload this page.": "Браузер застосував іншу обробку, ніж просив застосунок. Зазвичай це означає, що мікрофон першою відкрила інша вкладка або програма, і її налаштування перемогли. Закрийте її та перезавантажте цю сторінку.",
+  "Generated exercises stay inside this range. Every key stays available.": "Згенеровані вправи лишаються в межах цього діапазону. Усі тональності доступні.",
+  "This scale doesn't fit inside your vocal range at that octave. Try another start octave, or a smaller span.": "Ця гама не вміщається у ваш вокальний діапазон на цій октаві. Спробуйте іншу початкову октаву або менший обсяг.",
+  "This chord doesn't fit inside your vocal range at that octave. Try another start octave, or a smaller span.": "Цей акорд не вміщається у ваш вокальний діапазон на цій октаві. Спробуйте іншу початкову октаву або менший обсяг.",
+  "Try octave {n}.": "Спробуйте октаву {n}.",
+  "This pattern doesn't fit inside your vocal range at that octave. Try another start octave.": "Цей візерунок не вміщається у ваш вокальний діапазон на цій октаві. Спробуйте іншу початкову октаву.",
+  "This exercise needs a wider range": "Ця вправа потребує ширшого діапазону",
+  "It will not fit inside {r}. You can widen your range from the profile tag above, or try another lesson.": "Вона не вміщається в {r}. Розширте діапазон через позначку профілю вгорі або спробуйте інший урок.",
+  "Set your vocal range from the profile tag above, then try again.": "Задайте свій вокальний діапазон через позначку профілю вгорі й спробуйте ще раз.",
+  "Neighbour (1-2-1)": "Сусідня (1-2-1)",
+  "Lower neighbour (1-7-1)": "Нижня сусідня (1-7-1)",
+  "Third (1-3-1)": "Терція (1-3-1)",
+  "Fourth (1-4-1)": "Кварта (1-4-1)",
+  "Fifth (1-5-1)": "Квінта (1-5-1)",
+  "Broken triad (1-3-5-3-1)": "Розкладене тризвуччя (1-3-5-3-1)",
+  "Your saved range is narrow, so some exercises were shortened to fit. If your range has grown, update it from the profile tag.": "Ваш збережений діапазон вузький, тож деякі вправи було скорочено. Якщо діапазон розширився, оновіть його через позначку профілю.",
+  "(too wide)": "(завеликий)",
   "Profile": "Профіль",
   "Browse all lessons": "Переглянути всі уроки",
   "Set range": "Задати діапазон",
@@ -1641,8 +1713,6 @@
   "see details below": "деталі нижче",
   " notes on pitch — see details below": "правильних нот — деталі нижче",
   "Add at least one tone.": "Додайте щонайменше одну ноту.",
-  "— max 5 tones (would play ": "— максимум 5 нот (буде відтворено ",
-  "— plays ": "— відтворює ",
   "−50¢ flat": "−50¢ бемоль",
   "sharp +50¢": "дієз +50¢",
   "Already at the top of the app's usable range.": "Ви вже на межі можливого діапазону застосунку.",
@@ -1812,6 +1882,7 @@
     // JS-written text is not covered by the data-i18n sweep above, so anything
     // set with textContent has to be re-rendered here by hand.
     if(typeof refreshProfileRangeTag==="function") refreshProfileRangeTag();
+    if(typeof renderPatternOptions==="function") renderPatternOptions();
     if(typeof refreshPathModeSub==="function") refreshPathModeSub();
     const sel = $("lang-select");
     if(sel) sel.value = lang;
@@ -1893,34 +1964,12 @@
   }
 
   // ---------- play up and down ----------
-  // A playback mode: mirrors whatever tones are selected (manual or generated)
-  // without altering them, so the chips always show what you picked.
-  $("updown").addEventListener("change",e=>{
-    if(running){ e.target.checked=upDown; return; }
-    upDown=e.target.checked;
-    updateUpDownRow();
-    resetFlow();
-  });
-  function updateUpDownRow(){
-    const row=$("updown-row"), box=$("updown"), note=$("updown-note");
-    if(!row) return;
-    // Generated exercises already carry their direction: scales and arpeggios
-    // have their own Direction dropdown, and a sequence pattern like the
-    // five-note turn has the shape baked in. Offering the checkbox there is a
-    // second control for the same decision -- and on a turn it would just
-    // double a phrase that already comes back down. Manual and pasted
-    // sequences have no direction control, so it stays for them.
-    row.classList.toggle("hidden", seq.length<2 || seqIsGenerated);
-    // played length = 2n-1; keep it within the 9-tone limit
-    const played=seq.length*2-1;
-    const tooLong=played>9;
-    box.disabled=tooLong || running;
-    if(tooLong && upDown){ upDown=false; box.checked=false; }
-    row.classList.toggle("disabled",tooLong);
-    if(tooLong) note.textContent=t("— max 5 tones (would play ")+played+")";
-    else if(upDown) note.textContent=t("— plays ")+playSeq().join(" ");
-    else note.textContent="";
-  }
+  // No longer a user-facing control. It survives only as the mechanism behind
+  // the Scales/Arpeggios "Up and down" Direction option, set in
+  // loadGeneratedRounds(). As a manual checkbox it broke the rule that the
+  // chips show exactly what you will sing -- it silently doubled the phrase,
+  // which is why it needed a "— plays C4 D4 E4 D4 C4" note to explain itself.
+  // Adding the notes twice by hand gives the same result, visibly.
 
   // ============================================================
   // LEARNING PATHS (Stage 1 data model + Stage 2 UI)
@@ -2675,6 +2724,8 @@
     // The singing panel's visibility has exactly one owner, below: it depends
     // on mode and on which lesson is running, not just on this flag.
     syncPlaySingVisibility();
+  syncOctaveDefaults();
+  renderPatternOptions();
   }
   function finishPerceptionLesson(){
     const hits=perceptionTrialResults.filter(Boolean).length;
@@ -2777,7 +2828,7 @@
       // better a repeat than an unsingable one.
       const shifted=base.map(nm=>transposeNote(nm,i));
       // inInstrumentRange takes a MIDI number, not a note name
-      const usable = shifted.every(nm=>inInstrumentRange(noteToMidi(nm)));
+      const usable = shifted.every(nm=>inGenRange(noteToMidi(nm)));
       repeated.push(usable ? shifted : base.slice());
     }
     genRounds=repeated; genRoundIdx=0; genAllCaps=[];
@@ -2795,6 +2846,15 @@
     if(gradeNote) gradeNote.classList.toggle("hidden", !(lesson && lesson.mode==="free-practice"));
     const fbNote=$("live-fb-lesson-note");
     if(fbNote) fbNote.classList.toggle("hidden", !(lesson && lesson.feedbackSchedule));
+  }
+
+  // Shown when a lesson's exercise cannot be built inside the saved range.
+  function lessonRangeTooNarrow(){
+    const vr=loadVocalRange();
+    stage(t("This exercise needs a wider range"),
+      {cls:"warn", sub: vr
+        ? fill("It will not fit inside {r}. You can widen your range from the profile tag above, or try another lesson.", {r:vr.lo+"–"+vr.hi})
+        : t("Set your vocal range from the profile tag above, then try again.")});
   }
 
   function startLesson(lessonId){
@@ -2840,6 +2900,7 @@
       $("scale-span").value=lesson.preset.span;
       $("scale-direction").value=lesson.preset.direction;
       runScaleGenerate(true);
+      if(!seq.length){ lessonRangeTooNarrow(); return; }
       if(lesson.feedbackSchedule) replicateRoundsForLesson(lesson.repeats);
     } else if(lesson.mode==="arpeggios"){
       activateSourceTab("arpeggios");
@@ -2851,6 +2912,7 @@
       $("arp2-span").value=lesson.preset.span;
       $("arp2-direction").value=lesson.preset.direction;
       runArpeggioGenerate(true);
+      if(!seq.length){ lessonRangeTooNarrow(); return; }
       if(lesson.feedbackSchedule) replicateRoundsForLesson(lesson.repeats);
     } else if(lesson.mode==="sequences"){
       activateSourceTab("sequences");
@@ -2859,7 +2921,9 @@
       $("seq2-key").value=picked.keyIdx;
       $("seq2-octave").value=picked.octave;
       $("seq2-pattern").value=lesson.preset.pattern;
+      if($("seq2-direction")) $("seq2-direction").value=lesson.preset.direction || "up";
       runSequenceGenerate(true);
+      if(!seq.length){ lessonRangeTooNarrow(); return; }
       if(lesson.repeats) replicateRoundsForLesson(lesson.repeats);
     }
     syncPlaySingVisibility();   // a lesson is live now, so the panel is needed
@@ -3015,7 +3079,22 @@
     return line;
   }
 
+  // A shortened figure still counts as completing the lesson -- refusing would
+  // strand a narrow-range singer -- but the record says what was actually sung,
+  // which is what a teacher would want to see.
+  function noteLessonSubstitution(lessonId){
+    if(!lastSubstitutedPattern || !lessonId) return;
+    try{
+      const all=loadLpProgress();
+      const rec=all[lessonId]||{};
+      rec.substitutedFrom=lastSubstitutedPattern;
+      all[lessonId]=rec;
+      lsSet(lpProgressKey(), JSON.stringify(all));
+    }catch(e){}
+  }
+
   function finishLesson(lessonId, ratio, notesInvolved){
+    noteLessonSubstitution(lessonId);
     setTimeout(syncPlaySingVisibility, 0);   // after currentLessonId is cleared below
     const before=loadLpProgress()[lessonId];
     const wasPassed=lessonPassed(lessonId, before);
@@ -3215,6 +3294,69 @@
   }
 
   // ---------- tone source (Manual / Scales / Arpeggios / Sequences) ----------
+  // Built from PATTERN_SPAN so the list and the spans can never disagree, and
+  // so figures too large for the singer's working range can be shown as
+  // unavailable rather than failing after the fact.
+  // Exercises are anchored to the middle of the working range, not to whatever
+  // octave the selector happened to default to. Classic practice starts in the
+  // comfortable middle and works outward; starting at the bottom of the range
+  // is what produced refusals for singers with a perfectly usable range.
+  function syncOctaveDefaults(){
+    const L=singableLimit();
+    const mid=(L.lo+L.hi)/2;
+    [["scale-octave","scale-key"],["arp2-octave","arp2-key"],["seq2-octave","seq2-key"]].forEach(([octId,keyId])=>{
+      const oct=$(octId), key=$(keyId);
+      if(!oct||!key) return;
+      const letter=(KEY_SLOTS[parseInt(key.value,10)]||KEY_SLOTS[0]).major;
+      let best=null, bestDist=Infinity;
+      [...oct.options].forEach(o=>{
+        const m=noteToMidi(letter+o.value);
+        if(typeof m!=="number" || isNaN(m)) return;
+        if(m<L.lo || m>L.hi) return;                  // must start inside it
+        const d=Math.abs(m-mid);
+        if(d<bestDist){ bestDist=d; best=o.value; }
+      });
+      if(best!==null) oct.value=best;
+    });
+  }
+
+  // Whether a figure fits is not a property of the figure OR the range alone:
+  // a 5-note turn fits a 9-semitone range, but not starting four semitones
+  // below its ceiling. Pattern and octave have to be chosen together, so this
+  // scans largest-figure-first and returns the first pair that actually
+  // generates. Substitution is what the caller records.
+  function bestSequenceFit(keyIdx, scaleType, tonicLetter, direction, octSelId){
+    const oct=$(octSelId);
+    const octs = oct ? [...oct.options].map(o=>o.value) : ["3","4"];
+    const L=singableLimit(), mid=(L.lo+L.hi)/2;
+    const byCentre=octs.slice().sort((a,b)=>
+      Math.abs(noteToMidi(tonicLetter+a)-mid)-Math.abs(noteToMidi(tonicLetter+b)-mid));
+    for(let i=PATTERN_BY_SPAN.length-1;i>=0;i--){
+      const name=PATTERN_BY_SPAN[i];
+      for(const o of byCentre){
+        const r=generateSequence(keyIdx, scaleType, tonicLetter+o, name, 8, direction);
+        if(r && r.length) return {pattern:name, octave:o};
+      }
+    }
+    return null;
+  }
+
+  function renderPatternOptions(){
+    const sel=$("seq2-pattern"); if(!sel) return;
+    const keep=sel.value;
+    const span=workingSpanSemitones();
+    sel.innerHTML="";
+    PATTERN_BY_SPAN.forEach(name=>{
+      const o=document.createElement("option");
+      o.value=name;
+      o.textContent=t(name)+(PATTERN_SPAN[name]>span ? " "+t("(too wide)") : "");
+      o.disabled = PATTERN_SPAN[name]>span;
+      sel.appendChild(o);
+    });
+    const still=[...sel.options].some(o=>o.value===keep && !o.disabled);
+    sel.value = still ? keep : (largestPatternThatFits(span) || PATTERN_BY_SPAN[0]);
+  }
+
   function activateSourceTab(src){
     document.querySelectorAll("#source-set button").forEach(x=>x.classList.toggle("active", x.dataset.src===src));
     $("pane-manual").classList.toggle("hidden", src!=="manual");
@@ -3470,7 +3612,6 @@
     if(dh) dh.classList.toggle("hidden", seq.length<2);
     const oh=document.getElementById("onboard-hint");
     if(oh) oh.classList.toggle("hidden", seq.length>0);
-    updateUpDownRow();
     updatePlayButtons();
   }
   // flag the sequence as machine-generated (no longer a pristine manual edit)
@@ -3523,6 +3664,7 @@
   // completely unaffected when this is null.
   // ============================================================
   let seqIsGenerated=false;   // true once ANY generator has populated the chips
+  let lastSubstitutedPattern=null;   // set when a figure was shortened to fit
   let genRounds=null;         // array of ascending round arrays, or null
   let genRoundIdx=0;
   let genRange=null;          // {lo,hi} display names for the WHOLE exercise
@@ -3573,12 +3715,42 @@
     flat.forEach(n=>{ if(noteToMidi(n)<noteToMidi(lo)) lo=n; if(noteToMidi(n)>noteToMidi(hi)) hi=n; });
     genRange={lo,hi};
     seq=rounds[0].slice(); seqIsGenerated=true;
-    upDown = (direction==="updown");
-    $("updown").checked = upDown;
+    // Playback of an up-and-down phrase is 2n-1 tones; the engine caps a take
+    // at 9, so a long round cannot be mirrored. (Pre-existing limit: a full
+    // octave scale set to "Up and down" has always played one way only.)
+    upDown = (direction==="updown") && (seq.length*2-1)<=9;
     renderChips(); resetFlow(); updateRoundTag(); pulseChips();
   }
   // Advisory only -- never blocks. Checks the whole generated exercise's span
   // against the stored vocal range and names exactly how far outside it goes.
+  // Which "it doesn't fit" message applies depends on WHICH limit was hit --
+  // telling someone to try a lower octave is unhelpful when the real problem
+  // is that the exercise does not fit inside their own range at all.
+  // "Try another octave" is a dead end if the singer has to guess which one.
+  // Probe the octave selector's own options and name the first that fits.
+  function suggestOctave(buildNotes, octSelId){
+    const sel=$(octSelId); if(!sel) return null;
+    for(const opt of sel.options){
+      const notes=buildNotes(opt.value);
+      if(notes && notes.length>=2) return opt.value;
+    }
+    return null;
+  }
+
+  function outOfRangeMsgKey(kind){
+    const vr=(typeof loadVocalRange==="function") ? loadVocalRange() : null;
+    if(vr) return kind==="chord"
+      ? "This chord doesn't fit inside your vocal range at that octave. Try another start octave, or a smaller span."
+      : kind==="pattern"
+      ? "This pattern doesn't fit inside your vocal range at that octave. Try another start octave."
+      : "This scale doesn't fit inside your vocal range at that octave. Try another start octave, or a smaller span.";
+    return kind==="chord"
+      ? "That octave is too close to the instrument's limits for this chord. Try a lower start octave."
+      : kind==="pattern"
+      ? "That octave is too close to the instrument's limits for this pattern. Try a lower start octave."
+      : "That octave is too close to the instrument's limits for this scale. Try a lower start octave.";
+  }
+
   function vocalRangeWarning(range){
     const vr=loadVocalRange();
     if(!vr || !range) return "";
@@ -3663,7 +3835,12 @@
     const tonicLetter = scaleType==="minor" ? KEY_SLOTS[keyIdx].minor : KEY_SLOTS[keyIdx].major;
     const root=tonicLetter+octave;
     const notes=generateScale(keyIdx, scaleType, root, span);
-    if(notes.length<2){ showGenMsg("scale-msg",t("That octave is too close to the instrument's limits for this scale. Try a lower start octave."),false); lastGenMsg["scale-msg"]={type:"tooClose", key:"That octave is too close to the instrument's limits for this scale. Try a lower start octave."}; return; }
+    if(notes.length<2){
+      const k=outOfRangeMsgKey("scale");
+      const alt=suggestOctave(o=>generateScale(keyIdx, scaleType, tonicLetter+o, span), "scale-octave");
+      showGenMsg("scale-msg", t(k)+(alt?" "+fill("Try octave {n}.",{n:alt}):""), false);
+      lastGenMsg["scale-msg"]={type:"tooClose", key:k}; return;
+    }
     // reverse the FULL list before chunking (not each chunk after) so a
     // "Down" exercise's first round correctly starts at the top of the scale
     const ordered = direction==="down" ? notes.slice().reverse() : notes;
@@ -3691,7 +3868,12 @@
     const direction=$("arp2-direction").value;
     const root=KEY_SLOTS[keyIdx].major+octave;   // chords are always spelled from the major scale (§ engine)
     const notes=generateArpeggio(keyIdx, chordType, root, span);
-    if(notes.length<2){ showGenMsg("arp2-msg",t("That octave is too close to the instrument's limits for this chord. Try a lower start octave."),false); lastGenMsg["arp2-msg"]={type:"tooClose", key:"That octave is too close to the instrument's limits for this chord. Try a lower start octave."}; return; }
+    if(notes.length<2){
+      const k=outOfRangeMsgKey("chord");
+      const alt=suggestOctave(o=>generateArpeggio(keyIdx, chordType, KEY_SLOTS[keyIdx].major+o, span), "arp2-octave");
+      showGenMsg("arp2-msg", t(k)+(alt?" "+fill("Try octave {n}.",{n:alt}):""), false);
+      lastGenMsg["arp2-msg"]={type:"tooClose", key:k}; return;
+    }
     const ordered = direction==="down" ? notes.slice().reverse() : notes;
     const rounds=chunkIntoRounds(ordered);
     loadGeneratedRounds(rounds, direction);
@@ -3713,8 +3895,35 @@
     const pattern=$("seq2-pattern").value;
     const tonicLetter = scaleType==="minor" ? KEY_SLOTS[keyIdx].minor : KEY_SLOTS[keyIdx].major;
     const root=tonicLetter+octave;
-    const rounds=generateSequence(keyIdx, scaleType, root, pattern, 8);
-    if(!rounds.length){ showGenMsg("seq2-msg",t("That octave is too close to the instrument's limits for this pattern. Try a lower start octave."),false); lastGenMsg["seq2-msg"]={type:"tooClose", key:"That octave is too close to the instrument's limits for this pattern. Try a lower start octave."}; return; }
+    // Sequences are the Short scale / interval / arpeggio lessons' generator too,
+    // so this needs the same narrow-range fallback: one usable group is enough.
+    const direction=$("seq2-direction") ? $("seq2-direction").value : "up";
+    // Fit the figure to the range rather than generating one and refusing it.
+    // A teacher takes the range and picks a figure for it; only the substitution
+    // is recorded, so a shortened lesson is never silently passed off as the
+    // full one.
+    let pattern2=pattern, substituted=null;
+    let rounds=generateSequence(keyIdx, scaleType, root, pattern2, 8, direction);
+    if(!rounds.length && skipConfirm){
+      // Guided lessons must not dead-end on a narrow range: fit a figure to the
+      // range rather than refusing. Free Practice keeps the refuse-and-suggest
+      // path, because there the octave was an explicit choice.
+      const fit=bestSequenceFit(keyIdx, scaleType, tonicLetter, direction, "seq2-octave");
+      if(fit){
+        if(fit.pattern!==pattern2) substituted=pattern2;
+        pattern2=fit.pattern;
+        if($("seq2-octave")) $("seq2-octave").value=fit.octave;
+        if($("seq2-pattern")) $("seq2-pattern").value=fit.pattern;
+        rounds=generateSequence(keyIdx, scaleType, tonicLetter+fit.octave, pattern2, 8, direction);
+      }
+    }
+    lastSubstitutedPattern = substituted;
+    if(!rounds.length){
+      const k=outOfRangeMsgKey("pattern");
+      const alt=suggestOctave(o=>generateSequence(keyIdx, scaleType, tonicLetter+o, pattern2, 8, direction), "seq2-octave");
+      showGenMsg("seq2-msg", t(k)+(alt?" "+fill("Try octave {n}.",{n:alt}):""), false);
+      lastGenMsg["seq2-msg"]={type:"tooClose", key:k}; return;
+    }
     loadGeneratedRounds(rounds, "up");   // Sequences have no Direction control -- each pattern is its own complete shape
     lastGenMode="sequence";
     const warning=vocalRangeWarning(genRange);
@@ -5627,6 +5836,11 @@ function ceilPow2(v) {
     return out;
   }
 
+  function anyLessonSubstituted(){
+    try{ const all=loadLpProgress();
+      return Object.keys(all).some(k=>all[k] && all[k].substitutedFrom);
+    }catch(e){ return false; }
+  }
   function renderProgress(){
     const body=$("prog-body"); if(!body) return;
     const r=progressFindings();
@@ -5648,6 +5862,8 @@ function ceilPow2(v) {
       html+='<div class="prog-find"><b>'+f.t+'</b><span>'+f.d+'</span></div>';
     });
     r.pointers.forEach(p=>{ html+='<div class="prog-pointer">'+p+'</div>'; });
+    if(anyLessonSubstituted()) html+='<div class="prog-pointer">'+
+      t("Your saved range is narrow, so some exercises were shortened to fit. If your range has grown, update it from the profile tag.")+'</div>';
     body.innerHTML=html;
   }
   const progBackdrop=$("prog-backdrop");
@@ -5858,6 +6074,8 @@ function ceilPow2(v) {
   });
   function refreshVocalRangeUI(){
     refreshProfileRangeTag();   // header tag follows the range everywhere it changes
+    if(typeof syncOctaveDefaults==="function") syncOctaveDefaults();
+    if(typeof renderPatternOptions==="function") renderPatternOptions();
     const active=lsGet(LS_ACTIVE);
     $("vr-profile-tag").textContent = active ? "("+active+")" : "";
     const range=loadVocalRange();
