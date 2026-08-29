@@ -12,7 +12,7 @@
 <style>
   :root{
     --bg:#0f1417;--panel:#161d21;--panel-2:#1c252a;--line:#2a353b;
-    --ink:#e8eef0;--muted:#8fa1a8;--dim:#5f7078;--accent:#4ec9b0;
+    --ink:#e8eef0;--muted:#8fa1a8;--dim:#7d8c92;--accent:#4ec9b0;
     --good:#4ec9b0;--ok:#e0c04a;--bad:#e0684a;
     --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
     --sans:'Inter',system-ui,-apple-system,sans-serif;
@@ -22,6 +22,14 @@
   body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;min-height:100vh;
     background-image:radial-gradient(circle at 50% -10%,rgba(78,201,176,0.06),transparent 55%);}
   .wrap{max-width:720px;margin:0 auto;padding:28px 20px 64px}
+  /* Free Practice's exercise-setup controls (key/octave/span/direction selects,
+     the settings panel, etc.) are cramped at the same 720px used for Guided
+     Lessons' single-column reading layout. Widen it only in Free Practice and
+     only once there is real desktop room to spare -- narrower viewports keep
+     the shared 720px cap, which already exceeds their width anyway. */
+  @media (min-width:860px){
+    body.fp-mode .wrap{max-width:860px}
+  }
   header{margin-bottom:24px}
   .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
   .title-row{display:flex;align-items:center;gap:14px}
@@ -30,9 +38,10 @@
   h1{font-size:26px;font-weight:600;letter-spacing:-0.01em}
   h1 .accent{color:var(--accent)}
   .value-prop{color:var(--ink);font-size:16px;font-weight:700;margin-top:10px;max-width:52ch;letter-spacing:-0.01em}
+  .usage-hint{color:var(--muted);font-size:13.5px;margin-top:4px;max-width:52ch}
   .sub{color:var(--muted);font-size:14px;margin-top:6px;max-width:52ch}
   .byline{font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:10px}
-  .profile-switch{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .profile-switch{display:flex;align-items:center;gap:8px;margin-top:4px;margin-bottom:18px;flex-wrap:wrap}
   .profile-label{font-family:var(--mono);font-size:11px;color:var(--dim)}
   .profile-switch select{padding:6px 10px;font-size:13px}
   .lang-select{margin-left:auto}
@@ -178,14 +187,52 @@
   .path-fb-note{font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:6px}
 
   /* ---- the two-mode switch ---- */
-  .mode-switch{display:flex;gap:8px;margin-bottom:16px;position:sticky;top:8px;z-index:10;background:var(--bg);padding-top:4px}
-  .mode-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 8px;border-radius:12px;border:1px solid var(--line);background:var(--panel);cursor:pointer;transition:border-color .15s,background .15s}
-  .mode-btn .mtitle{font-weight:700;font-size:14.5px;color:var(--ink)}
-  .mode-btn .msub{font-size:11px;color:var(--dim)}
-  .mode-btn.active{border-color:var(--accent);background:rgba(78,201,176,0.1)}
+  /* This is the single most consequential choice in the app (which product
+     do you want), so it gets its own heading and card-sized buttons rather
+     than reading as a quiet settings tab-bar. */
+  .fork-intro{font-family:var(--mono);font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin:18px 0 10px}
+  /* Zone labels are the module headers within Free Practice's builder panel --
+     given real visual weight (accent color, bold, a numbered badge) instead of
+     the muted small-caps most section labels use, since the whole point here
+     is that a newcomer sees Free Practice as a sequence of clear steps, not one
+     undifferentiated block of controls. */
+  .fp-zone-label{font-family:var(--mono);font-size:12.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin:0 0 12px;display:flex;align-items:center;gap:9px}
+  .fp-zone-label.second{margin-top:24px;padding-top:20px;border-top:1px dashed var(--line)}
+  .fp-step-num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;flex:none;border-radius:50%;background:rgba(78,201,176,0.16);color:var(--accent);font-size:11px}
+  /* Step 3's label ("Your exercise") lives in #shared-active-seq, a container
+     reused by Guided mode too -- shown only while Free Practice is active, so
+     Guided lessons (which build the sequence for you) don't get a "your
+     exercise" label that doesn't apply there. */
+  .fp-step3-label{display:none;margin:0 0 10px}
+  body.fp-mode .fp-step3-label{display:flex}
+  /* Per-step help: a small "?" trigger next to a step's label opens a floating
+     bubble with one or two sentences on what that step is and what to do --
+     replaces the old always-visible roadmap strip, which took vertical space
+     for information that's only useful once, the first time. */
+  .step-help{position:relative;display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;flex:none;border-radius:50%;border:1px solid var(--dim);background:none;color:var(--dim);font-family:var(--mono);font-size:10px;font-weight:700;line-height:1;padding:0;cursor:pointer}
+  /* Invisible hit-slop: the visible circle stays 16px, but taps within ~9px
+     around it still count as hitting the button. Matters most for the
+     "Practice options" icon, which sits inside the big always-clickable
+     <summary> row -- without this, a near-miss tap toggled the whole
+     disclosure open/closed instead of opening the help bubble. */
+  .step-help::after{content:"";position:absolute;top:-9px;right:-9px;bottom:-9px;left:-9px}
+  .step-help:hover,.step-help.open{border-color:var(--accent);color:var(--accent)}
+  .step-help:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .step-popover{position:fixed;z-index:45;max-width:260px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.45;color:var(--ink);box-shadow:0 10px 28px rgba(0,0,0,0.4)}
+  .step-popover.hidden{display:none}
+  .fp-range-line{font-size:13px;color:var(--muted);margin:-2px 0 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .fp-range-line .link-btn{font-size:12.5px}
+  .mode-switch{display:flex;gap:10px;margin-bottom:18px;position:sticky;top:8px;z-index:10;background:var(--bg);padding-top:4px}
+  .mode-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 12px;border-radius:14px;border:1px solid var(--line);background:var(--panel);cursor:pointer;transition:border-color .15s,background .15s}
+  .mode-btn .mode-recommend-badge{font-family:var(--mono);font-size:10px;letter-spacing:0.04em;text-transform:uppercase;color:var(--bg);background:var(--accent);border-radius:999px;padding:2px 9px;margin-bottom:4px}
+  .mode-btn .mode-recommend-badge.hidden{display:none}
+  .mode-btn .mtitle{font-weight:700;font-size:17px;color:var(--ink)}
+  .mode-btn .msub{font-size:12.5px;color:var(--muted)}
+  .mode-btn.active{border-width:2px;border-color:var(--accent);background:rgba(78,201,176,0.14);padding:17px 11px}
   .mode-btn.active .mtitle{color:var(--accent)}
   .app-mode-panel{display:none}
   .shared-active-seq{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-bottom:14px}
+  .shared-active-seq.no-content{display:none}
   .back-to-path{font-size:12.5px;color:var(--accent);cursor:pointer;margin:0 0 10px;text-decoration:underline;text-underline-offset:2px;width:fit-content}
   .challenge-prompt{margin-top:6px}
   .self-assess{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
@@ -210,8 +257,12 @@
 
   /* ---- Learning Path: next-lesson card ---- */
   .next-lesson-card{background:var(--panel);border:1px solid var(--accent);border-radius:14px;padding:18px;margin-bottom:16px}
-  .range-onboard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+  /* Deliberately NOT styled as a bordered card: this is optional pre-work,
+     and it must never compete visually with the next-lesson-card below it. */
+  .range-onboard{margin:0 0 14px}
   .range-onboard.hidden{display:none}
+  .range-onboard .ro-line{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+  .range-onboard .ro-line button{font-size:12.5px;padding:5px 11px}
   .range-onboard .ro-eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
   .range-onboard .ro-desc{margin:0 0 6px;font-size:13.5px;color:var(--ink)}
   .range-onboard .ro-meta{font-family:var(--mono);font-size:11px;color:var(--dim);margin-bottom:12px}
@@ -222,6 +273,7 @@
   .next-lesson-card .nl-goal{margin:0 0 10px;font-size:12.5px;color:var(--ink);font-weight:600}
   .next-lesson-card .nl-meta{font-family:var(--mono);font-size:11px;color:var(--dim);margin-bottom:14px}
   .nl-start-btn{width:100%;background:var(--accent);color:#04120e;border:none;font-weight:700;font-size:15px;padding:13px;border-radius:11px;cursor:pointer}
+  .continue-next-btn{margin-top:14px}
   .nl-why{margin-top:12px}
   .nl-why summary{font-size:12px;color:var(--dim);cursor:pointer;list-style:none;display:flex;align-items:center;gap:5px}
   .nl-why summary::-webkit-details-marker{display:none}
@@ -356,7 +408,21 @@
   .radioset button:hover{color:var(--ink)}
   .radioset button.active{background:var(--panel);color:var(--accent)}
   .radioset button:disabled{opacity:.5;cursor:default}
+  /* #source-set (Tones/Scales/Arpeggios/Sequences) is the first and most
+     consequential choice inside Free Practice, so it gets the same "obvious
+     card, not a quiet tab" treatment as the top-level mode fork rather than
+     blending in with every other small pill-style .radioset in the app. */
+  #source-set{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:none;border:none;padding:0;width:100%;flex:1 1 100%}
+  #source-set button{background:var(--panel-2);border:1.5px solid var(--line);border-radius:12px;padding:12px 6px;font-weight:700;font-size:13.5px;text-align:center}
+  #source-set button:hover{border-color:var(--accent)}
+  #source-set button.active{background:rgba(78,201,176,0.16);border-color:var(--accent)}
   .piano-status{font-family:var(--mono);font-size:10px;color:var(--dim);margin-left:2px}
+
+  /* lightweight Hear -> Sing -> Review flow-state indicator */
+  .hsr-steps{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--dim);margin-bottom:12px}
+  .hsr-arrow{color:var(--dim)}
+  .hsr-step{padding:2px 4px;border-radius:4px;transition:color .15s,font-weight .15s}
+  .hsr-step.current{color:var(--accent);font-weight:700}
 
   /* main control row: buttons left, info stage right */
   .stage-row{display:flex;gap:14px;align-items:stretch;margin-bottom:18px;flex-wrap:wrap}
@@ -369,6 +435,8 @@
   .btn-seq:hover{background:rgba(78,201,176,0.1)}
   .btn-seq:active{transform:translateY(1px)}
   .btn-seq:disabled{opacity:.4;cursor:default}
+  .play-btn-hint{font-size:11.5px;color:var(--dim);margin:-2px 0 0;max-width:16ch;line-height:1.3}
+  .play-btn-hint.hidden{display:none}
 
   /* the info stage */
   .stage{flex:1;min-width:240px;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:14px 18px;display:flex;flex-direction:row;align-items:center;gap:16px;min-height:104px;position:relative;overflow:hidden}
@@ -451,17 +519,42 @@
   .loud-distance-note.hidden{display:none}
   .loud-toggle{display:flex;align-items:center;gap:8px;font-size:13.5px}
 
+  /* Post-attempt pitch-over-time traces: a "hold it steady" attempt gets a
+     small sparkline of cents-vs-time per attempt (see stabilityTraceSVG),
+     and a glide attempt gets a start-to-end trajectory (see glideTraceSVG).
+     Both render AFTER the take, alongside/under the live meter -- neither
+     replaces the meter's real-time role during singing. */
+  .trace-caption{font-family:var(--mono);font-size:10.5px;letter-spacing:0.04em;color:var(--dim);margin-bottom:3px}
+  .trace-row-title{margin-bottom:6px}
+  .stability-trace-row{margin-top:10px}
+  .trace-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 14px}
+  .trace-item svg{display:block;width:100%;height:52px}
+  .trace-good-band{fill:var(--good);opacity:.14}
+  .trace-center-line{stroke:var(--dim);stroke-width:1;stroke-dasharray:2,3}
+  .trace-line{fill:none;stroke:var(--good);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+  .trace-line.trace-ok{stroke:var(--ok)}
+  .trace-line.trace-bad{stroke:var(--bad)}
+
+  .glide-trace{margin-top:10px}
+  .glide-trace.hidden{display:none}
+  .glide-trace svg{display:block;width:100%;height:100px}
+  .glide-target-line{stroke:var(--dim);stroke-width:1;stroke-dasharray:2,3}
+  .glide-trace-line{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+  .glide-endpoint{fill:var(--accent)}
+  .glide-endpoint.off-target{fill:var(--bad)}
+
   .results{margin-top:14px}
   .results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
   .rcell{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:16px 12px;text-align:center}
   .rcell.good{border-color:var(--good)}.rcell.ok{border-color:var(--ok)}.rcell.bad{border-color:var(--bad)}
   .rcell .rk{font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim)}
-  .rcell .exp{font-family:var(--mono);font-size:26px;font-weight:700;margin:2px 0 12px;letter-spacing:-0.01em}
-  .rcell .you{font-family:var(--mono);font-size:26px;font-weight:700;margin:2px 0;letter-spacing:-0.01em}
-  .rcell.good .you{color:var(--good)}.rcell.ok .you{color:var(--ok)}.rcell.bad .you{color:var(--bad)}
-  .rcell .dev{font-family:var(--mono);font-size:12px;margin-top:2px}
-  .rcell .plainmini{font-size:14px;font-weight:500;color:var(--ink);margin-top:10px;line-height:1.35}
+  .rcell .exp{font-family:var(--mono);font-size:20px;font-weight:700;margin:2px 0 12px;letter-spacing:-0.01em;color:var(--muted)}
+  /* Plain-language verdict leads -- it's what a beginner reads first -- with the
+     exact sung note/cents underneath as secondary, monospace detail. */
+  .rcell .plainmini{font-size:17px;font-weight:700;margin:2px 0 8px;line-height:1.3}
   .rcell.good .plainmini{color:var(--good)}.rcell.ok .plainmini{color:var(--ok)}.rcell.bad .plainmini{color:var(--bad)}
+  .rcell .you{font-family:var(--mono);font-size:12.5px;font-weight:500;color:var(--muted);margin:0}
+  .rcell .dev{font-family:var(--mono);font-size:12px;margin-top:2px}
   .score{font-family:var(--mono);font-size:13px;color:var(--muted);margin-bottom:12px}
   .score b{color:var(--accent);font-weight:600}
 
@@ -499,15 +592,24 @@
     .readout{grid-template-columns:1fr}
     .cell .v{font-size:20px}
     h1{font-size:22px}
+    /* On a phone, a permanently-pinned two-card mode switch eats a large slice
+       of the viewport for the whole session -- worth it on desktop, where
+       there's height to spare, but not here. Let it scroll away like the
+       rest of the header instead. */
+    .mode-switch{position:static;padding-top:0}
+    .mode-btn .mode-recommend-badge{font-size:9px;padding:2px 6px;white-space:nowrap}
+    .mode-btn{padding:14px 6px}
     /* comfortable touch targets on phones (44px minimum) */
     .btn,select{min-height:44px}
     .seq-row{min-height:44px}
     .seq-row.empty{min-height:0}
-    .radioset button{min-height:40px;padding:8px 12px}
-    .timbre button{min-height:40px}
+    .radioset button{min-height:44px;padding:8px 12px}
+    .timbre button{min-height:44px}
     .arp-check input{width:20px;height:20px}
     .chip{padding:9px 12px}
     .radioset{flex-wrap:wrap}
+    #source-set{display:grid;grid-template-columns:1fr 1fr;gap:6px;flex:1 1 100%}
+    #source-set button{text-align:center}
   }
 </style>
 </head>
@@ -520,55 +622,35 @@
         <option value="uk">Українська</option>
       </select></div>
     <p class="value-prop"><span data-i18n="Train vocal pitch accuracy through guided lessons or focused exercises.">Train vocal pitch accuracy through guided lessons or focused exercises.</span></p>
-    <p class="byline"><span data-i18n="Created by">Created by</span> <b><span data-i18n="N. Scherbak">N. Scherbak</span></b> · <button class="feedback-link" id="feedback-open"><span data-i18n="send feedback">send feedback</span></button></p>
-    <div class="profile-switch">
-      <span class="profile-label"><span data-i18n="Profile">Profile</span></span>
-      <select id="profile-select" aria-label="Profile"></select>
-      <button class="range-tag" id="profile-range-tag" type="button"></button>
-      <button class="btn ghost profile-new" id="profile-new-btn"><span data-i18n="+ New">+ New</span></button>
-    </div>
   </header>
 
-  <details class="vocab">
-    <summary><span class="chev">▶</span> <span data-i18n="New to this? What tones, semitones &amp; sharp/flat mean">New to this? What tones, semitones &amp; sharp/flat mean</span></summary>
-    <div class="vocab-body">
-      <h4><span data-i18n="Notes">Notes</span></h4>
-      <p><span data-i18n="Music uses seven letter names — A B C D E F G — that repeat over and over as you go higher. A note written like">Music uses seven letter names — A B C D E F G — that repeat over and over as you go higher. A note written like</span> <span class="ex"><span data-i18n="C4">C4</span></span> <span data-i18n="means &quot;the C in the 4th octave&quot;; the higher the number, the higher the pitch.">means "the C in the 4th octave"; the higher the number, the higher the pitch.</span></p>
-      <div class="uk-only hidden" id="uk-solfège-note">
-        <h4>Українські назви нот</h4>
-        <p>Застосунок показує ноти латинськими літерами. Ось як вони відповідають назвам, знайомим з української музичної традиції: <b>До</b> (C), <b>Ре</b> (D), <b>Мі</b> (E), <b>Фа</b> (F), <b>Соль</b> (G), <b>Ля</b> (A), <b>Сі</b> (B). Дієз додає «-дієз» (наприклад, Фа-дієз = F♯), а бемоль — «-бемоль» (наприклад, Сі-бемоль = B♭). Латинські літери використані для зручності й міжнародної сумісності — сама висота звуку та сама.</p>
-      </div>
-      <h4><span data-i18n="Semitone (half step)">Semitone (half step)</span></h4>
-      <p><span data-i18n="The smallest normal step between two notes — the distance from one key to the very next key on a piano, black or white. For example">The smallest normal step between two notes — the distance from one key to the very next key on a piano, black or white. For example</span> <span class="ex"><span data-i18n="C → C♯">C → C♯</span></span> <span data-i18n="is one semitone. Most letter-to-letter steps are two semitones, but">is one semitone. Most letter-to-letter steps are two semitones, but</span> <span class="ex"><span data-i18n="E → F">E → F</span></span> <span data-i18n="and">and</span> <span class="ex"><span data-i18n="B → C">B → C</span></span> <span data-i18n="are only one.">are only one.</span></p>
-      <h4><span data-i18n="Tone (whole step)">Tone (whole step)</span></h4>
-      <p><span data-i18n="Two semitones stacked together.">Two semitones stacked together.</span> <span class="ex"><span data-i18n="C → D">C → D</span></span> <span data-i18n="is one tone;">is one tone;</span> <span class="ex"><span data-i18n="C → E">C → E</span></span> <span data-i18n="is two tones. When this app says you sang &quot;one and a half tones lower,&quot; it means your note was three semitones below the target.">is two tones. When this app says you sang "one and a half tones lower," it means your note was three semitones below the target.</span></p>
-      <h4><span data-i18n="Sharp &amp; flat">Sharp &amp; flat</span></h4>
-      <p><span data-i18n="These are the musical words for small pitch differences.">These are the musical words for small pitch differences.</span> <span class="sharp"><span data-i18n="Sharp (♯)">Sharp (♯)</span></span> <span data-i18n="means">means</span> <em><span data-i18n="a little too high">a little too high</span></em>; <span class="flat"><span data-i18n="flat (♭)">flat (♭)</span></span> <span data-i18n="means">means</span> <em><span data-i18n="a little too low">a little too low</span></em>. <span data-i18n="As symbols they also name the in-between notes (the piano's black keys), like">As symbols they also name the in-between notes (the piano's black keys), like</span> <span class="ex"><span data-i18n="F♯">F♯</span></span><span data-i18n=". In singing, &quot;you're a bit sharp&quot; just means &quot;you're singing slightly above the note.&quot;">. In singing, "you're a bit sharp" just means "you're singing slightly above the note."</span></p>
-      <h4><span data-i18n="Cents">Cents</span></h4>
-      <p><span data-i18n="A fine ruler for pitch: one semitone is divided into 100 cents, so a whole tone is 200 cents. A difference under about 15 cents is so small most ears hear it as &quot;in tune.&quot;">A fine ruler for pitch: one semitone is divided into 100 cents, so a whole tone is 200 cents. A difference under about 15 cents is so small most ears hear it as "in tune."</span></p>
-    </div>
-  </details>
-
+  <p class="fork-intro"><span data-i18n="Choose how you'll train">Choose how you'll train</span></p>
   <div class="mode-switch" id="mode-switch">
     <button class="mode-btn active" data-appmode="path">
+      <span class="mode-recommend-badge" id="path-mode-badge"><span data-i18n="New here? Start here">New here? Start here</span></span>
       <span class="mtitle"><span data-i18n="Guided lessons">Guided lessons</span></span>
-      <span class="msub" id="path-mode-sub"><span data-i18n="step by step">step by step</span></span>
+      <span class="msub" id="path-mode-sub"><span data-i18n="We'll tell you what to practice next">We'll tell you what to practice next</span></span>
     </button>
     <button class="mode-btn" data-appmode="free">
       <span class="mtitle"><span data-i18n="Free Practice">Free Practice</span></span>
-      <span class="msub"><span data-i18n="choose an exercise">choose an exercise</span></span>
+      <span class="msub"><span data-i18n="Build your own exercise">Build your own exercise</span></span>
     </button>
+  </div>
+
+  <div class="profile-switch">
+    <span class="profile-label"><span data-i18n="Profile">Profile</span></span>
+    <select id="profile-select" aria-label="Profile"></select>
+    <button class="range-tag" id="profile-range-tag" type="button"></button>
+    <button class="btn ghost profile-new" id="profile-new-btn"><span data-i18n="+ New">+ New</span></button>
   </div>
 
   <div class="app-mode-panel active" id="app-mode-path">
     <div class="range-onboard hidden" id="range-onboard-banner">
-      <div class="ro-eyebrow"><span data-i18n="Before we start">Before we start</span></div>
-      <p class="ro-desc"><span data-i18n="Let's find a comfortable area for your exercises.">Let's find a comfortable area for your exercises.</span></p>
-      <div class="ro-meta">~1 <span data-i18n="min">min</span></div>
-      <div class="ro-actions">
-        <button class="btn" id="ro-set-range-btn"><span data-i18n="Set my range">Set my range</span></button>
-        <button class="btn ghost" id="ro-skip-btn"><span data-i18n="Skip for now">Skip for now</span></button>
-      </div>
+      <p class="ro-line">
+        <span data-i18n="Want exercises kept inside your comfortable range?">Want exercises kept inside your comfortable range?</span>
+        <button class="btn ghost" id="ro-set-range-btn"><span data-i18n="Set my range">Set my range</span></button>
+        <button class="link-btn" id="ro-skip-btn"><span data-i18n="Not now">Not now</span></button>
+      </p>
     </div>
     <div id="next-lesson-card"></div>
     <div id="path-progress-label" class="progress-label"></div>
@@ -580,14 +662,9 @@
     </details>
   </div>
 
-  <div class="shared-active-seq" id="shared-active-seq">
-    <p class="back-to-path hidden" id="back-to-path-link">↑ <span data-i18n="Back to Guided lessons">Back to Guided lessons</span></p>
-    <p class="round-tag hidden" id="round-tag"></p>
-    <div class="seq-row" id="seq-chips"></div>
-  </div>
-
   <div class="app-mode-panel" id="app-mode-free">
   <section class="panel">
+    <p class="fp-zone-label"><span class="fp-step-num">1</span><span data-i18n="What to practice">What to practice</span><button class="step-help" data-help="what-to-practice" type="button" aria-label="What this step is for">?</button></p>
     <div class="panel-label">
       <div class="radioset" id="source-set" role="group" aria-label="Tone source">
         <button data-src="manual" class="active"><span data-i18n="Tones">Tones</span></button>
@@ -595,36 +672,15 @@
         <button data-src="arpeggios"><span data-i18n="Arpeggios">Arpeggios</span></button>
         <button data-src="sequences"><span data-i18n="Sequences">Sequences</span></button>
       </div>
-      <span class="voice-tag" id="voice-tag"><span data-i18n="E2–C6">E2–C6</span></span>
       <span class="hint" id="seq-hint">0 tones</span>
     </div>
-    <details class="fp-timing" id="fp-timing">
-      <summary><span class="chev">▶</span> <span data-i18n="Timing">Timing</span></summary>
-      <div class="settings-body">
-    <div class="set-row">
-      <div class="timing-cap"><span data-i18n="Grading">Grading</span></div>
-      <div class="radioset" id="grade-mode" role="group" aria-label="Grading mode">
-        <button data-grade="follow" class="active"><span data-i18n="Follow me">Follow me</span></button>
-        <button data-grade="clock"><span data-i18n="On the clock">On the clock</span></button>
-      </div>
-      <span class="set-note" id="grade-note"><span data-i18n="No timer — take as long as you need on each note.">No timer — take as long as you need on each note.</span></span>
-      <p class="lesson-controlled-note hidden" id="grade-lesson-note"><span data-i18n="This lesson sets its own grading style — this choice only applies in Free Practice.">This lesson sets its own grading style — this choice only applies in Free Practice.</span></p>
-    </div>
-
-    <div class="set-row" id="singtime-group">
-      <div class="timing-cap"><span data-i18n="Singing time">Singing time</span></div>
-      <div class="radioset" id="sing-time" role="group" aria-label="Singing time per tone">
-        <button data-t="default" class="active"><span data-i18n="Default">Default</span></button>
-        <button data-t="1000"><span data-i18n="1 s">1 s</span></button>
-        <button data-t="2000"><span data-i18n="2 s">2 s</span></button>
-        <button data-t="3000"><span data-i18n="3 s">3 s</span></button>
-      </div>
-      <span class="set-note"><span data-i18n="Adjusts how long you get per tone on the clock.">Adjusts how long you get per tone on the clock.</span></span>
-    </div>
-      </div>
-    </details>
+    <p class="fp-range-line" id="fp-range-line">
+      <span id="fp-range-text"></span>
+      <button class="link-btn" id="fp-range-change-btn" type="button"><span data-i18n="Change">Change</span></button>
+    </p>
     <p class="free-practice-stats hidden" id="free-practice-stats"></p>
 
+    <p class="fp-zone-label second"><span class="fp-step-num">2</span><span data-i18n="Exercise setup">Exercise setup</span><button class="step-help" data-help="exercise-setup" type="button" aria-label="What this step is for">?</button></p>
     <p class="onboard-hint" id="onboard-hint"><span data-i18n="Select tones below">Select tones below</span> <span class="arrow">→</span> <span data-i18n="Add">Add</span> <span class="arrow">→</span> <span data-i18n="Play">Play</span></p>
     <p class="drag-hint hidden" id="drag-hint"><span data-i18n="Drag to reorder · × to remove">Drag to reorder · × to remove</span></p>
 
@@ -743,8 +799,15 @@
   </section>
   </div>
 
+  <div class="shared-active-seq" id="shared-active-seq">
+    <p class="fp-zone-label fp-step3-label"><span class="fp-step-num">3</span><span data-i18n="Your exercise">Your exercise</span><button class="step-help" data-help="your-exercise" type="button" aria-label="What this step is for">?</button></p>
+    <p class="back-to-path hidden" id="back-to-path-link">↑ <span data-i18n="Back to Guided lessons">Back to Guided lessons</span></p>
+    <p class="round-tag hidden" id="round-tag"></p>
+    <div class="seq-row" id="seq-chips"></div>
+  </div>
+
   <details class="settings" id="settings">
-    <summary><span class="chev">▶</span> <span data-i18n="Settings">Settings</span> <span class="settings-sum" id="settings-sum"><span data-i18n="pure tone · default tempo · follow me">pure tone · default tempo · follow me</span></span></summary>
+    <summary><span class="chev">▶</span> <span data-i18n="Practice options">Practice options</span> <button class="step-help" data-help="practice-options" type="button" aria-label="What this section is for">?</button> <span class="settings-sum" id="settings-sum"><span data-i18n="pure tone · default tempo · follow me">pure tone · default tempo · follow me</span></span></summary>
     <div class="settings-body">
 
     <div class="set-row">
@@ -759,10 +822,32 @@
     </div>
 
     <div class="set-row">
+      <div class="timing-cap"><span data-i18n="Grading">Grading</span></div>
+      <div class="radioset" id="grade-mode" role="group" aria-label="Grading mode">
+        <button data-grade="follow" class="active"><span data-i18n="Follow me">Follow me</span></button>
+        <button data-grade="clock"><span data-i18n="On the clock">On the clock</span></button>
+      </div>
+      <span class="set-note" id="grade-note"><span data-i18n="No timer — take as long as you need on each note.">No timer — take as long as you need on each note.</span></span>
+      <p class="lesson-controlled-note hidden" id="grade-lesson-note"><span data-i18n="This lesson sets its own grading style — this choice only applies in Free Practice.">This lesson sets its own grading style — this choice only applies in Free Practice.</span></p>
+    </div>
+
+    <div class="set-row" id="singtime-group">
+      <div class="timing-cap"><span data-i18n="Singing time">Singing time</span></div>
+      <div class="radioset" id="sing-time" role="group" aria-label="Singing time per tone">
+        <button data-t="default" class="active"><span data-i18n="Default">Default</span></button>
+        <button data-t="1000"><span data-i18n="1 s">1 s</span></button>
+        <button data-t="2000"><span data-i18n="2 s">2 s</span></button>
+        <button data-t="3000"><span data-i18n="3 s">3 s</span></button>
+      </div>
+      <span class="set-note"><span data-i18n="Adjusts how long you get per tone on the clock.">Adjusts how long you get per tone on the clock.</span></span>
+    </div>
+
+    <div class="set-row">
       <div class="timing-cap"><span data-i18n="Sound">Sound</span></div>
       <div class="timbre" id="timbre" role="group" aria-label="Playback sound">
         <button data-timbre="tone" class="active"><span data-i18n="Pure tone">Pure tone</span></button>
         <button data-timbre="piano"><span data-i18n="Piano">Piano</span></button>
+        <button data-timbre="guitar"><span data-i18n="Guitar">Guitar</span></button>
       </div>
       <span class="piano-status" id="piano-status"></span>
     </div>
@@ -845,12 +930,20 @@
 
   <section class="panel" id="play-sing-panel">
     <p class="mic-path-note hidden" id="mic-path-note"><span id="mic-path-text"></span> <button class="mic-path-x" id="mic-path-dismiss" aria-label="Dismiss">×</button></p>
-    <div class="panel-label"><span data-i18n="Play &amp; sing">Play &amp; sing</span></div>
+    <div class="panel-label"><span data-i18n="Play &amp; sing">Play &amp; sing</span> <button class="step-help" data-help="play-sing" type="button" aria-label="What this section is for">?</button></div>
+    <div class="hsr-steps" id="hsr-steps" aria-hidden="true">
+      <span class="hsr-step" data-step="hear"><span data-i18n="Hear">Hear</span></span>
+      <span class="hsr-arrow">→</span>
+      <span class="hsr-step" data-step="sing"><span data-i18n="Sing">Sing</span></span>
+      <span class="hsr-arrow">→</span>
+      <span class="hsr-step" data-step="review"><span data-i18n="Review">Review</span></span>
+    </div>
 
     <div class="stage-row">
       <div class="btn-col">
         <button class="btn-go" id="play-tone-btn"><span data-i18n="▶ Play a tone">▶ Play a tone</span></button>
         <button class="btn-seq" id="play-phrase-btn"><span data-i18n="▶ Play a phrase">▶ Play a phrase</span></button>
+        <p class="play-btn-hint hidden" id="play-btn-hint"><span data-i18n="One note at a time, or the whole line at once">One note at a time, or the whole line at once</span></p>
         <button class="btn next-round-btn hidden" id="next-round-btn"><span data-i18n="Next round →">Next round →</span></button>
         <button class="btn ghost step-semitone-btn hidden" id="step-semitone-btn"><span data-i18n="Step up a semitone ↑">Step up a semitone ↑</span></button>
       </div>
@@ -894,6 +987,7 @@
       <span class="scale" style="right:8px"><span data-i18n="sharp +50¢">sharp +50¢</span></span>
     </div>
     <p class="loud-distance-note hidden" id="loud-distance-note"><span data-i18n="Try to keep about the same distance from the mic while loudness is being tracked, so the comparison stays fair.">Try to keep about the same distance from the mic while loudness is being tracked, so the comparison stays fair.</span></p>
+    <div class="glide-trace hidden" id="glide-trace" aria-hidden="true"></div>
   </section>
 
   <!-- Must stay a SIBLING of #play-sing-panel, never a child: setPerceptionModeVisible()
@@ -913,9 +1007,30 @@
     <div class="results-grid" id="results-grid"></div>
   </section>
 
+  <details class="vocab">
+    <summary><span class="chev">▶</span> <span data-i18n="New to this? What tones, semitones &amp; sharp/flat mean">New to this? What tones, semitones &amp; sharp/flat mean</span></summary>
+    <div class="vocab-body">
+      <h4><span data-i18n="Notes">Notes</span></h4>
+      <p><span data-i18n="Music uses seven letter names — A B C D E F G — that repeat over and over as you go higher. A note written like">Music uses seven letter names — A B C D E F G — that repeat over and over as you go higher. A note written like</span> <span class="ex"><span data-i18n="C4">C4</span></span> <span data-i18n="means &quot;the C in the 4th octave&quot;; the higher the number, the higher the pitch.">means "the C in the 4th octave"; the higher the number, the higher the pitch.</span></p>
+      <div class="uk-only hidden" id="uk-solfège-note">
+        <h4>Українські назви нот</h4>
+        <p>Застосунок показує ноти латинськими літерами. Ось як вони відповідають назвам, знайомим з української музичної традиції: <b>До</b> (C), <b>Ре</b> (D), <b>Мі</b> (E), <b>Фа</b> (F), <b>Соль</b> (G), <b>Ля</b> (A), <b>Сі</b> (B). Дієз додає «-дієз» (наприклад, Фа-дієз = F♯), а бемоль — «-бемоль» (наприклад, Сі-бемоль = B♭). Латинські літери використані для зручності й міжнародної сумісності — сама висота звуку та сама.</p>
+      </div>
+      <h4><span data-i18n="Semitone (half step)">Semitone (half step)</span></h4>
+      <p><span data-i18n="The smallest normal step between two notes — the distance from one key to the very next key on a piano, black or white. For example">The smallest normal step between two notes — the distance from one key to the very next key on a piano, black or white. For example</span> <span class="ex"><span data-i18n="C → C♯">C → C♯</span></span> <span data-i18n="is one semitone. Most letter-to-letter steps are two semitones, but">is one semitone. Most letter-to-letter steps are two semitones, but</span> <span class="ex"><span data-i18n="E → F">E → F</span></span> <span data-i18n="and">and</span> <span class="ex"><span data-i18n="B → C">B → C</span></span> <span data-i18n="are only one.">are only one.</span></p>
+      <h4><span data-i18n="Tone (whole step)">Tone (whole step)</span></h4>
+      <p><span data-i18n="Two semitones stacked together.">Two semitones stacked together.</span> <span class="ex"><span data-i18n="C → D">C → D</span></span> <span data-i18n="is one tone;">is one tone;</span> <span class="ex"><span data-i18n="C → E">C → E</span></span> <span data-i18n="is two tones. When this app says you sang &quot;one and a half tones lower,&quot; it means your note was three semitones below the target.">is two tones. When this app says you sang "one and a half tones lower," it means your note was three semitones below the target.</span></p>
+      <h4><span data-i18n="Sharp &amp; flat">Sharp &amp; flat</span></h4>
+      <p><span data-i18n="These are the musical words for small pitch differences.">These are the musical words for small pitch differences.</span> <span class="sharp"><span data-i18n="Sharp (♯)">Sharp (♯)</span></span> <span data-i18n="means">means</span> <em><span data-i18n="a little too high">a little too high</span></em>; <span class="flat"><span data-i18n="flat (♭)">flat (♭)</span></span> <span data-i18n="means">means</span> <em><span data-i18n="a little too low">a little too low</span></em>. <span data-i18n="As symbols they also name the in-between notes (the piano's black keys), like">As symbols they also name the in-between notes (the piano's black keys), like</span> <span class="ex"><span data-i18n="F♯">F♯</span></span><span data-i18n=". In singing, &quot;you're a bit sharp&quot; just means &quot;you're singing slightly above the note.&quot;">. In singing, "you're a bit sharp" just means "you're singing slightly above the note."</span></p>
+      <h4><span data-i18n="Cents">Cents</span></h4>
+      <p><span data-i18n="A fine ruler for pitch: one semitone is divided into 100 cents, so a whole tone is 200 cents. A difference under about 15 cents is so small most ears hear it as &quot;in tune.&quot;">A fine ruler for pitch: one semitone is divided into 100 cents, so a whole tone is 200 cents. A difference under about 15 cents is so small most ears hear it as "in tune."</span></p>
+    </div>
+  </details>
+
   <footer>
     <span><span data-i18n="Web Audio · nothing uploaded · tone mode runs offline">Web Audio · nothing uploaded · tone mode runs offline</span></span>
     <span><span data-i18n="Allow microphone access to begin">Allow microphone access to begin</span></span>
+    <span class="byline"><span data-i18n="Created by">Created by</span> <b><span data-i18n="N. Scherbak">N. Scherbak</span></b> · <button class="feedback-link" id="feedback-open"><span data-i18n="send feedback">send feedback</span></button></span>
     <span class="credit"><span data-i18n="Piano samples: Salamander Grand Piano V3 by Alexander Holm · MP3 packaging by">Piano samples: Salamander Grand Piano V3 by Alexander Holm · MP3 packaging by</span> <a href="https://github.com/darosh/samples-piano-mp3" target="_blank" rel="noopener"><span data-i18n="darosh">darosh</span></a> <span data-i18n="· MIT licensed">· MIT licensed</span></span>
   </footer>
 
@@ -965,6 +1080,8 @@
     </div>
   </div>
 
+  <div class="step-popover hidden" id="step-popover" role="tooltip"><p id="step-popover-text"></p></div>
+
   <div class="modal-backdrop" id="fb-backdrop" hidden>
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="fb-title">
       <button class="modal-close" id="fb-close" aria-label="Close">✕</button>
@@ -985,8 +1102,8 @@
   <div class="modal-backdrop" id="profile-backdrop" hidden>
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="profile-title">
       <button class="modal-close" id="profile-close" aria-label="Close">✕</button>
-      <h3 id="profile-title"><span data-i18n="Welcome to Vocal Pitch Trainer 👋">Welcome to Vocal Pitch Trainer 👋</span></h3>
-      <p class="modal-note"><span data-i18n="Train your pitch with guided lessons or focused practice. Add a nickname to save your progress on this device — or skip for now.">Train your pitch with guided lessons or focused practice. Add a nickname to save your progress on this device — or skip for now.</span></p>
+      <h3 id="profile-title"><span data-i18n="Nice work! 🎉">Nice work! 🎉</span></h3>
+      <p class="modal-note"><span data-i18n="Save this progress on this device? Add a nickname to keep it, or skip for now.">Save this progress on this device? Add a nickname to keep it, or skip for now.</span></p>
       <input type="text" id="profile-name-input" placeholder="Your nickname" maxlength="16" autocomplete="off">
       <div class="fb-actions">
         <button class="btn ghost" id="profile-skip"><span data-i18n="Skip for now">Skip for now</span></button>
@@ -1347,7 +1464,33 @@
   "Guided lessons — step by step from basic pitch matching onward": "Покрокові уроки — крок за кроком, починаючи з базового відповідання висоти звуку",
   "Guided lessons": "Покрокові уроки",
   "step by step": "крок за кроком",
+  "Choose how you'll train": "Оберіть, як тренуватися",
+  "New here? Start here": "Вперше тут? Почніть звідси",
+  "We'll tell you what to practice next": "Ми підкажемо, що практикувати далі",
+  "Build your own exercise": "Створіть власну вправу",
+  "What to practice": "Що практикувати",
+  "Configure": "Налаштувати",
+  "Exercise setup": "Побудова вправи",
+  "Your exercise": "Ваша вправа",
+  "Choose what kind of exercise to build: hand-picked tones, or a generated scale, arpeggio, or sequence.": "Оберіть тип вправи: вибрані вручну тони або згенеровану гаму, арпеджіо чи послідовність.",
+  "Pick the notes, key, octave, and shape for your exercise here — the controls change depending on what you chose above.": "Тут оберіть ноти, тональність, октаву та форму вашої вправи — елементи керування змінюються залежно від вибору вище.",
+  "The exercise you've built so far. Drag a tone to reorder it, or tap × to remove it.": "Вправа, яку ви вже створили. Перетягніть тон, щоб змінити порядок, або натисніть ×, щоб видалити його.",
+  "Sound, tempo, grading style, and vocal range — how you practice, not what you practice.": "Звук, темп, стиль оцінювання та вокальний діапазон — те, ЯК ви практикуєтесь, а не ЩО саме.",
+  "Press Play to hear the reference, then sing it back. Your result shows up in Results below.": "Натисніть «Відтворити», щоб почути еталон, а потім проспівайте його. Результат з'явиться нижче, в розділі «Результати».",
+  "Set the options below, then Generate": "Встановіть параметри нижче, потім натисніть «Створити»",
+  "Change": "Змінити",
+  "Working range": "Робочий діапазон",
+  "not set yet": "ще не встановлено",
+  "not set": "не встановлено",
+  "Hear": "Слухай",
+  "Sing": "Співай",
+  "Review": "Перевір",
+  "One note at a time, or the whole line at once": "По одній ноті або всю фразу одразу",
+  "Start by training your ear — singing comes next.": "Почніть із тренування слуху — спів буде далі.",
   "Want structured practice instead?": "Хочете структуровану практику?",
+  "Continue: ": "Продовжити: ",
+  "Try it again": "Спробувати ще раз",
+  "About this lesson": "Про цей урок",
   "Want to practice ": "Хочете попрактикувати ",
   " directly?": " окремо?",
   "Practice it": "Практикувати",
@@ -1425,6 +1568,8 @@
   "Let's find a comfortable area for your exercises.": "Знайдімо зручний діапазон для ваших вправ.",
   "min": "хв",
   "Set my range": "Визначити мій діапазон",
+  "Want exercises kept inside your comfortable range?": "Тримати вправи в межах вашого зручного діапазону?",
+  "Not now": "Не зараз",
   "Pitch center: ": "Центр висоти: ",
   " accurate.": " точно.",
   " accurate": " точно",
@@ -1471,8 +1616,12 @@
   "Sing the scale {repeats} times, landing at least {hits} of {trials} notes on pitch overall.": "Проспівайте гаму {repeats} рази, влучивши загалом щонайменше у {hits} з {trials} нот.",
   "Sing the arpeggio {repeats} times, landing at least {hits} of {trials} notes on pitch overall.": "Проспівайте арпеджіо {repeats} рази, влучивши загалом щонайменше у {hits} з {trials} нот.",
   "Trial ": "Спроба ",
+  "Attempt ": "Спроба ",
   " recorded": " записано",
   " on pitch so far": " у тон поки що",
+  "Hold ": "Утримання ",
+  "Pitch during each hold (shaded band = on pitch):": "Висота звуку під час кожного утримання (заштрихована смуга = у тон):",
+  "Your glide: ": "Ваше ковзання: ",
   "Landing accurately on a single pitch is the foundation every other skill here builds on -- scales, arpeggios, and eventually real melodies.": "Точне влучання в одну ноту — це основа, на якій тримаються всі інші навички тут: гами, арпеджіо і згодом справжні мелодії.",
   "Stable pitch helps you sustain notes reliably in melodies and prepares you for moving accurately between notes.": "Стабільна висота звуку допомагає впевнено тримати ноти в мелодіях і готує вас до точного переходу між нотами.",
   "Real singing constantly jumps between notes -- training the distance between two pitches, not just one pitch alone, is what makes those jumps land correctly.": "Справжній спів постійно перестрибує між нотами — тренування відстані між двома нотами, а не лише окремої ноти, робить ці стрибки точними.",
@@ -1541,10 +1690,12 @@
   "Thirds": "Терції",
   "5-note turn": "оберт із 5 нот",
   "Settings": "Налаштування",
+  "Practice options": "Параметри тренування",
   "pure tone · default tempo · follow me": "чистий тон · типовий темп · слідувати за мною",
   "Sound": "Звук",
   "Pure tone": "Чистий тон",
   "Piano": "Фортепіано",
+  "Guitar": "Гітара",
   "Playback tempo": "Темп відтворення",
   "Default": "Типовий",
   "Slow": "Повільно",
@@ -1568,6 +1719,8 @@
   "Play & sing": "Відтворити й співати",
   "▶ Play a tone": "▶ Відтворити ноту",
   "▶ Play a phrase": "▶ Відтворити фразу",
+  "▶ Play": "▶ Відтворити",
+  "▶ Play again": "▶ Відтворити знову",
   "▶ Play a tone again": "▶ Відтворити ноту знову",
   "▶ Play a phrase again": "▶ Відтворити фразу знову",
   "▶ Play next tone": "▶ Відтворити наступну ноту",
@@ -1581,6 +1734,7 @@
   "pick tones above": "оберіть ноти вище",
   "one tone selected": "обрано одну ноту",
   "play tones one at a time, or the whole phrase": "відтворюйте ноти по одній або цілу фразу",
+  "play the whole exercise": "відтворити всю вправу",
   "Get ready": "Приготуйтеся",
   "Sing each tone the moment it lights up, against a fixed timer.": "Співайте кожен тон, щойно він засвітиться, за фіксованим таймером.",
   "Filters background sound. Less accurate — switch back when it is quiet.": "Фільтрує фоновий шум. Менш точно — поверніться, коли стане тихо.",
@@ -1638,6 +1792,7 @@
   "Your pitch drifts during long notes. That is usually about breath support, which this app cannot measure — a teacher, or breathing work, is the next step there.": "Висота «пливе» на довгих нотах. Зазвичай це пов'язано з опорою дихання, яку цей застосунок виміряти не може — далі варто звернутися до викладача або попрацювати над диханням.",
   "piano ready (local samples)": "фортепіано готове (локальні семпли)",
   "piano ready (online)": "фортепіано готове (онлайн)",
+  "guitar ready (online)": "гітара готова (онлайн)",
   "State": "Стан",
   "Sample rate": "Частота дискретизації",
   "Device in use": "Використовується пристрій",
@@ -1772,6 +1927,8 @@
   "starting the microphone…": "вмикається мікрофон…",
   "loading piano…": "завантажується фортепіано…",
   "piano unavailable — using synth tone": "фортепіано недоступне — використовується синтезований тон",
+  "loading guitar…": "завантажується гітара…",
+  "guitar unavailable — using synth pluck": "гітара недоступна — використовується синтезований щипок",
   "That octave is too close to the instrument's limits for this scale. Try a lower start octave.": "Ця октава занадто близька до меж діапазону інструмента для цієї гами. Спробуйте нижчу початкову октаву.",
   "That octave is too close to the instrument's limits for this chord. Try a lower start octave.": "Ця октава занадто близька до меж діапазону інструмента для цього акорду. Спробуйте нижчу початкову октаву.",
   "That octave is too close to the instrument's limits for this pattern. Try a lower start octave.": "Ця октава занадто близька до меж діапазону інструмента для цього патерну. Спробуйте нижчу початкову октаву.",
@@ -1815,6 +1972,8 @@
   "Thank you for the feedback!": "Дякуємо за відгук!",
   "Welcome to Vocal Pitch Trainer 👋": "Ласкаво просимо до Тренажера вокального слуху 👋",
   "Train your pitch with guided lessons or focused practice. Add a nickname to save your progress on this device — or skip for now.": "Тренуйте висоту голосу через покрокові уроки або цілеспрямовану практику. Додайте нікнейм, щоб зберігати прогрес на цьому пристрої — або пропустіть це зараз.",
+  "Nice work! 🎉": "Чудова робота! 🎉",
+  "Save this progress on this device? Add a nickname to keep it, or skip for now.": "Зберегти цей прогрес на цьому пристрої? Додайте нікнейм, щоб зберегти його, або пропустіть це зараз.",
   "Skip for now": "Пропустити зараз",
   "Web Audio · nothing uploaded · tone mode runs offline": "Web Audio · нічого не завантажується · режим тону працює офлайн",
   "Allow microphone access to begin": "Дозвольте доступ до мікрофона, щоб почати",
@@ -2284,10 +2443,68 @@
     return t("Good glide!")+" "+t("Direction ✓ · Smooth movement ✓ · Reached the target ✓")+" · "+landingLine+".";
   }
 
+  // Post-attempt glide trajectory: time-vs-pitch, in cents relative to the
+  // starting note, with a dashed straight line showing the ideal path from
+  // the start note to the target note. Drawn immediately after each attempt
+  // (not just at lesson end) since a glide lesson's live needle shows
+  // distance-to-nearest-semitone while singing -- a genuinely different,
+  // and more confusing, quantity than "how far along the glide am I" -- so
+  // this trajectory is the singer's real look at what they actually did,
+  // including whether they moved continuously, stalled, or overshot.
+  function glideTraceSVG(result){
+    const samples=result && result.trace;
+    if(!samples || samples.length<2) return "";
+    const firstIdx=samples.findIndex(s=>s.freq!==null);
+    let lastIdx=-1;
+    for(let i=samples.length-1;i>=0;i--){ if(samples[i].freq!==null){ lastIdx=i; break; } }
+    if(firstIdx<0 || lastIdx<0) return "";
+    const trimmed=samples.slice(firstIdx, lastIdx+1);
+    const t0=trimmed[0].t;
+    const dur=Math.max(1, trimmed[trimmed.length-1].t-t0);
+    const fromFreq=result.fromFreq, toFreq=result.toFreq;
+    const intervalCents=1200*Math.log2(toFreq/fromFreq);
+    const pts=trimmed.map(s=> s.freq===null ? null : {t:s.t-t0, cents:1200*Math.log2(s.freq/fromFreq)});
+    const voicedCents=pts.filter(Boolean).map(p=>p.cents);
+    if(!voicedCents.length) return "";
+    const lo=Math.min(0,intervalCents,...voicedCents), hi=Math.max(0,intervalCents,...voicedCents);
+    const span=Math.max(40, hi-lo);
+    const yLo=lo-span*0.12, yHi=hi+span*0.12;
+    const W=260,H=100,PADX=6,PADY=6;
+    const xOf=tt=>PADX+(tt/dur)*(W-2*PADX);
+    const yOf=c=>H-PADY-((c-yLo)/(yHi-yLo))*(H-2*PADY);
+    // break the line at silence so a dropout reads as a gap, not a smooth connector
+    const segs=[]; let cur=[];
+    pts.forEach(p=>{
+      if(!p){ if(cur.length>1) segs.push(cur.slice()); cur=[]; return; }
+      cur.push(xOf(p.t).toFixed(1)+","+yOf(p.cents).toFixed(1));
+    });
+    if(cur.length>1) segs.push(cur);
+    const pathHtml=segs.map(seg=>'<polyline points="'+seg.join(" ")+'" class="glide-trace-line"></polyline>').join("");
+    const targetLine='<line x1="'+xOf(0).toFixed(1)+'" y1="'+yOf(0).toFixed(1)+'" x2="'+xOf(dur).toFixed(1)+'" y2="'+yOf(intervalCents).toFixed(1)+'" class="glide-target-line"></line>';
+    let lastPoint=null;
+    for(let i=pts.length-1;i>=0;i--){ if(pts[i]){ lastPoint=pts[i]; break; } }
+    const endOff = result.landingCents!=null && Math.abs(result.landingCents)>35;
+    const startDot='<circle cx="'+xOf(0).toFixed(1)+'" cy="'+yOf(0).toFixed(1)+'" r="3.5" class="glide-endpoint"></circle>';
+    const endDot = lastPoint ? '<circle cx="'+xOf(lastPoint.t).toFixed(1)+'" cy="'+yOf(lastPoint.cents).toFixed(1)+'" r="3.5" class="glide-endpoint'+(endOff?" off-target":"")+'"></circle>' : "";
+    const fromLabel=result.fromNote||"", toLabel=result.toNote||"";
+    return '<div class="trace-caption">'+t("Your glide: ")+fromLabel+" → "+toLabel+'</div>'
+      +'<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" role="img" aria-hidden="true">'
+      +targetLine+pathHtml+startDot+endDot+'</svg>';
+  }
+  function renderGlideTrace(result){
+    const el=$("glide-trace");
+    if(!el) return;
+    const html=glideTraceSVG(result);
+    if(!html){ el.classList.add("hidden"); el.innerHTML=""; return; }
+    el.innerHTML=html;
+    el.classList.remove("hidden");
+  }
+
   let glideTrialPlan=null;      // array of {from,to,direction} for the current lesson session
   let glideTrialResults=[];     // accumulates analyzeGlideAttempt results across all trials
   async function runGlideTrial(){
     setBusy(true);
+    renderGlideTrace(null);   // clear the previous attempt's trajectory while this one plays/records
     const totalTrials=LESSONS[currentLessonId].trials;
     const pair=glideTrialPlan[lessonAttemptCount];
     // Glide lessons declared a feedbackSchedule but never consulted it, so the
@@ -2299,18 +2516,19 @@
     const result=await attemptGlide(pair.from, pair.to, pair.direction);
     liveFeedbackHidden=false;   // never leave it hidden once the trial is over
     if(!result){ setBusy(false); return; }   // mic issue or the attempt was aborted (e.g. navigated away)
+    renderGlideTrace(result);   // show what was actually sung, whether the attempt passed or not
     lessonAttemptCount++;
     glideTrialResults.push(result);
     const feedback=glideFeedbackLine(currentLessonId, result, pair.to);
     if(lessonAttemptCount<totalTrials){
       const hitsSoFar=glideTrialResults.filter(r=>isGlideTrialHit(currentLessonId, r)).length;
-      stage(t("Trial ")+lessonAttemptCount+t(" of ")+totalTrials+t(" recorded"), {cls:"", sub:hitsSoFar+t(" of ")+lessonAttemptCount+t(" so far")+" — "+feedback});
+      stage(t("Attempt ")+lessonAttemptCount+t(" of ")+totalTrials+t(" recorded"), {cls:"", sub:hitsSoFar+t(" of ")+lessonAttemptCount+t(" so far")+" — "+feedback, step:"review"});
       playToneBtn.textContent=t("▶ Play next glide");
       setBusy(false);
     } else {
       const hits=glideTrialResults.filter(r=>isGlideTrialHit(currentLessonId, r)).length;
       const ratio=totalTrials ? hits/totalTrials : 0;
-      stage(t("Complete"), {cls:"", sub:feedback});
+      stage(t("Complete"), {cls:"", sub:feedback, step:"review"});
       playToneBtn.textContent=t("▶ Play a glide again");
       finishLesson(currentLessonId, ratio, []);
       glideTrialResults=[];
@@ -2659,6 +2877,11 @@
   // lesson. Reuses finishLesson/lessonThreshold/lessonGoalText directly,
   // since those are already generic (just trials/goalHits), not singing-specific.
   function runPerceptionTrial(){
+    // Guards a real race: this can fire from a setTimeout scheduled while the
+    // lesson was active, after the singer has since switched mode or abandoned
+    // it (which clears currentLessonId) -- without this it crashed on
+    // LESSONS[null].preset.
+    if(!currentLessonId || !LESSONS[currentLessonId] || !LESSONS[currentLessonId].preset) return;
     const typeConfig=PERCEPTION_TYPES[LESSONS[currentLessonId].preset.type];
     currentPerceptionPair=typeConfig.generate(perceptionTrialResults.length);
     const totalTrials=LESSONS[currentLessonId].trials;
@@ -2675,7 +2898,7 @@
     $("perception-question").textContent=t(typeConfig.question);
     $("perception-play-label").textContent=t(typeConfig.playLabel);
     const fb=$("perception-feedback"); fb.textContent=""; fb.className="perception-feedback";
-    $("perception-instruction").textContent=t("Trial ")+(perceptionTrialResults.length+1)+t(" of ")+totalTrials;
+    $("perception-instruction").textContent=t("Attempt ")+(perceptionTrialResults.length+1)+t(" of ")+totalTrials;
     $("perception-play-btn").disabled=false;
   }
   // playNote only accepts note names, so a sub-semitone offset needs its own
@@ -2728,6 +2951,9 @@
   renderPatternOptions();
   }
   function finishPerceptionLesson(){
+    // Same deferred-callback race as runPerceptionTrial: don't record a finish
+    // for a lesson the singer already left.
+    if(!currentLessonId || !LESSONS[currentLessonId]) return;
     const hits=perceptionTrialResults.filter(Boolean).length;
     const ratio=perceptionTrialResults.length ? hits/perceptionTrialResults.length : 0;
     const lessonId=currentLessonId;
@@ -2842,10 +3068,17 @@
   // Live feedback for any lesson with its own schedule (currently all of them).
   function updateLessonControlledNotes(){
     const lesson = currentLessonId ? LESSONS[currentLessonId] : null;
-    const gradeNote=$("grade-lesson-note");
-    if(gradeNote) gradeNote.classList.toggle("hidden", !(lesson && lesson.mode==="free-practice"));
-    const fbNote=$("live-fb-lesson-note");
-    if(fbNote) fbNote.classList.toggle("hidden", !(lesson && lesson.feedbackSchedule));
+    // Hide the control itself while the running lesson overrides it, instead
+    // of showing it next to a note explaining it doesn't apply right now --
+    // a control the app is ignoring anyway shouldn't be sitting there to
+    // touch. (#settings sits outside both mode panels, so its Live Feedback
+    // row stays visible during a Guided lesson unless hidden explicitly.)
+    const gradeOverridden = !!(lesson && lesson.mode==="free-practice");
+    const fbOverridden = !!(lesson && lesson.feedbackSchedule);
+    const gradeRow=$("grade-mode"); const gradeRowEl=gradeRow && gradeRow.closest(".set-row");
+    if(gradeRowEl) gradeRowEl.classList.toggle("hidden", gradeOverridden);
+    const fbRow=$("live-fb-set"); const fbRowEl=fbRow && fbRow.closest(".set-row");
+    if(fbRowEl) fbRowEl.classList.toggle("hidden", fbOverridden);
   }
 
   // Shown when a lesson's exercise cannot be built inside the saved range.
@@ -2929,6 +3162,7 @@
     syncPlaySingVisibility();   // a lesson is live now, so the panel is needed
     const backLink=$("back-to-path-link");
     if(backLink) backLink.classList.remove("hidden");
+    syncSharedSeqEmptyState();
     const scrollTarget = lesson.mode==="perception" ? $("perception-panel") : $("shared-active-seq");
     if(scrollTarget) scrollTarget.scrollIntoView({behavior:"smooth", block:"start"});
     updateLessonControlledNotes();
@@ -2957,6 +3191,7 @@
     setPerceptionModeVisible(false);
     const backLink=$("back-to-path-link");
     if(backLink) backLink.classList.add("hidden");
+    syncSharedSeqEmptyState();
     // mid-take, resetFlow would fight the in-flight capture; that attempt just
     // finishes as an ordinary Free Practice take now that the lesson is gone
     if(!running) resetFlow();
@@ -3016,6 +3251,41 @@
     return line;
   }
 
+  // Post-attempt pitch-over-time trace for a single held note: a small
+  // sparkline of cents-vs-time, with the ±15¢ on-pitch band shaded the same
+  // way the live meter's target band is. This is deliberately AFTER the
+  // fact, not live -- it shows the shape of the wobble/drift the singer just
+  // produced (a text sentence like "Stability: 2 of 3 steady" says THAT it
+  // wandered but not how -- rising, falling, or fluttering).
+  function stabilityTraceSVG(trace){
+    if(!trace || trace.length<2) return "";
+    const W=240,H=52,PAD=3;
+    const dur=Math.max(1, trace[trace.length-1].t);
+    const RANGE=50;   // ± cents shown top-to-bottom
+    const xOf=tt=>PAD+(tt/dur)*(W-2*PAD);
+    const yOf=c=>{ const cl=Math.max(-RANGE,Math.min(RANGE,c)); return H/2-(cl/RANGE)*(H/2-PAD); };
+    const pts=trace.map(p=>xOf(p.t).toFixed(1)+","+yOf(p.cents).toFixed(1)).join(" ");
+    const bandTop=yOf(15), bandBot=yOf(-15);
+    const maxAbs=Math.max(...trace.map(p=>Math.abs(p.cents)));
+    const lineClass = maxAbs<=15 ? "" : maxAbs<=35 ? "trace-ok" : "trace-bad";
+    return '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" role="img" aria-hidden="true">'
+      +'<rect x="0" y="'+bandTop.toFixed(1)+'" width="'+W+'" height="'+(bandBot-bandTop).toFixed(1)+'" class="trace-good-band"></rect>'
+      +'<line x1="0" y1="'+(H/2)+'" x2="'+W+'" y2="'+(H/2)+'" class="trace-center-line"></line>'
+      +'<polyline points="'+pts+'" class="trace-line '+lineClass+'"></polyline>'
+      +'</svg>';
+  }
+  // caps: a plain array of cap objects (may contain null/undefined misses --
+  // only entries that actually held long enough carry a .trace).
+  function stabilityTracesBlock(caps){
+    const withTrace=(caps||[]).filter(c=>c && c.trace && c.trace.length>=2);
+    if(!withTrace.length) return "";
+    const items=withTrace.map((c,i)=>
+      '<div class="trace-item"><div class="trace-caption">'+t("Hold ")+(i+1)+'</div>'+stabilityTraceSVG(c.trace)+'</div>'
+    ).join("");
+    return '<div class="exercise-done stability-trace-row"><div class="trace-caption trace-row-title">'
+      +t("Pitch during each hold (shaded band = on pitch):")+'</div><div class="trace-grid">'+items+'</div></div>';
+  }
+
   // Match a Note's own feedback: how many landed, plus which direction they
   // tended to miss in when they did -- flat vs sharp is a genuinely different
   // thing to work on than "just try again", and the raw cents data already
@@ -3033,6 +3303,22 @@
     if(avgCents < -8) line += " "+t("You usually landed slightly below the target.")+avgStr;
     else if(avgCents > 8) line += " "+t("You usually landed slightly above the target.")+avgStr;
     return line;
+  }
+
+  // Plain Free Practice (no lessonId to key a `detail` branch on) gets the same
+  // kind of one-line coaching insight guided lessons already get from
+  // matchNoteFeedback -- just generalized to a raw caps array instead of
+  // {cap} trial records. Silent (returns null) below a real sample size or a
+  // small enough average that calling out a direction would be noise.
+  function freePracticeInsight(caps){
+    const withCap = (caps||[]).filter(Boolean);
+    if(withCap.length<2) return null;
+    const avgCents = withCap.reduce((s,c)=>s+c.cents,0)/withCap.length;
+    const avg=Math.round(avgCents);
+    if(Math.abs(avg)<8) return null;
+    const avgStr=" ("+(avg>0?"+":"")+avg+t(" ¢")+")";
+    return avg<0 ? t("You usually landed slightly below the target.")+avgStr
+                 : t("You usually landed slightly above the target.")+avgStr;
   }
 
   // Interval-specific: compares the lower and upper note of each attempt
@@ -3127,6 +3413,10 @@
     else if(lesson.scoringMode==="perAttemptPair" && lessonRoundResults.length) detail=intervalFeedback(lessonRoundResults);
     else if(lessonRoundResults.length) detail=patternPositionFeedback(lessonRoundResults);
     if(detail) scoreEl.innerHTML += '<div class="exercise-done lesson-stability-detail">'+detail+'</div>';
+    if(lesson.scoringMode==="stability" && lessonTrialResults.length){
+      const tracesHtml=stabilityTracesBlock(lessonTrialResults.map(r=>r.cap));
+      if(tracesHtml) scoreEl.innerHTML += tracesHtml;
+    }
 
     // Optional challenge: only offered the moment this attempt is what
     // actually pushed the lesson into "passed" -- not on every already-passed
@@ -3175,8 +3465,26 @@
       });
     }
 
+    // Continue right where the result is, instead of making the singer
+    // scroll back up to the next-lesson-card to find out what's next --
+    // that card still updates (via renderPathList above) for anyone
+    // browsing back to it, this is just the same action surfaced locally.
+    const continueId = backward || forward;
+    if(continueId){
+      const continueLesson=LESSONS[continueId];
+      const sameLesson = continueId===lessonId;
+      const continueLabel = sameLesson ? t("Try it again") : (t("Continue: ")+t(continueLesson.title));
+      scoreEl.innerHTML += '<button class="nl-start-btn continue-next-btn" id="continue-next-btn">▶ '+continueLabel+'</button>';
+      const continueBtn=$("continue-next-btn");
+      if(continueBtn) continueBtn.addEventListener("click",()=>startLesson(continueId));
+    }
+
     currentLessonId=null;
     updateLessonControlledNotes();
+    // First completed attempt of any kind is the moment "save my progress"
+    // actually means something -- see maybeOfferProfileSave() for why this
+    // no longer happens on page load.
+    if(typeof maybeOfferProfileSave==="function") maybeOfferProfileSave();
   }
 
   // Plain forward progression: the first lesson in the default path not yet
@@ -3204,14 +3512,20 @@
     const stageLessons=DEFAULT_PATH.filter(id=>LESSONS[id].stage===lesson.stage);
     const posInStage=stageLessons.indexOf(lessonId)+1;
     el.className="next-lesson-card";
+    // Trimmed to what's needed to decide + act: title, one-line purpose,
+    // duration, Start. Goal/stage-position/why-matters are real information
+    // but don't need to be visible before Start -- they're one disclosure away.
     el.innerHTML =
       '<div class="nl-eyebrow">'+(isRevisit ? t("Worth revisiting") : t("Your next lesson"))+'</div>'+
       '<h3>'+t(lesson.title)+'</h3>'+
       '<p class="nl-desc">'+t(lesson.purpose)+'</p>'+
-      '<p class="nl-goal">'+t("Goal: ")+lessonGoalText(lesson.id)+'</p>'+
-      '<div class="nl-meta">'+t(stage.title)+' · '+t("Lesson ")+posInStage+t(" of ")+stageLessons.length+' · ~'+lesson.durationMin+t(" min")+'</div>'+
+      '<div class="nl-meta">~'+lesson.durationMin+t(" min")+'</div>'+
       '<button class="nl-start-btn" id="nl-start-btn">▶ '+t("Start")+'</button>'+
-      '<details class="nl-why"><summary><span class="chev">▶</span> '+t("Why this matters")+'</summary><p>'+t(lesson.whyMatters)+'</p></details>';
+      '<details class="nl-why"><summary><span class="chev">▶</span> '+t("About this lesson")+'</summary>'+
+        '<p class="nl-goal">'+t("Goal: ")+lessonGoalText(lesson.id)+'</p>'+
+        '<div class="nl-meta">'+t(stage.title)+' · '+t("Lesson ")+posInStage+t(" of ")+stageLessons.length+'</div>'+
+        '<p>'+t(lesson.whyMatters)+'</p>'+
+      '</details>';
     $("nl-start-btn").addEventListener("click",()=>startLesson(lessonId));
   }
 
@@ -3235,7 +3549,11 @@
   function refreshPathModeSub(){
     const el=$("path-mode-sub"); if(!el) return;
     const done=DEFAULT_PATH.filter(id=>lessonStatusLabel(id)==="passed").length;
-    el.textContent = done>0 ? (done+t(" of ")+DEFAULT_PATH.length+t(" done")) : t("step by step");
+    el.textContent = done>0 ? (done+t(" of ")+DEFAULT_PATH.length+t(" done")) : t("We'll tell you what to practice next");
+    // "New here? Start here" only means something before any progress exists --
+    // once lessons are underway the tab's own progress readout says enough.
+    const badge=$("path-mode-badge");
+    if(badge) badge.classList.toggle("hidden", done>0);
   }
 
   function renderStageList(){
@@ -3363,6 +3681,14 @@
     $("pane-scales").classList.toggle("hidden", src!=="scales");
     $("pane-arpeggios").classList.toggle("hidden", src!=="arpeggios");
     $("pane-sequences").classList.toggle("hidden", src!=="sequences");
+    // the onboarding hint text depends on which tab is active (Tones gets the
+    // Select->Add->Play instruction, the generator tabs get a different one),
+    // so switching tabs alone -- with no seq/genRounds change -- must refresh
+    // it directly rather than waiting on the next renderChips() call
+    if(typeof updateOnboardHint==="function") updateOnboardHint();
+    // likewise, which Play button(s) show depends on the active tab (Tones gets
+    // both tone/phrase actions, the generator tabs collapse to one Play button)
+    if(typeof updatePlayButtons==="function") updatePlayButtons();
   }
   document.querySelectorAll("#source-set button").forEach(b=>{
     b.addEventListener("click",()=>{
@@ -3378,8 +3704,9 @@
   function updateSettingsSummary(){
     const el=$("settings-sum"); if(!el) return;
     const tempoLabel = tempo==="default" ? t("Default") : t(tempo.charAt(0).toUpperCase()+tempo.slice(1));
+    const timbreLabel = timbre==="piano" ? t("Piano") : timbre==="guitar" ? t("Guitar") : t("Pure tone");
     const bits=[
-      (timbre==="piano" ? t("Piano") : t("Pure tone")).toLowerCase(),
+      timbreLabel.toLowerCase(),
       tempoLabel.toLowerCase()+" "+t("tempo"),
       (gradeMode==="follow" ? t("Follow me") : t("On the clock")).toLowerCase()
     ];
@@ -3394,6 +3721,8 @@
       document.querySelectorAll("#timbre button").forEach(x=>x.classList.remove("active"));
       b.classList.add("active");
       if(timbre==="piano") ensurePiano();
+      else if(timbre==="guitar") ensureGuitar();
+      else setInstrumentStatus();   // switching to Pure tone clears any piano/guitar status line
       updateSettingsSummary();
     });
   });
@@ -3559,6 +3888,7 @@
   function renderChips(){
     chipsEl.innerHTML="";
     chipsEl.classList.toggle("empty", seq.length===0);
+    if(typeof syncSharedSeqEmptyState==="function") syncSharedSeqEmptyState();
     if(!seq.length){ /* nothing rendered — the onboarding hint above covers this */ }
     seq.forEach((n,i)=>{
       const c=document.createElement("span");
@@ -3605,14 +3935,49 @@
       });
       chipsEl.appendChild(c);
     });
-    seqHint.textContent = currentLang==="uk"
-      ? seq.length+" "+ukPlural(seq.length, "тон", "тони", "тонів")
-      : seq.length+" tone"+(seq.length===1?"":"s");
+    updateSeqHint();
     const dh=document.getElementById("drag-hint");
     if(dh) dh.classList.toggle("hidden", seq.length<2);
-    const oh=document.getElementById("onboard-hint");
-    if(oh) oh.classList.toggle("hidden", seq.length>0);
+    updateOnboardHint();
     updatePlayButtons();
+  }
+  // "X notes", or "Y rounds · Z notes" once a multi-round exercise is loaded --
+  // `seq` itself only ever holds the CURRENT round (loadGeneratedRounds sets
+  // seq=rounds[0]), so the total across every round has to come from
+  // genRounds directly or the count silently under-reports a repeated
+  // exercise. Hidden entirely at zero rather than reading "0 notes".
+  function noteWordUk(n){ return ukPlural(n, "нота", "ноти", "нот"); }
+  function roundWordUk(n){ return ukPlural(n, "раунд", "раунди", "раундів"); }
+  function updateSeqHint(){
+    if(!seqHint) return;
+    const totalNotes = (genRounds && genRounds.length) ? genRounds.reduce((s,r)=>s+r.length,0) : seq.length;
+    seqHint.classList.toggle("hidden", totalNotes===0);
+    if(totalNotes===0){ seqHint.textContent=""; return; }
+    const notesLabel = currentLang==="uk" ? totalNotes+" "+noteWordUk(totalNotes) : totalNotes+" note"+(totalNotes===1?"":"s");
+    if(genRounds && genRounds.length>1){
+      const roundsLabel = currentLang==="uk" ? genRounds.length+" "+roundWordUk(genRounds.length) : genRounds.length+" round"+(genRounds.length===1?"":"s");
+      seqHint.textContent = roundsLabel+" · "+notesLabel;
+    } else {
+      seqHint.textContent = notesLabel;
+    }
+  }
+  // The "Select tones below -> Add -> Play" instruction is only true for the
+  // Tones tab -- Scales/Arpeggios/Sequences build through labeled dropdowns
+  // and a Generate button instead, so showing the same line there was
+  // actively wrong, not just imprecise.
+  function updateOnboardHint(){
+    const oh=document.getElementById("onboard-hint");
+    if(!oh) return;
+    if(seq.length>0){ oh.classList.add("hidden"); return; }
+    const activeBtn=document.querySelector("#source-set button.active");
+    const src = activeBtn ? activeBtn.dataset.src : "manual";
+    if(src==="manual"){
+      oh.innerHTML = '<span data-i18n="Select tones below">'+t("Select tones below")+'</span> <span class="arrow">→</span> '+
+        '<span data-i18n="Add">'+t("Add")+'</span> <span class="arrow">→</span> <span data-i18n="Play">'+t("Play")+'</span>';
+    } else {
+      oh.innerHTML = '<span data-i18n="Set the options below, then Generate">'+t("Set the options below, then Generate")+'</span> <span class="arrow">↓</span>';
+    }
+    oh.classList.remove("hidden");
   }
   // flag the sequence as machine-generated (no longer a pristine manual edit)
   function markManual(){
@@ -3678,7 +4043,7 @@
   }
   function updateRoundTag(){
     const rt=$("round-tag"); if(!rt) return;
-    if(!genRounds){ rt.classList.add("hidden"); return; }
+    if(!genRounds){ rt.classList.add("hidden"); if(typeof syncSharedSeqEmptyState==="function") syncSharedSeqEmptyState(); return; }
     rt.classList.remove("hidden");
     // Rounds are transposed in lessons, so report THIS round's own span rather
     // than the range the exercise was generated in -- otherwise the tag keeps
@@ -3693,6 +4058,7 @@
       }
     }
     rt.textContent = t("Round ")+(genRoundIdx+1)+t(" of ")+genRounds.length+rangeTxt;
+    if(typeof syncSharedSeqEmptyState==="function") syncSharedSeqEmptyState();
   }
   // Confirm-before-overwrite, shared by all three generators (same UX the old
   // random arpeggio generator used).
@@ -4011,6 +4377,10 @@
         const avg=Math.round(genAllCaps.reduce((s,c)=>s+Math.abs(c.cents),0)/genAllCaps.length);
         scoreEl.classList.remove("hidden");
         scoreEl.innerHTML += '<div class="exercise-done">'+t("Whole exercise: ")+'<b>'+hits+'/'+genAllCaps.length+'</b>'+t(" on pitch · avg deviation ")+'<b>'+avg+t(" ¢")+'</b></div>';
+        if(!currentLessonId){
+          const insight=freePracticeInsight(genAllCaps);
+          if(insight) scoreEl.innerHTML += '<div class="exercise-done lesson-stability-detail">'+insight+'</div>';
+        }
       }
       // offer to step up a semitone only once the WHOLE exercise is done --
       // keeps it from competing with "Next round" mid-exercise
@@ -4046,17 +4416,68 @@
   }
   function clearChipHighlights(){ chipsEl.querySelectorAll(".chip.playing").forEach(c=>c.classList.remove("playing")); }
 
+  // #source-set only means something while Free Practice is the active mode --
+  // in Guided lessons it just sits inactive in the DOM holding whatever tab was
+  // last touched, so gate on fp-mode first rather than reading it unconditionally.
+  // Scales/Arpeggios/Sequences are always a single built phrase (no genuine
+  // "step through one note at a time" use case the way Tones has), so they get
+  // one plain "Play" action instead of the tone/phrase choice.
+  function isGeneratedSourceActive(){
+    if(!document.body.classList.contains("fp-mode")) return false;
+    const b=document.querySelector("#source-set button.active");
+    return !!(b && b.dataset.src!=="manual");
+  }
+
   // enable/disable the two Play buttons by how many tones are selected
   function updatePlayButtons(){
     const n=seq.length;
     const isGlideLesson = currentLessonId && LESSONS[currentLessonId] && LESSONS[currentLessonId].mode==="glide";
+    const isGeneratedSource = isGeneratedSourceActive();
+
     playToneBtn.disabled = running || n<1;
     playPhraseBtn.disabled = running || n<2 || isGlideLesson;
+
+    if(isGeneratedSource){
+      // A scale/arpeggio/sequence is always meant to be heard as the one phrase
+      // it was built as -- there's no genuine "step through one note at a time"
+      // use case the way there is for hand-picked Tones, so show a single plain
+      // "Play" action instead of a tone/phrase choice with no real second option.
+      playToneBtn.classList.add("hidden");
+      playPhraseBtn.classList.remove("hidden");
+      playPhraseBtn.classList.remove("btn-seq");
+      playPhraseBtn.classList.add("btn-go");
+      playPhraseBtn.textContent = t("▶ Play");
+      const playBtnHint=$("play-btn-hint");
+      if(playBtnHint) playBtnHint.classList.add("hidden");
+      return;
+    }
+
+    // Tones (manual source) and every Guided lesson keep the original two-action
+    // choice -- restore the tone/phrase labels in case the source-set toggle
+    // above last left this button reading the generic "Play".
+    playToneBtn.classList.remove("hidden");
+    playToneBtn.textContent = t("▶ Play a tone");
+    playPhraseBtn.textContent = t("▶ Play a phrase");
     // fully hidden when it doesn't apply (single tone, or a glide lesson
     // where seq is display-only) -- there's nothing to play as a phrase, and
     // the button was already an inert no-op in this state via the disabled
     // checks above; this just makes the UI say so honestly
-    playPhraseBtn.classList.toggle("hidden", n<2 || isGlideLesson);
+    const phraseApplies = n>=2 && !isGlideLesson;
+    playPhraseBtn.classList.toggle("hidden", !phraseApplies);
+    // The two buttons are genuinely different actions once there's more than one
+    // tone (step through vs. play the whole line) -- a one-line hint distinguishes
+    // them instead of leaving two visually-similar buttons to guess between.
+    const playBtnHint=$("play-btn-hint");
+    if(playBtnHint) playBtnHint.classList.toggle("hidden", !phraseApplies);
+    // Which action is "primary" depends on what was actually built: a single
+    // tone has nothing to phrase, so Play a tone stays the filled button; a
+    // multi-tone build is meant to be heard as a line, so Play a phrase takes
+    // the filled style and Play a tone steps back to the outline one -- both
+    // stay clickable either way, this only changes which reads as "the" action.
+    playToneBtn.classList.toggle("btn-go", !phraseApplies);
+    playToneBtn.classList.toggle("btn-seq", phraseApplies);
+    playPhraseBtn.classList.toggle("btn-go", phraseApplies);
+    playPhraseBtn.classList.toggle("btn-seq", !phraseApplies);
   }
   // The sequence as actually played/graded. "Play up and down" mirrors on the fly
   // (C E G -> C E G E C) without touching the stored tones, so the chips always
@@ -4080,11 +4501,16 @@
   }
 
   // ---------- info stage helpers ----------
-  function stage(status,{cls="muted",sub="",showWave=false}={}){
+  // step: "hear" | "sing" | "review" | null (idle -- nothing highlighted).
+  // Purely a visual echo of what stage()'s caller already knows; it never
+  // drives any logic, so a missed case just leaves the indicator blank.
+  function stage(status,{cls="muted",sub="",showWave=false,step=null}={}){
     stageStatus.textContent=status;
     stageStatus.className="stage-status "+cls;
     stageSub.textContent=sub;
     wave.classList.toggle("on",showWave);
+    const hsr=$("hsr-steps");
+    if(hsr) hsr.querySelectorAll(".hsr-step").forEach(el=>el.classList.toggle("current", el.dataset.step===step));
   }
   function hideDots(){ singDots.classList.remove("on"); clearDotTimers(); singDots.innerHTML=""; }
   // Dot timeline: the final FINE_MS of the window is shown as 0.5s "fine" dots;
@@ -4134,10 +4560,16 @@
       stage(t("Add a tone to begin"),{cls:"muted",sub:t("pick tones above")});
     } else if(seq.length===1){
       stage(t("Ready — press Play a tone"),{cls:"muted",sub:t("one tone selected")});
+    } else if(isGeneratedSourceActive()){
+      // Scales/Arpeggios/Sequences only offer the one Play action (see
+      // updatePlayButtons()), so the sub-line shouldn't describe a
+      // "one at a time" option that isn't there for this source.
+      stage(t("Ready — press Play"),{cls:"muted",sub:t("play the whole exercise")});
     } else {
       stage(t("Ready — press Play"),{cls:"muted",sub:t("play tones one at a time, or the whole phrase")});
     }
     results.classList.add("hidden"); scoreEl.innerHTML=""; resetReadout(); clearChipHighlights();
+    renderGlideTrace(null);
     updatePlayButtons();
   }
 
@@ -4176,12 +4608,27 @@
   let cdnPiano=null;
   const localBuffers=new Map();   // midi -> AudioBuffer (loaded on demand, not all at once)
 
-  function setPianoStatus(){
-    if(timbre!=="piano"){ pianoStatus.textContent=""; return; }
-    if(pianoState==="loading") pianoStatus.textContent=t("loading piano…");
-    else if(pianoState==="ready") pianoStatus.textContent= pianoMode==="local" ? t("piano ready (local samples)") : t("piano ready (online)");
-    else if(pianoState==="failed") pianoStatus.textContent=t("piano unavailable — using synth tone");
-    else pianoStatus.textContent="";
+  // Guitar has no bundled local samples (only the piano ships those), so its
+  // chain is just: 1) CDN guitar via smplr (needs a network), 2) a synthesized
+  // plucked-string tone that needs neither samples nor a connection.
+  let guitarMode="idle";      // idle | cdn | failed
+  let guitarState="idle";     // idle | loading | ready | failed
+  let cdnGuitar=null;
+
+  function setInstrumentStatus(){
+    if(timbre==="piano"){
+      if(pianoState==="loading") pianoStatus.textContent=t("loading piano…");
+      else if(pianoState==="ready") pianoStatus.textContent= pianoMode==="local" ? t("piano ready (local samples)") : t("piano ready (online)");
+      else if(pianoState==="failed") pianoStatus.textContent=t("piano unavailable — using synth tone");
+      else pianoStatus.textContent="";
+    } else if(timbre==="guitar"){
+      if(guitarState==="loading") pianoStatus.textContent=t("loading guitar…");
+      else if(guitarState==="ready") pianoStatus.textContent=t("guitar ready (online)");
+      else if(guitarState==="failed") pianoStatus.textContent=t("guitar unavailable — using synth pluck");
+      else pianoStatus.textContent="";
+    } else {
+      pianoStatus.textContent="";
+    }
   }
 
   // fetch+decode one sample; returns AudioBuffer or null
@@ -4197,27 +4644,57 @@
     }catch(e){ return null; }
   }
 
+  // A blocked or flaky connection can leave the CDN import/`.load` promise
+  // neither resolving nor rejecting for a long time (seen directly: 12s+ with
+  // no result), which would otherwise leave the status line stuck reading
+  // "loading…" forever even though playback has already silently fallen back
+  // to the synth. Race it against a plain timeout so failure is always timely.
+  function withTimeout(promise, ms){
+    return Promise.race([
+      promise,
+      new Promise((_,reject)=>setTimeout(()=>reject(new Error("timed out")), ms))
+    ]);
+  }
+
   async function ensurePiano(){
-    if(pianoState==="ready"||pianoState==="loading"){ setPianoStatus(); return; }
-    pianoState="loading"; setPianoStatus();
+    if(pianoState==="ready"||pianoState==="loading"){ setInstrumentStatus(); return; }
+    pianoState="loading"; setInstrumentStatus();
     await ensureAudioCtx();
     // 1) probe for local samples (one small request; C4 always exists in the set)
     const probe=await loadSample(noteToMidi("C4"));
     if(probe){
-      pianoMode="local"; pianoState="ready"; setPianoStatus(); return;
+      pianoMode="local"; pianoState="ready"; setInstrumentStatus(); return;
     }
     // 2) no local samples → try the CDN piano
     try{
-      const mod=await import("https://esm.sh/smplr@0.16.0");
+      const mod=await withTimeout(import("https://esm.sh/smplr@0.16.0"), 6000);
       cdnPiano = mod.SplendidGrandPiano ? new mod.SplendidGrandPiano(ac)
                                         : new mod.Soundfont(ac,{instrument:"acoustic_grand_piano",kit:"FluidR3_GM"});
-      await cdnPiano.load;
+      await withTimeout(cdnPiano.load, 6000);
       pianoMode="cdn"; pianoState="ready";
     }catch(e){
       // 3) everything failed → synth
       pianoMode="failed"; pianoState="failed"; cdnPiano=null;
     }
-    setPianoStatus();
+    setInstrumentStatus();
+  }
+
+  async function ensureGuitar(){
+    if(guitarState==="ready"||guitarState==="loading"){ setInstrumentStatus(); return; }
+    guitarState="loading"; setInstrumentStatus();
+    await ensureAudioCtx();
+    // No bundled local guitar samples exist, so go straight to the CDN --
+    // offline (or if the CDN fails for any reason) falls through to the
+    // synthesized plucked-string tone in playPluck().
+    try{
+      const mod=await withTimeout(import("https://esm.sh/smplr@0.16.0"), 6000);
+      cdnGuitar = new mod.Soundfont(ac,{instrument:"acoustic_guitar_nylon",kit:"FluidR3_GM"});
+      await withTimeout(cdnGuitar.load, 6000);
+      guitarMode="cdn"; guitarState="ready";
+    }catch(e){
+      guitarMode="failed"; guitarState="failed"; cdnGuitar=null;
+    }
+    setInstrumentStatus();
   }
 
   // Output levels. Mobile (esp. iOS) plays back quietly, so run hot but keep a
@@ -4306,10 +4783,43 @@
       }catch(e){ clearTimeout(guard); finish(); }
     });
   }
+  // Offline/fallback guitar timbre: no samples or network needed. A sawtooth
+  // (richer in harmonics than the Pure-tone triangle) with a fast attack and a
+  // much quicker decay than a sustained tone approximates a plucked-string
+  // envelope -- simple on purpose, since it only has to sound distinctly
+  // "plucked" rather than be a convincing acoustic guitar.
+  function playPluck(freq,dur){
+    return new Promise(res=>{
+      let done=false;
+      const finish=()=>{ if(!done){ done=true; res(); } };
+      const guard=setTimeout(finish, dur*1000+400);
+      try{
+        const t=ac.currentTime;
+        const out=ac.createGain(); out.connect(master());
+        const o=ac.createOscillator();
+        o.type="sawtooth"; o.frequency.value=freq;
+        out.gain.setValueAtTime(0,t);
+        out.gain.linearRampToValueAtTime(OUT_LEVEL,t+0.006);
+        out.gain.exponentialRampToValueAtTime(0.0001, t+Math.max(0.08,Math.min(dur,1.1)));
+        o.connect(out); o.start(t); o.stop(t+dur+0.02);
+        o.onended=()=>{ clearTimeout(guard); finish(); };
+      }catch(e){ clearTimeout(guard); finish(); }
+    });
+  }
   async function playNote(noteName,dur){
     const freq=noteToFreq(noteName);
     // iOS suspends the context on interruptions/route changes — resume before every tone
     await ensureAudioCtx();
+    if(timbre==="guitar"){
+      if(guitarState!=="ready" && guitarState!=="failed") await ensureGuitar();
+      if(guitarState==="ready" && guitarMode==="cdn" && cdnGuitar){
+        try{
+          cdnGuitar.start({note:noteName,duration:dur});
+          return new Promise(r=>setTimeout(r,dur*1000));
+        }catch(e){ /* fall through */ }
+      }
+      return playPluck(freq,dur);   // offline, or the CDN guitar failed to load
+    }
     if(timbre!=="piano") return playSynth(freq,dur);
     if(pianoState!=="ready") await ensurePiano();
     if(pianoState==="ready"){
@@ -4740,7 +5250,7 @@ function ceilPow2(v) {
     stage(preHear ? t("Keep hearing it") : t("Get ready"),
           {cls:"", sub: preHear
             ? t("hold the note silently — sing when the dots run out")
-            : t("take a breath — you sing when the dots run out")});
+            : t("take a breath — you sing when the dots run out"), step:"sing"});
     runDots(ms, 3);
     await wait(ms);
     if(!micPromise){ hideDots(); return true; }
@@ -4748,7 +5258,7 @@ function ceilPow2(v) {
     let ok=await Promise.race([micPromise, wait(0).then(()=>"pending")]);
     if(ok==="pending"){
       blinkLastDot(true);
-      stage(t("Get ready"),{cls:"",sub:t("starting the microphone…")});
+      stage(t("Get ready"),{cls:"",sub:t("starting the microphone…"),step:"sing"});
       ok=await micPromise;
       blinkLastDot(false);
     }
@@ -4975,7 +5485,7 @@ function ceilPow2(v) {
   async function attemptGlide(fromNote, toNote, direction){
     const fromFreq=noteToFreq(fromNote), toFreq=noteToFreq(toNote);
     muteMic();
-    stage(t("Listen…"),{cls:"", sub: fromNote+" → "+toNote, showWave:true});
+    stage(t("Listen…"),{cls:"", sub: fromNote+" → "+toNote, showWave:true, step:"hear"});
     await playGlide(fromFreq, toFreq, GLIDE_REF_DUR);
     if(!running) return null;
     wave.classList.remove("on");
@@ -4985,7 +5495,7 @@ function ceilPow2(v) {
     if(!okMic){ stage(micStatusTitle(),{cls:"warn",sub:micStatusSub()}); return null; }
     stage(t("Sing!"),{cls:"", sub: direction>0
       ? t("glide smoothly upward from ")+fromNote+t(" to ")+toNote
-      : t("glide smoothly downward from ")+fromNote+t(" to ")+toNote});
+      : t("glide smoothly downward from ")+fromNote+t(" to ")+toNote, step:"sing"});
     runDots(GLIDE_RECORD_MS);
     listening=true;
     const samples=await recordTake(GLIDE_RECORD_MS, null);
@@ -4993,7 +5503,14 @@ function ceilPow2(v) {
     listening=false; cancelAnimationFrame(raf); parkNeedle();
     hideDots(); wave.classList.remove("on");
     muteMic();
-    return analyzeGlideAttempt(samples, fromFreq, toFreq, direction);
+    const result=analyzeGlideAttempt(samples, fromFreq, toFreq, direction);
+    // Carried along so the caller can draw a post-attempt trajectory --
+    // analyzeGlideAttempt only returns the graded verdict, but the raw
+    // samples are already in scope here, so no need to re-record or change
+    // that function's signature.
+    result.trace=samples; result.fromFreq=fromFreq; result.toFreq=toFreq; result.reqDirection=direction;
+    result.fromNote=fromNote; result.toNote=toNote;
+    return result;
   }
 
   function segmentTake(samples){
@@ -5068,8 +5585,12 @@ function ceilPow2(v) {
         if(dur>=MIN_HOLD-HOLD_SLACK){
           const cf=centerFreq(run);
           const stats=stabilityStats(run, cf);
+          // Raw cents-over-time for this held run, relative to its own start --
+          // kept only here (aggregate stats above already discard it) so a
+          // post-attempt trace can be drawn without re-deriving it downstream.
+          const trace=run.map(s=>({t:s.t-run[0].t, cents:cents(s.freq,cf)}));
           held.push({freq:cf, start:run[0].t, dur, stabilitySpread:stats.spread, driftCents:stats.drift,
-                     vibratoStrength:stats.vibratoStrength, vibratoHz:stats.vibratoHz});
+                     vibratoStrength:stats.vibratoStrength, vibratoHz:stats.vibratoHz, trace});
         }
       }
       run=[];
@@ -5140,7 +5661,7 @@ function ceilPow2(v) {
     const tf=noteToFreq(targetNote);
     const cents=Math.round(1200*Math.log2(held.freq/tf));
     return {cents, note:freqToNoteData(held.freq), stabilitySpread:held.stabilitySpread, driftCents:held.driftCents,
-            holdMs:held.dur, vibratoStrength:held.vibratoStrength, vibratoHz:held.vibratoHz};
+            holdMs:held.dur, vibratoStrength:held.vibratoStrength, vibratoHz:held.vibratoHz, trace:held.trace};
   }
   // classify a single-tone follow-me take: returns {cap, reason}
   // reason: null (ok) · "none" (no signal at all) · "short" (signal but nothing held long enough)
@@ -5307,8 +5828,8 @@ function ceilPow2(v) {
     // shown next to the sung note describe that note, and converge on the target
     // deviation exactly when it matters (a near miss).
     cell.innerHTML='<div class="rk">'+t("target")+'</div><div class="exp">'+expected+'</div>'+
-      '<div class="rk">'+t("you sang")+'</div><div class="you">'+sang+'</div>'+
-      '<div class="plainmini">'+pw.txt+'</div>';
+      '<div class="plainmini">'+pw.txt+'</div>'+
+      '<div class="you">'+t("you sang")+": "+sang+'</div>';
     resultsGrid.appendChild(cell);
   }
   // Short aggregate line for the "Complete" stage message -- consistent
@@ -5435,8 +5956,8 @@ function ceilPow2(v) {
     // sure the mic is muted before we play the reference tone (kept alive, not
     // stopped, so repeated Play presses don't each pay a full reacquire cost).
     muteMic();
-    stage(t("Listen…"),{cls:"",sub: seq.length>1 ? (t("Note ")+(i+1)+t(" of ")+seq.length+" · "+note) : note, showWave:true});
-    await playNote(note, playDur(timbre==="piano"?2.2:2.0));
+    stage(t("Listen…"),{cls:"",sub: seq.length>1 ? (t("Note ")+(i+1)+t(" of ")+seq.length+" · "+note) : note, showWave:true, step:"hear"});
+    await playNote(note, playDur(timbre!=="tone"?2.2:2.0));
     chipPlaying(i,false);
     if(!running) return null;
     wave.classList.remove("on");
@@ -5459,7 +5980,7 @@ function ceilPow2(v) {
         : Math.max(winMs, MIN_HOLD+600);
       stage(t("Sing!"),{cls:"",sub: stabilityLesson
         ? t("hold the tone steadily for 3 seconds")
-        : t("hold the tone for at least half a second")});
+        : t("hold the tone for at least half a second"), step:"sing"});
       runDots(holdWin);
       listening=true;
       const samples=await recordTake(holdWin, tf);
@@ -5470,7 +5991,7 @@ function ceilPow2(v) {
       const held=segmentTake(samples);
       return classifyHeld(note, samples, held);   // {cap, reason}
     }
-    stage(t("Sing!"),{cls:"",sub:t("your turn — hold the note")});
+    stage(t("Sing!"),{cls:"",sub:t("your turn — hold the note"),step:"sing"});
     runDots(winMs);
     listening=true; detectLoop(tf);
     const best=await captureWindow(winMs, 400);  // ignore first 400ms
@@ -5490,6 +6011,7 @@ function ceilPow2(v) {
     setBusy(true);
     await ensureAudioCtx();
     if(timbre==="piano") await ensurePiano();
+    else if(timbre==="guitar") await ensureGuitar();
 
     if(stepIdx===0){ resultsGrid.innerHTML=""; stepCaps=[]; results.classList.remove("hidden"); scoreEl.classList.add("hidden"); }
 
@@ -5546,13 +6068,13 @@ function ceilPow2(v) {
             : nextPhase==="delayed" ? t(" — next one hides the meter until you're done")
             : nextPhase==="independent" ? t(" — last one is a real check, no hints")
             : "";
-          stage(t("Trial ")+lessonAttemptCount+t(" of ")+totalTrials+t(" recorded"),
-                {cls:"", sub:hitsSoFar+t(" of ")+lessonAttemptCount+t(" on pitch so far")+phaseNote});
+          stage(t("Attempt ")+lessonAttemptCount+t(" of ")+totalTrials+t(" recorded"),
+                {cls:"", sub:hitsSoFar+t(" of ")+lessonAttemptCount+t(" on pitch so far")+phaseNote, step:"review"});
           playToneBtn.textContent=t("▶ Play next tone");
           stepIdx=0;
         } else {
           // final trial -- score the WHOLE lesson across all its trials, not just this one note
-          stage(t("Complete"),{cls:"",sub:summaryLine(stepCaps,seq.length)});
+          stage(t("Complete"),{cls:"",sub:summaryLine(stepCaps,seq.length),step:"review"});
           playToneBtn.textContent=t("▶ Play a tone again");
           stepIdx=0;
           const hits=lessonTrialResults.filter(r=>isTrialHit(currentLessonId, r.cap)).length;
@@ -5564,7 +6086,7 @@ function ceilPow2(v) {
           lessonNotePlan=null;
         }
       } else {
-        stage(t("Complete"),{cls:"",sub:summaryLine(stepCaps,seq.length)});
+        stage(t("Complete"),{cls:"",sub:summaryLine(stepCaps,seq.length),step:"review"});
         playToneBtn.textContent=t("▶ Play a tone again");
         stepIdx=0;
         roundFinished(stepCaps);
@@ -5575,6 +6097,13 @@ function ceilPow2(v) {
           const hits=stepCaps.filter(c=>c && Math.abs(c.cents)<=15).length;
           const ratio = seq.length ? hits/seq.length : 0;
           finishLesson(currentLessonId, ratio, seq.slice());
+        } else if(!currentLessonId){
+          // Plain Free Practice, no lesson driving its own detail line --
+          // give it the same one-line coaching insight guided lessons get.
+          const insight=freePracticeInsight(stepCaps);
+          if(insight) scoreEl.innerHTML += '<div class="exercise-done lesson-stability-detail">'+insight+'</div>';
+          const tracesHtml=stabilityTracesBlock(stepCaps);
+          if(tracesHtml) scoreEl.innerHTML += tracesHtml;
         }
       }
     } else {
@@ -5594,6 +6123,7 @@ function ceilPow2(v) {
     setBusy(true);
     await ensureAudioCtx();
     if(timbre==="piano") await ensurePiano();
+    else if(timbre==="guitar") await ensureGuitar();
     // Learning Path: decide guided vs delayed for THIS round before playing it,
     // using the round index as the attempt number -- same idea as single-tone
     // lessons, just at round granularity since a round IS the attempt here.
@@ -5604,7 +6134,7 @@ function ceilPow2(v) {
       liveFeedbackHidden = (manualLiveFeedback==="hidden");
     }
     await playWholeThenRepeat();
-    playPhraseBtn.textContent=t("▶ Play a phrase again");
+    playPhraseBtn.textContent = isGeneratedSourceActive() ? t("▶ Play again") : t("▶ Play a phrase again");
     setBusy(false);
   }
 
@@ -5620,10 +6150,10 @@ function ceilPow2(v) {
     // mute the mic so iOS plays the phrase through the main speaker, not the earpiece
     // (muted, not stopped -- the stream stays alive across repeated Play presses)
     muteMic();
-    stage(t("Listen to the phrase…"),{cls:"",sub:pseq.join("  ·  "),showWave:true});
+    stage(t("Listen to the phrase…"),{cls:"",sub:pseq.join("  ·  "),showWave:true,step:"hear"});
     for(let i=0;i<pseq.length && running;i++){
       clearChipHighlights(); chipPlaying(chipIndexFor(i),true);
-      await playNote(pseq[i], playDur(timbre==="piano"?0.95:0.7));
+      await playNote(pseq[i], playDur(timbre!=="tone"?0.95:0.7));
       chipPlaying(chipIndexFor(i),false);
       await wait(140);
     }
@@ -5642,7 +6172,7 @@ function ceilPow2(v) {
       const FLOOR_PER = MIN_HOLD + 500;                 // hold + transition room
       const perNote = Math.max(budgetPer, FLOOR_PER);
       const totalMs = perNote*pseq.length + 500;        // small tail
-      stage(t("Sing!"),{cls:"",sub:t("sing the phrase at your pace — hold each tone briefly")});
+      stage(t("Sing!"),{cls:"",sub:t("sing the phrase at your pace — hold each tone briefly"),step:"sing"});
       runDots(totalMs);
       clearChipHighlights();
       listening=true;
@@ -5674,8 +6204,12 @@ function ceilPow2(v) {
       }
       const raLine=await maybeAskRoundAssess(caps, pseq.length);
       if(caps.length) commitFeedback(pseq[pseq.length-1],caps[caps.length-1],missReason);
-      stage(t("Complete"),{cls:"",sub:summaryLine(caps,pseq.length)+extra});
+      stage(t("Complete"),{cls:"",sub:summaryLine(caps,pseq.length)+extra,step:"review"});
       roundFinished(caps);
+      if(!currentLessonId){
+        const insight=freePracticeInsight(caps);
+        if(insight) scoreEl.innerHTML += '<div class="exercise-done lesson-stability-detail">'+insight+'</div>';
+      }
       if(raLine) scoreEl.innerHTML += '<div class="exercise-done self-assess-result">'+raLine+'</div>';
       return;
     }
@@ -5683,7 +6217,7 @@ function ceilPow2(v) {
     // ---- ON THE CLOCK: fixed per-tone slots ----
     const perNote = singMsFor(false);
     const totalMs = perNote*pseq.length;
-    stage(t("Sing!"),{cls:"",sub:t("repeat the whole phrase — keep going")});
+    stage(t("Sing!"),{cls:"",sub:t("repeat the whole phrase — keep going"),step:"sing"});
     runDots(totalMs);
 
     listening=true;
@@ -5704,8 +6238,12 @@ function ceilPow2(v) {
     showScore(caps,pseq.length);
     const raLine2=await maybeAskRoundAssess(caps, pseq.length);
     if(caps.length) commitFeedback(pseq[pseq.length-1],caps[caps.length-1]);
-    stage(t("Complete"),{cls:"",sub:summaryLine(caps,pseq.length)});
+    stage(t("Complete"),{cls:"",sub:summaryLine(caps,pseq.length),step:"review"});
     roundFinished(caps);
+    if(!currentLessonId){
+      const insight=freePracticeInsight(caps);
+      if(insight) scoreEl.innerHTML += '<div class="exercise-done lesson-stability-detail">'+insight+'</div>';
+    }
     if(raLine2) scoreEl.innerHTML += '<div class="exercise-done self-assess-result">'+raLine2+'</div>';
   }
 
@@ -5925,6 +6463,23 @@ function ceilPow2(v) {
     const r=loadVocalRange();
     tag.textContent = r ? (r.lo+"–"+r.hi) : t("Set range");
     tag.title = r ? t("Vocal range") : t("Set range");
+    updateFpRangeLine(r);
+  }
+
+  // Free Practice's own visible "Working range" line -- the plan's own
+  // header tag (#profile-range-tag) sits up in the profile row, easy to miss
+  // while building an exercise; this repeats the same value right where the
+  // exercise is being configured.
+  function updateFpRangeLine(r){
+    const el=$("fp-range-text");
+    if(!el) return;
+    if(r===undefined) r=loadVocalRange();
+    // Two distinct states rather than one line with a generic "Change" button:
+    // once a range exists, "Change" reads naturally; before one exists there is
+    // nothing to change yet, so the line and the button both say "set" instead.
+    el.textContent = t("Working range")+": "+(r ? (r.lo+"–"+r.hi) : t("not set"));
+    const btn=$("fp-range-change-btn");
+    if(btn) btn.textContent = t(r ? "Change" : "Set range");
   }
 
   function refreshProfileScopedUI(){
@@ -5972,16 +6527,47 @@ function ceilPow2(v) {
   document.addEventListener("keydown",e=>{ if(e.key==="Escape" && !profileBackdrop.hidden) closeProfileModal(); });
 
   renderProfileSelect();
-  // Soft, one-time nudge: only if nobody has ever created a profile AND the
-  // prompt has never been dismissed. Never blocks the rest of the page.
-  if(!lsGet(LS_SEEN) && !loadProfileList().length){
-    setTimeout(openProfileModal, 400);
+  // Deliberately NOT shown on load: a nickname prompt has nothing to do with
+  // a visitor's first job (start the first lesson), so it used to compete
+  // with Start for attention before anyone had done anything. Offered once,
+  // instead, right after finishLesson() records a first completed attempt --
+  // see maybeOfferProfileSave() below.
+  function maybeOfferProfileSave(){
+    if(!lsGet(LS_SEEN) && !loadProfileList().length){
+      setTimeout(openProfileModal, 600);
+    }
   }
 
   // language: apply the detected/saved language immediately, and let the
   // header selector switch it (global/device-level setting, not per-profile)
   applyLanguage(currentLang);
   $("lang-select").addEventListener("change", e=>applyLanguage(e.target.value));
+
+  // Default sound depends on connectivity at load: online is worth trying a
+  // richer instrument (Piano, which itself still falls back to a synth tone if
+  // loading it turns out to fail anyway); offline, there is nothing worth
+  // fetching, so stay on the zero-dependency Pure tone the markup already
+  // defaults to. This only sets the initial default -- picking a sound by hand
+  // is never overridden once the app has loaded, including if connectivity
+  // changes mid-session.
+  // This only flips the *selection*, not the actual loading -- ensurePiano()
+  // touches the AudioContext, and starting/resuming one with no preceding user
+  // gesture runs straight into the browser's autoplay policy (it can hang
+  // indefinitely rather than fail fast). Loading stays lazy, exactly as it
+  // already is for a hand-picked sound: the first real Play press triggers it
+  // via playNote()'s own `if(pianoState!=="ready") await ensurePiano()`, by
+  // which point that click itself is the user gesture the browser needs.
+  // Deferred one tick for a second reason too: this runs during the script's
+  // own top-to-bottom setup, before later top-level `const`s (e.g. diagLog)
+  // have been initialized -- setTimeout(...,0) pushes it past the end of that
+  // setup instead of tripping their temporal dead zone.
+  setTimeout(()=>{
+    if(navigator.onLine){
+      timbre="piano";
+      document.querySelectorAll("#timbre button").forEach(b=>b.classList.toggle("active", b.dataset.timbre==="piano"));
+      updateSettingsSummary();
+    }
+  },0);
 
   // The shared exercise panel is Free Practice furniture that Guided lessons
   // borrows once a lesson is running. Before that it has nothing to say in
@@ -5999,6 +6585,21 @@ function ceilPow2(v) {
     const needed = !inPath || !!(lesson && lesson.mode!=="perception");
     panel.classList.toggle("hidden", !needed);
     if(sharedSeq) sharedSeq.classList.toggle("hidden", !needed);
+    syncSharedSeqEmptyState();
+  }
+
+  // The shared panel is otherwise-empty furniture (no chips, no round tag,
+  // no "back to lessons" link) until there's something to show inside it --
+  // without this it rendered as a blank bordered box, which read as a
+  // rendering bug rather than intentional design.
+  function syncSharedSeqEmptyState(){
+    const sharedSeq=$("shared-active-seq");
+    if(!sharedSeq) return;
+    const backLink=$("back-to-path-link"), roundTag=$("round-tag");
+    const hasBackLink = !!backLink && !backLink.classList.contains("hidden");
+    const hasRoundTag = !!roundTag && !roundTag.classList.contains("hidden");
+    const hasChips = typeof seq!=="undefined" && seq.length>0;
+    sharedSeq.classList.toggle("no-content", !hasBackLink && !hasRoundTag && !hasChips);
   }
 
   // Two exclusive top-level modes (Learning Path / Free Practice), per the
@@ -6013,6 +6614,7 @@ function ceilPow2(v) {
       abandonLesson();   // no-op when no lesson is running; otherwise leaving the
                          // mode leaves the lesson too, rather than scoring the
                          // singer's Free Practice takes as lesson trials
+      document.body.classList.toggle("fp-mode", mode==="free");   // widens .wrap on desktop, see CSS
       $("app-mode-path").classList.toggle("active", mode==="path");
       $("app-mode-free").classList.toggle("active", mode==="free");
       syncPlaySingVisibility();
@@ -6040,6 +6642,69 @@ function ceilPow2(v) {
   pruneOldFreePracticeStats();
   updateFreePracticeStatsDisplay();
 
+  // ================= STEP HELP POPOVERS =================
+  // Replaces the old always-visible "roadmap" strip: a small "?" next to each
+  // step's own label opens a short floating explanation on demand instead of
+  // spending permanent vertical space on something only useful the first time.
+  const STEP_HELP_TEXT = {
+    "what-to-practice": "Choose what kind of exercise to build: hand-picked tones, or a generated scale, arpeggio, or sequence.",
+    "exercise-setup": "Pick the notes, key, octave, and shape for your exercise here — the controls change depending on what you chose above.",
+    "your-exercise": "The exercise you've built so far. Drag a tone to reorder it, or tap × to remove it.",
+    "practice-options": "Sound, tempo, grading style, and vocal range — how you practice, not what you practice.",
+    "play-sing": "Press Play to hear the reference, then sing it back. Your result shows up in Results below.",
+  };
+  const stepPopover=$("step-popover"), stepPopoverText=$("step-popover-text");
+  let openStepHelpBtn=null;
+  function closeStepPopover(){
+    if(!openStepHelpBtn) return;
+    stepPopover.classList.add("hidden");
+    openStepHelpBtn.classList.remove("open");
+    openStepHelpBtn.setAttribute("aria-expanded","false");
+    openStepHelpBtn=null;
+  }
+  function openStepPopover(btn){
+    const key=btn.dataset.help;
+    stepPopoverText.textContent=t(STEP_HELP_TEXT[key]||"");
+    stepPopover.classList.remove("hidden");
+    // Position below the trigger by default, flipping above it if there isn't
+    // room, and clamped horizontally so it never runs off a narrow (phone)
+    // viewport -- getBoundingClientRect() is viewport-relative, matching the
+    // popover's own `position:fixed`.
+    const r=btn.getBoundingClientRect();
+    const pw=stepPopover.offsetWidth, ph=stepPopover.offsetHeight;
+    let left=r.left+r.width/2-pw/2;
+    left=Math.max(8, Math.min(left, window.innerWidth-pw-8));
+    let top=r.bottom+8;
+    if(top+ph>window.innerHeight-8) top=r.top-ph-8;
+    stepPopover.style.left=Math.round(left)+"px";
+    stepPopover.style.top=Math.round(top)+"px";
+    btn.classList.add("open");
+    btn.setAttribute("aria-expanded","true");
+    openStepHelpBtn=btn;
+  }
+  document.querySelectorAll(".step-help").forEach(btn=>{
+    btn.setAttribute("aria-expanded","false");
+    btn.addEventListener("click",(e)=>{
+      // Several triggers sit inside a <summary> (Practice options) -- without
+      // this, clicking "?" also toggled the whole disclosure open/closed.
+      e.preventDefault(); e.stopPropagation();
+      if(openStepHelpBtn===btn){ closeStepPopover(); return; }
+      openStepPopover(btn);
+    });
+  });
+  document.addEventListener("click",(e)=>{
+    if(!openStepHelpBtn) return;
+    if(e.target.closest(".step-help") || e.target.closest("#step-popover")) return;
+    closeStepPopover();
+  });
+  document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closeStepPopover(); });
+  // Reposition rather than close on scroll: several existing flows (starting
+  // a lesson, "Back to Learning Path") trigger their own smooth-scroll, which
+  // fires scroll events well after a click -- closing on those made a
+  // just-opened popover disappear on its own for reasons unrelated to the user.
+  window.addEventListener("scroll",()=>{ if(openStepHelpBtn) openStepPopover(openStepHelpBtn); }, {passive:true, capture:true});
+  window.addEventListener("resize", closeStepPopover);
+
   // ================= VOCAL RANGE (Stage 6) =================
   // Advisory only -- never blocks an exercise, only used later to suggest
   // keys/octaves. Stored per profile; falls back to a session-only key when
@@ -6065,7 +6730,13 @@ function ceilPow2(v) {
     if(!banner) return;
     const alreadySet = !!loadVocalRange();
     const alreadySkipped = lsGet(rangeOnboardSkipKey())==="1";
-    banner.classList.toggle("hidden", alreadySet || alreadySkipped);
+    // Only worth asking for before a lesson that actually uses the voice --
+    // showing it ahead of a listen-only perception lesson (e.g. "Higher or
+    // lower?") asked for setup a singing lesson didn't need yet.
+    const nextId = typeof getNextLessonId==="function" ? getNextLessonId() : null;
+    const nextLesson = nextId ? LESSONS[nextId] : null;
+    const nextNeedsVoice = !!nextLesson && nextLesson.mode!=="perception";
+    banner.classList.toggle("hidden", alreadySet || alreadySkipped || !nextNeedsVoice);
   }
 
   const vrLow=$("vr-low"), vrHigh=$("vr-high");
@@ -6122,6 +6793,8 @@ function ceilPow2(v) {
 
   const vrBackdrop=$("vr-backdrop");
   $("profile-range-tag").addEventListener("click",()=>openVrModal());
+  const fpRangeChangeBtn=$("fp-range-change-btn");
+  if(fpRangeChangeBtn) fpRangeChangeBtn.addEventListener("click",()=>openVrModal());
   let vrDetectedHigh=null, vrDetectedLow=null;
   function vrShowStep(step){
     $("vr-step-high").hidden = step!=="high";
@@ -6560,6 +7233,118 @@ function ceilPow2(v) {
   updateSettingsSummary();
   // Last in init: earlier calls get overwritten by resetFlow()/renderChips().
   syncPlaySingVisibility();
+
+  // Remember Free Practice's exercise-construction and execution settings
+  // per profile, the way vocal range already is -- an advanced user building
+  // "D major, 1 octave, up and down" every session should get it back as
+  // left, not have to rebuild it each time. Guided lessons deliberately stay
+  // out of this: they choose their own settings regardless.
+  const FP_SETTINGS_KEY = "vpt:fpSettings";
+  function fpSettingsKey(){ const a=lsGet(LS_ACTIVE); return FP_SETTINGS_KEY+":"+(a||"_session"); }
+  const FP_PERSIST_SELECTS = ["scale-type","scale-key","scale-octave","scale-span","scale-direction",
+    "arp2-chord","arp2-key","arp2-octave","arp2-span","arp2-direction",
+    "seq2-type","seq2-key","seq2-octave","seq2-pattern","seq2-direction"];
+  const FP_PERSIST_GROUPS = [
+    {id:"source-set", attr:"data-src"}, {id:"timbre", attr:"data-timbre"},
+    {id:"tempo-set", attr:"data-tempo"}, {id:"live-fb-set", attr:"data-fb"},
+    {id:"room-set", attr:"data-room"}, {id:"loud-sensitivity", attr:"data-sens"},
+    {id:"grade-mode", attr:"data-grade"}, {id:"sing-time", attr:"data-t"}
+  ];
+  const FP_PERSIST_CHECKS = ["loudness-on"];
+  function saveFpSettings(){
+    const data={selects:{}, groups:{}, checks:{}};
+    FP_PERSIST_SELECTS.forEach(id=>{ const el=$(id); if(el) data.selects[id]=el.value; });
+    FP_PERSIST_GROUPS.forEach(g=>{
+      const container=$(g.id); if(!container) return;
+      const activeBtn=container.querySelector("button.active");
+      if(activeBtn) data.groups[g.id]=activeBtn.getAttribute(g.attr);
+    });
+    FP_PERSIST_CHECKS.forEach(id=>{ const el=$(id); if(el) data.checks[id]=el.checked; });
+    lsSet(fpSettingsKey(), JSON.stringify(data));
+  }
+  function restoreFpSettings(){
+    let data; try{ data=JSON.parse(lsGet(fpSettingsKey())||"null"); }catch(e){ data=null; }
+    if(!data) return;
+    // Restore the exercise-type tab and other button-groups by clicking the
+    // matching button, and selects by setting + dispatching change -- both
+    // run through the app's own existing handlers rather than duplicating
+    // their side effects here.
+    Object.entries(data.groups||{}).forEach(([id,val])=>{
+      if(val==null) return;
+      const g=FP_PERSIST_GROUPS.find(x=>x.id===id); if(!g) return;
+      const container=$(id); if(!container) return;
+      const btn=container.querySelector('button['+g.attr+'="'+val+'"]');
+      if(btn && !btn.classList.contains("active")) btn.click();
+    });
+    Object.entries(data.selects||{}).forEach(([id,val])=>{
+      const el=$(id);
+      if(el && val!=null && Array.from(el.options).some(o=>o.value===val)){
+        el.value=val;
+        el.dispatchEvent(new Event("change",{bubbles:true}));
+      }
+    });
+    Object.entries(data.checks||{}).forEach(([id,val])=>{
+      const el=$(id);
+      if(el && el.checked!==!!val){ el.checked=!!val; el.dispatchEvent(new Event("change",{bubbles:true})); }
+    });
+  }
+  restoreFpSettings();
+  ["change","click"].forEach(evt=>{
+    document.addEventListener(evt, e=>{
+      const id=e.target.id;
+      if(FP_PERSIST_SELECTS.includes(id) || FP_PERSIST_CHECKS.includes(id) ||
+         FP_PERSIST_GROUPS.some(g=>e.target.closest && e.target.closest("#"+g.id))){
+        saveFpSettings();
+      }
+    });
+  });
+
+  // Keyboard-accessible modals: trap Tab inside whichever modal is open, and
+  // return focus to whatever triggered it on close. Every modal here toggles
+  // the standard `hidden` IDL property directly (never classList), so a
+  // MutationObserver on that one attribute covers every existing open/close
+  // call site without having to touch each of them individually.
+  function setupModalA11y(backdrop){
+    if(!backdrop) return;
+    let lastFocused=null;
+    function getFocusable(){
+      return Array.from(backdrop.querySelectorAll(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )).filter(el=>el.offsetParent!==null);
+    }
+    function onKeydown(e){
+      if(e.key==="Tab"){
+        const focusable=getFocusable();
+        if(!focusable.length) return;
+        const first=focusable[0], last=focusable[focusable.length-1];
+        if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+        else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+      }
+    }
+    const observer=new MutationObserver(()=>{
+      if(!backdrop.hidden){
+        lastFocused=document.activeElement;
+        backdrop.addEventListener("keydown", onKeydown);
+        // Several modals already focus a specific field on open (e.g. the
+        // nickname input) -- only fall back to the first focusable element
+        // when nothing inside grabbed focus itself.
+        setTimeout(()=>{
+          if(!backdrop.contains(document.activeElement)){
+            const focusable=getFocusable();
+            if(focusable.length) focusable[0].focus();
+          }
+        }, 60);
+      } else {
+        backdrop.removeEventListener("keydown", onKeydown);
+        if(lastFocused && typeof lastFocused.focus==="function" && document.contains(lastFocused)){
+          lastFocused.focus();
+        }
+        lastFocused=null;
+      }
+    });
+    observer.observe(backdrop, {attributes:true, attributeFilter:["hidden"]});
+  }
+  ["prog-backdrop","diag-backdrop","fb-backdrop","profile-backdrop","vr-backdrop"].forEach(id=>setupModalA11y($(id)));
 })();
 </script>
 </body>
