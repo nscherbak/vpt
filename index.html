@@ -38,12 +38,46 @@
   h1{font-size:26px;font-weight:600;letter-spacing:-0.01em}
   h1 .accent{color:var(--accent)}
   .value-prop{color:var(--ink);font-size:16px;font-weight:700;margin-top:10px;max-width:52ch;letter-spacing:-0.01em}
+  /* On a narrow phone the full tagline wraps to 2-3 lines before the reader
+     has done anything -- real cost at the top of a page whose landing screen
+     already has a "what do I do first" problem (see the Context section of
+     the UX review doc). Swap to a one-line short form below the existing
+     mobile breakpoint rather than shortening it everywhere. */
+  .value-prop-short{display:none}
+  @media (max-width:480px){
+    .value-prop-full{display:none}
+    .value-prop-short{display:block}
+  }
   .usage-hint{color:var(--muted);font-size:13.5px;margin-top:4px;max-width:52ch}
   .sub{color:var(--muted);font-size:14px;margin-top:6px;max-width:52ch}
   .byline{font-family:var(--mono);font-size:12px;color:var(--dim);margin-top:10px}
   .profile-switch{display:flex;align-items:center;gap:8px;margin-top:4px;margin-bottom:18px;flex-wrap:wrap}
   .profile-label{font-family:var(--mono);font-size:11px;color:var(--dim)}
-  .profile-switch select{padding:6px 10px;font-size:13px}
+  /* The profile picker is a native <select>, but sat next to plain .btn
+     elements it rendered visibly smaller/thinner -- browsers give <select>
+     its own UI font and chrome by default, ignoring most of what .btn gets
+     from CSS. Reset both away so the two controls actually match: same
+     font, same weight, same padding/border, and a drawn-in chevron since
+     appearance:none removes the native dropdown arrow. */
+  .profile-switch select{
+    -webkit-appearance:none;-moz-appearance:none;appearance:none;
+    font-family:var(--sans);font-weight:500;font-size:13px;
+    height:35px;line-height:33px;padding:0 26px 0 12px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%237d8c92' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 10px center;
+  }
+  /* Small, deliberately unalarming delete affordance -- same border/background
+     language as every other control in the row, not the reserved-for-the-
+     confirm-modal danger styling. Sits right next to the picker it acts on:
+     pick a profile from the list, delete button right there. */
+  .profile-del-btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:32px;height:32px;flex:none;padding:0;
+    background:var(--panel-2);border:1px solid var(--line);border-radius:8px;
+    color:var(--muted);font-size:14px;cursor:pointer;
+  }
+  .profile-del-btn:hover{color:var(--ink);border-color:var(--dim)}
+  .profile-del-btn.hidden{display:none}
   .lang-select{margin-left:auto}
   .my-progress-row{margin:10px 0 0}
   .link-btn{background:none;border:none;padding:0;color:var(--accent);cursor:pointer;
@@ -100,6 +134,27 @@
 
   .modal-backdrop{position:fixed;inset:0;background:rgba(6,10,12,0.72);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50;backdrop-filter:blur(2px)}
   .modal-backdrop[hidden]{display:none}
+
+  /* Destructive-action styling, reserved for profile deletion: an outline
+     variant for the low-stakes entry point (still just opens a confirmation),
+     a solid fill for the actual irreversible confirm button -- deliberately
+     more alarming than the button that leads to it. */
+  .btn.ghost.danger-outline{color:var(--bad);border-color:var(--bad)}
+  .btn.ghost.danger-outline:hover{background:rgba(224,104,74,0.12)}
+  .btn.danger{background:var(--bad);border:none;color:var(--bg);font-weight:600}
+  .btn.danger:hover{filter:brightness(1.08)}
+
+  /* Undo toast: the actual localStorage removal for a deleted profile is
+     delayed until this closes (see finalizePendingProfileDelete), so a stray
+     confirm click or instant regret both have a way back. */
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--panel-2);
+    border:1px solid var(--line);border-radius:10px;padding:12px 16px;display:flex;align-items:center;
+    gap:16px;font-size:14px;color:var(--ink);box-shadow:0 10px 28px rgba(0,0,0,0.4);z-index:60;
+    max-width:calc(100vw - 32px)}
+  .toast.hidden{display:none}
+  .toast .toast-undo{background:none;border:none;color:var(--accent);font-weight:700;cursor:pointer;
+    padding:0;font-size:14px;flex:none}
+  .toast .toast-undo:hover{filter:brightness(1.2)}
   .modal{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;max-width:440px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
   .modal h3{font-size:18px;font-weight:600;margin-bottom:6px}
   .modal-note{font-size:13px;color:var(--muted);margin-bottom:16px}
@@ -190,7 +245,18 @@
   /* This is the single most consequential choice in the app (which product
      do you want), so it gets its own heading and card-sized buttons rather
      than reading as a quiet settings tab-bar. */
-  .fork-intro{font-family:var(--mono);font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin:18px 0 10px}
+  .fork-intro{font-family:var(--mono);font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin:0}
+  .fork-intro-row{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin:18px 0 10px}
+  .fork-intro-row .feedback-link{font-size:11.5px;white-space:nowrap;flex:none}
+  /* Pill-badge link, matching the app's small uppercase-mono tag language
+     (.range-tag, .mode-recommend-badge, .lc-tag) rather than a plain
+     underlined link floating next to the eyebrow text. */
+  .tutorial-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);
+    font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);
+    text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:5px 12px;
+    white-space:nowrap;flex:none;transition:border-color .15s,color .15s,background .15s}
+  .tutorial-link:hover{color:var(--accent);border-color:var(--accent);background:rgba(78,201,176,0.10)}
+  .tutorial-link .tl-arrow{font-size:10px;opacity:.7}
   /* Zone labels are the module headers within Free Practice's builder panel --
      given real visual weight (accent color, bold, a numbered badge) instead of
      the muted small-caps most section labels use, since the whole point here
@@ -222,12 +288,13 @@
   .step-popover.hidden{display:none}
   .fp-range-line{font-size:13px;color:var(--muted);margin:-2px 0 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
   .fp-range-line .link-btn{font-size:12.5px}
-  .mode-switch{display:flex;gap:10px;margin-bottom:18px;position:sticky;top:8px;z-index:10;background:var(--bg);padding-top:4px}
-  .mode-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 12px;border-radius:14px;border:1px solid var(--line);background:var(--panel);cursor:pointer;transition:border-color .15s,background .15s}
-  .mode-btn .mode-recommend-badge{font-family:var(--mono);font-size:10px;letter-spacing:0.04em;text-transform:uppercase;color:var(--bg);background:var(--accent);border-radius:999px;padding:2px 9px;margin-bottom:4px}
+  .mode-switch{display:flex;gap:10px;margin-bottom:18px}
+  .mode-btn{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 12px;border-radius:14px;border:1px solid var(--line);background:var(--panel);cursor:pointer;transition:border-color .15s,background .15s}
+  .mode-btn .mode-recommend-badge{font-family:var(--mono);font-size:10px;letter-spacing:0.04em;text-transform:uppercase;color:var(--bg);background:var(--accent);border-radius:999px;padding:2px 9px;margin-bottom:4px;text-align:center}
   .mode-btn .mode-recommend-badge.hidden{display:none}
   .mode-btn .mtitle{font-weight:700;font-size:17px;color:var(--ink)}
   .mode-btn .msub{font-size:12.5px;color:var(--muted)}
+  .mode-btn .mexamples{font-size:10.5px;color:var(--muted);opacity:.75;letter-spacing:0.01em}
   .mode-btn.active{border-width:2px;border-color:var(--accent);background:rgba(78,201,176,0.14);padding:17px 11px}
   .mode-btn.active .mtitle{color:var(--accent)}
   .app-mode-panel{display:none}
@@ -565,6 +632,37 @@
   .mic-path-note{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dim);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 10px;margin:0 0 10px}
   .mic-path-note.hidden{display:none}
   .mic-path-x{background:none;border:none;color:var(--dim);font-size:15px;line-height:1;cursor:pointer;padding:0 2px;margin-left:auto}
+  .mic-block-note{display:flex;flex-direction:column;gap:10px;align-items:flex-start;font-size:13px;
+    color:var(--ink);background:rgba(224,104,74,0.1);border:1px solid rgba(224,104,74,0.4);
+    border-radius:10px;padding:12px 14px;margin:0 0 12px}
+  .mic-block-note.hidden{display:none}
+  .mbn-text{margin:0;max-width:56ch}
+  /* Deliberately NOT --bad: the note/panel around this button is already red
+     to signal "problem", but the button itself is the ACTION that resolves
+     that problem -- red-on-red made it read as another destructive/failing
+     control rather than the way out. Accent (the same teal used for every
+     other primary call-to-action -- .btn-go, .next-round-btn, etc.) keeps
+     "problem" and "fix it" visually distinct. */
+  .mbn-activate{background:var(--accent);border:1px solid var(--accent);color:#04120e;font-weight:700}
+  .mbn-activate:hover{filter:brightness(1.08)}
+  .mbn-activate:disabled{opacity:.6;cursor:default}
+  /* Deliberately a plain text-style link, not a bordered button -- this is the
+     tertiary action (automatic recovery -> Try again -> this -> Diagnostics),
+     and it should read as one step down from the main retry button, not equal
+     to it. */
+  .mbn-secondary{background:none;border:none;padding:0;font-size:12.5px;color:var(--muted);
+    text-decoration:underline;cursor:pointer;align-self:flex-start}
+  .mbn-secondary:hover{color:var(--ink)}
+  .mbn-secondary.hidden{display:none}
+  .mbn-help{width:100%}
+  .mbn-help summary{cursor:pointer;list-style:none;font-size:12px;color:var(--muted)}
+  .mbn-help summary:hover{color:var(--ink)}
+  .mbn-help summary::-webkit-details-marker{display:none}
+  .mbn-help ul{margin:8px 0 0;padding-left:18px;font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+  .mbn-help ul li.hidden{display:none}
+  .mbn-help #mic-help-showall{display:block;font-size:12px;margin:8px 0 0}
+  .mbn-os-note{margin:10px 0 0;font-size:12px;color:var(--muted)}
+  .mbn-help.hidden{display:none}
   .vocab summary{cursor:pointer;list-style:none;font-family:var(--mono);font-size:13px;color:var(--accent);padding:12px 16px;background:var(--panel);border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;gap:8px;user-select:none}
   .vocab summary::-webkit-details-marker{display:none}
   .vocab summary .chev{transition:transform .2s;color:var(--dim)}
@@ -592,12 +690,7 @@
     .readout{grid-template-columns:1fr}
     .cell .v{font-size:20px}
     h1{font-size:22px}
-    /* On a phone, a permanently-pinned two-card mode switch eats a large slice
-       of the viewport for the whole session -- worth it on desktop, where
-       there's height to spare, but not here. Let it scroll away like the
-       rest of the header instead. */
-    .mode-switch{position:static;padding-top:0}
-    .mode-btn .mode-recommend-badge{font-size:9px;padding:2px 6px;white-space:nowrap}
+    .mode-btn .mode-recommend-badge{font-size:9px;padding:2px 6px}
     .mode-btn{padding:14px 6px}
     /* comfortable touch targets on phones (44px minimum) */
     .btn,select{min-height:44px}
@@ -609,6 +702,8 @@
     .chip{padding:9px 12px}
     .radioset{flex-wrap:wrap}
     #source-set{display:grid;grid-template-columns:1fr 1fr;gap:6px;flex:1 1 100%}
+    #tempo-set{display:grid;grid-template-columns:1fr 1fr;gap:3px;width:100%}
+    #tempo-set button{text-align:center}
     #source-set button{text-align:center}
   }
 </style>
@@ -616,30 +711,37 @@
 <body>
 <div class="wrap">
   <header>
-    <div class="title-row"><img class="app-logo" src="data:image/png;base64,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" alt="Vocal Pitch Trainer icon" width="48" height="48"><h1>Vocal Pitch <span class="accent">Trainer</span><span class="version-tag">v3.13.0</span></h1>
+    <div class="title-row"><img class="app-logo" src="data:image/png;base64,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" alt="Vocal Pitch Trainer icon" width="48" height="48"><h1>Vocal Pitch <span class="accent">Trainer</span><span class="version-tag">v3.20</span></h1>
       <select id="lang-select" aria-label="Language" class="lang-select">
         <option value="en">English</option>
         <option value="uk">Українська</option>
       </select></div>
-    <p class="value-prop"><span data-i18n="Train vocal pitch accuracy through guided lessons or focused exercises.">Train vocal pitch accuracy through guided lessons or focused exercises.</span></p>
+    <p class="value-prop value-prop-full"><span data-i18n="Train vocal pitch accuracy through guided lessons or focused exercises.">Train vocal pitch accuracy through guided lessons or focused exercises.</span></p>
+    <p class="value-prop value-prop-short"><span data-i18n="Train vocal pitch accuracy.">Train vocal pitch accuracy.</span></p>
   </header>
 
-  <p class="fork-intro"><span data-i18n="Choose how you'll train">Choose how you'll train</span></p>
+  <div class="fork-intro-row">
+    <p class="fork-intro"><span data-i18n="Choose how you'll train">Choose how you'll train</span></p>
+    <a class="tutorial-link" href="https://claude.ai/code/artifact/60a57ad7-948a-4256-9d57-a5d17cf98959" target="_blank" rel="noopener"><span data-i18n="Tutorial">Tutorial</span><span class="tl-arrow" aria-hidden="true">↗</span></a>
+  </div>
   <div class="mode-switch" id="mode-switch">
     <button class="mode-btn active" data-appmode="path">
-      <span class="mode-recommend-badge" id="path-mode-badge"><span data-i18n="New here? Start here">New here? Start here</span></span>
+      <span class="mode-recommend-badge" id="path-mode-badge"><span data-i18n="New to singing? Start here">New to singing? Start here</span></span>
       <span class="mtitle"><span data-i18n="Guided lessons">Guided lessons</span></span>
       <span class="msub" id="path-mode-sub"><span data-i18n="We'll tell you what to practice next">We'll tell you what to practice next</span></span>
     </button>
     <button class="mode-btn" data-appmode="free">
       <span class="mtitle"><span data-i18n="Free Practice">Free Practice</span></span>
       <span class="msub"><span data-i18n="Build your own exercise">Build your own exercise</span></span>
+      <span class="mexamples"><span data-i18n="Tones">Tones</span> · <span data-i18n="Scales">Scales</span> · <span data-i18n="Arpeggios">Arpeggios</span> · <span data-i18n="Sequences">Sequences</span></span>
     </button>
   </div>
 
   <div class="profile-switch">
     <span class="profile-label"><span data-i18n="Profile">Profile</span></span>
+    <button class="step-help" data-help="profile" type="button" aria-label="What this section is for">?</button>
     <select id="profile-select" aria-label="Profile"></select>
+    <button class="profile-del-btn hidden" id="profile-delete-btn" type="button" aria-label="Delete profile">🗑</button>
     <button class="range-tag" id="profile-range-tag" type="button"></button>
     <button class="btn ghost profile-new" id="profile-new-btn"><span data-i18n="+ New">+ New</span></button>
   </div>
@@ -903,8 +1005,8 @@
         <summary><span class="chev">›</span> <span data-i18n="Which headphones or mic should I use?">Which headphones or mic should I use?</span></summary>
         <div class="vocab-body">
           <p><span data-i18n="Wired headphones or earbuds are best — 3.5 mm or USB-C. Your phone or laptop's own mic is fine alongside them.">Wired headphones or earbuds are best — 3.5 mm or USB-C. Your phone or laptop's own mic is fine alongside them.</span></p>
-          <p><span data-i18n="Avoid Bluetooth headsets. As soon as any app opens the mic, Bluetooth drops to call quality — the reference tone you are matching sounds muffled, and your headset applies its own processing that this app cannot switch off.">Avoid Bluetooth headsets. As soon as any app opens the mic, Bluetooth drops to call quality — the reference tone you are matching sounds muffled, and your headset applies its own processing that this app cannot switch off.</span></p>
-          <p><span data-i18n="Using Bluetooth headphones only for listening doesn't avoid this — opening the mic switches the whole device.">Using Bluetooth headphones only for listening doesn't avoid this — opening the mic switches the whole device.</span></p>
+          <p><span data-i18n="Bluetooth headset microphones can drop to call-quality audio once any app opens them for recording — the reference tone you are matching may sound muffled, and the headset applies its own processing this app cannot switch off.">Bluetooth headset microphones can drop to call-quality audio once any app opens them for recording — the reference tone you are matching may sound muffled, and the headset applies its own processing this app cannot switch off.</span></p>
+          <p><span data-i18n="If that happens, try singing into your phone or laptop's own mic (or a wired mic) while still listening through your Bluetooth headphones — how much this affects you depends on your device and OS.">If that happens, try singing into your phone or laptop's own mic (or a wired mic) while still listening through your Bluetooth headphones — how much this affects you depends on your device and OS.</span></p>
           <p><span data-i18n="Turn off noise cancelling or any gaming mode on your headset. Noise gates can cut the quiet end of a long note, so a steady hold gets measured as a short one.">Turn off noise cancelling or any gaming mode on your headset. Noise gates can cut the quiet end of a long note, so a steady hold gets measured as a short one.</span></p>
         </div>
       </details>
@@ -915,9 +1017,6 @@
       <button class="btn ghost" id="diag-open"><span data-i18n="Check microphone">Check microphone</span></button>
       <span class="set-note"><span data-i18n="Open this if nothing happens when you sing.">Open this if nothing happens when you sing.</span></span>
     </div>
-
-
-
 
 
 
@@ -937,6 +1036,26 @@
       <span class="hsr-step" data-step="sing"><span data-i18n="Sing">Sing</span></span>
       <span class="hsr-arrow">→</span>
       <span class="hsr-step" data-step="review"><span data-i18n="Review">Review</span></span>
+    </div>
+
+    <div class="mic-block-note hidden" id="mic-block-note" role="alert">
+      <p class="mbn-text" id="mbn-text"></p>
+      <button class="btn mbn-activate" id="mic-activate-btn" type="button">
+        <span aria-hidden="true">🎙️</span> <span id="mbn-activate-label"><span data-i18n="Activate microphone">Activate microphone</span></span>
+      </button>
+      <button class="mbn-secondary hidden" id="mic-secondary-btn" type="button"><span id="mbn-secondary-label"></span></button>
+      <details class="mbn-help hidden" id="mic-unblock-help">
+        <summary><span data-i18n="How to allow microphone access">How to allow microphone access</span></summary>
+        <ul id="mic-unblock-list">
+          <li data-mic-platform="ios"><b><span data-i18n="iPhone/iPad (Safari):">iPhone/iPad (Safari):</span></b> <span data-i18n="tap the &quot;aA&quot; button in the address bar → Website Settings → Microphone → Allow, then reload this page.">tap the "aA" button in the address bar → Website Settings → Microphone → Allow, then reload this page.</span></li>
+          <li data-mic-platform="android"><b><span data-i18n="Android (Chrome):">Android (Chrome):</span></b> <span data-i18n="tap the lock or info icon left of the address bar → Permissions → Microphone → Allow, then reload this page.">tap the lock or info icon left of the address bar → Permissions → Microphone → Allow, then reload this page.</span></li>
+          <li data-mic-platform="windows mac"><b><span data-i18n="Chrome / Edge:">Chrome / Edge:</span></b> <span data-i18n="click the lock or info icon left of the address bar → Site settings → Microphone → Allow, then reload this page.">click the lock or info icon left of the address bar → Site settings → Microphone → Allow, then reload this page.</span></li>
+          <li data-mic-platform="windows mac"><b><span data-i18n="Firefox:">Firefox:</span></b> <span data-i18n="click the lock icon → Connection secure → More information → Permissions, set Microphone to Allow, then reload this page.">click the lock icon → Connection secure → More information → Permissions, set Microphone to Allow, then reload this page.</span></li>
+          <li data-mic-platform="mac"><b><span data-i18n="Safari:">Safari:</span></b> <span data-i18n="open Settings for This Website (Safari menu, or the ⋯ button) → Microphone → Allow, then reload this page.">open Settings for This Website (Safari menu, or the ⋯ button) → Microphone → Allow, then reload this page.</span></li>
+        </ul>
+        <button class="link-btn hidden" id="mic-help-showall" type="button"><span data-i18n="Show instructions for other browsers/devices">Show instructions for other browsers/devices</span></button>
+        <p class="mbn-os-note"><span data-i18n="Still blocked? Check microphone permission for your browser in your device's settings.">Still blocked? Check microphone permission for your browser in your device's settings.</span></p>
+      </details>
     </div>
 
     <div class="stage-row">
@@ -1110,6 +1229,23 @@
         <button class="btn-go" id="profile-save"><span data-i18n="Save">Save</span></button>
       </div>
     </div>
+  </div>
+
+  <div class="modal-backdrop" id="profile-delete-backdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="profile-delete-title">
+      <button class="modal-close" id="profile-delete-close" aria-label="Close">✕</button>
+      <h3 id="profile-delete-title"></h3>
+      <p class="modal-note" id="profile-delete-body"></p>
+      <div class="fb-actions">
+        <button class="btn ghost" id="profile-delete-cancel"><span data-i18n="Cancel">Cancel</span></button>
+        <button class="btn danger" id="profile-delete-confirm"><span data-i18n="Delete profile">Delete profile</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast hidden" id="profile-delete-toast" role="status" aria-live="polite">
+    <span id="profile-delete-toast-text"></span>
+    <button class="toast-undo" id="profile-delete-undo" type="button"><span data-i18n="Undo">Undo</span></button>
   </div>
 
   <div class="modal-backdrop" id="vr-backdrop" hidden>
@@ -1421,8 +1557,27 @@
   "ear training · voice · intonation": "тренування слуху · голосу · інтонаціі",
   "v3.4.0": "v3.4.0",
   "Train vocal pitch accuracy through guided lessons or focused exercises.": "Розвивайте точність висоти голосу через покрокові уроки або цілеспрямовані вправи.",
+  "Train vocal pitch accuracy.": "Розвивайте точність висоти голосу.",
   "Listen, sing, and get precise feedback on how closely your voice matches the target.": "Слухайте, співайте й отримуйте точний зворотний зв'язок про те, наскільки ваш голос відповідає цілі.",
   "Created by": "Створено",
+  "Tutorial": "Посібник",
+  "Activate microphone": "Активувати мікрофон",
+  "Try again": "Спробувати знову",
+  "This app needs your microphone to hear you sing.": "Цій програмі потрібен ваш мікрофон, щоб чути, як ви співаєте.",
+  "Microphone access wasn't granted. Try again. If your browser doesn't show a permission request, allow microphone access for this site in your browser or device settings.": "Доступ до мікрофона не надано. Спробуйте ще раз. Якщо браузер не показує запит дозволу, дозвольте доступ до мікрофона для цього сайту в налаштуваннях браузера або пристрою.",
+  "How to allow microphone access": "Як дозволити доступ до мікрофона",
+  "iPhone/iPad (Safari):": "iPhone/iPad (Safari):",
+  "tap the \"aA\" button in the address bar → Website Settings → Microphone → Allow, then reload this page.": "натисніть кнопку «aA» в адресному рядку → Налаштування сайту → Мікрофон → Дозволити, потім перезавантажте сторінку.",
+  "Android (Chrome):": "Android (Chrome):",
+  "tap the lock or info icon left of the address bar → Permissions → Microphone → Allow, then reload this page.": "натисніть значок замка або інформації ліворуч від адресного рядка → Дозволи → Мікрофон → Дозволити, потім перезавантажте сторінку.",
+  "Chrome / Edge:": "Chrome / Edge:",
+  "click the lock or info icon left of the address bar → Site settings → Microphone → Allow, then reload this page.": "натисніть значок замка або інформації ліворуч від адресного рядка → Налаштування сайту → Мікрофон → Дозволити, потім перезавантажте сторінку.",
+  "Firefox:": "Firefox:",
+  "click the lock icon → Connection secure → More information → Permissions, set Microphone to Allow, then reload this page.": "натисніть значок замка → З'єднання захищене → Докладніше → Дозволи, встановіть для мікрофона значення Дозволити, потім перезавантажте сторінку.",
+  "Safari:": "Safari:",
+  "open Settings for This Website (Safari menu, or the ⋯ button) → Microphone → Allow, then reload this page.": "відкрийте Налаштування для цього сайту (меню Safari або кнопка ⋯) → Мікрофон → Дозволити, потім перезавантажте сторінку.",
+  "Show instructions for other browsers/devices": "Показати інструкції для інших браузерів/пристроїв",
+  "Still blocked? Check microphone permission for your browser in your device's settings.": "Досі заблоковано? Перевірте дозвіл на використання мікрофона для вашого браузера в налаштуваннях пристрою.",
   "N. Scherbak": "М. Щербак",
   "send feedback": "надіслати відгук",
   "Who's practicing?": "Хто зараз тренується?",
@@ -1465,7 +1620,7 @@
   "Guided lessons": "Покрокові уроки",
   "step by step": "крок за кроком",
   "Choose how you'll train": "Оберіть, як тренуватися",
-  "New here? Start here": "Вперше тут? Почніть звідси",
+  "New to singing? Start here": "Початківець? Почніть звідси",
   "We'll tell you what to practice next": "Ми підкажемо, що практикувати далі",
   "Build your own exercise": "Створіть власну вправу",
   "What to practice": "Що практикувати",
@@ -1732,6 +1887,8 @@
   "Note ": "Нота ",
   "Add a tone to begin": "Додайте ноту, щоб почати",
   "pick tones above": "оберіть ноти вище",
+  "Finish Exercise setup to begin": "Завершіть налаштування вправи, щоб почати",
+  "set the options above, then Generate": "налаштуйте параметри вище, потім натисніть «Згенерувати»",
   "one tone selected": "обрано одну ноту",
   "play tones one at a time, or the whole phrase": "відтворюйте ноти по одній або цілу фразу",
   "play the whole exercise": "відтворити всю вправу",
@@ -1830,6 +1987,14 @@
   "Your saved range is narrow, so some exercises were shortened to fit. If your range has grown, update it from the profile tag.": "Ваш збережений діапазон вузький, тож деякі вправи було скорочено. Якщо діапазон розширився, оновіть його через позначку профілю.",
   "(too wide)": "(завеликий)",
   "Profile": "Профіль",
+  "A profile keeps your vocal range, lesson progress, and stats separate from anyone else on this device. Setting a range helps exercises fit your voice — it's optional, and you can change it later. Use the delete button next to the profile picker above to remove a profile (and everything saved under it).": "Профіль зберігає ваш вокальний діапазон, прогрес уроків і статистику окремо від інших, хто користується цим пристроєм. Налаштування діапазону допомагає підібрати вправи під ваш голос — це необов'язково, і ви можете змінити його пізніше. Щоб видалити профіль (і все збережене в ньому), натисніть кнопку видалення поруч із вибором профілю вище.",
+  "Removes the saved vocal range, lesson progress, and practice stats for this profile. Other profiles aren't affected.": "Видаляє збережений вокальний діапазон, прогрес уроків і статистику практики для цього профілю. Інші профілі не постраждають.",
+  "Delete {name}": "Видалити {name}",
+  "Delete {name}?": "Видалити {name}?",
+  "This removes {name}'s saved vocal range, lesson progress, and practice stats from this device. Other profiles won't be affected, and you'll have a few seconds to undo right after.": "Це видалить збережений вокальний діапазон, прогрес уроків і статистику практики профілю «{name}» з цього пристрою. Інші профілі не постраждають, і після підтвердження у вас буде кілька секунд, щоб скасувати дію.",
+  "Delete profile": "Видалити профіль",
+  "Profile {name} deleted": "Профіль «{name}» видалено",
+  "Undo": "Відновити",
   "Browse all lessons": "Переглянути всі уроки",
   "Set range": "Задати діапазон",
   "take a breath — you sing when the dots run out": "зробіть вдих — співайте, коли крапки закінчаться",
@@ -1888,16 +2053,22 @@
   "typically ": "зазвичай ",
   "Which headphones or mic should I use?": "Які навушники чи мікрофон обрати?",
   "Wired headphones or earbuds are best — 3.5 mm or USB-C. Your phone or laptop's own mic is fine alongside them.": "Найкраще підходять дротові навушники — 3,5 мм або USB-C. Вбудований мікрофон телефона чи ноутбука разом з ними цілком годиться.",
-  "Avoid Bluetooth headsets. As soon as any app opens the mic, Bluetooth drops to call quality — the reference tone you are matching sounds muffled, and your headset applies its own processing that this app cannot switch off.": "Уникайте Bluetooth-гарнітур. Щойно застосунок вмикає мікрофон, Bluetooth переходить у режим розмови — еталонний тон звучить приглушено, а гарнітура застосовує власну обробку, яку цей застосунок не може вимкнути.",
-  "Using Bluetooth headphones only for listening doesn't avoid this — opening the mic switches the whole device.": "Слухати через Bluetooth і записувати іншим мікрофоном не вийде — увімкнення мікрофона перемикає весь пристрій.",
+  "Bluetooth headset microphones can drop to call-quality audio once any app opens them for recording — the reference tone you are matching may sound muffled, and the headset applies its own processing this app cannot switch off.": "Мікрофони Bluetooth-гарнітур можуть переходити в якість розмови, щойно якийсь застосунок вмикає їх для запису — еталонний тон, який ви повторюєте, може звучати приглушено, а гарнітура застосовує власну обробку, яку цей застосунок не може вимкнути.",
+  "If that happens, try singing into your phone or laptop's own mic (or a wired mic) while still listening through your Bluetooth headphones — how much this affects you depends on your device and OS.": "Якщо так стається, спробуйте співати у вбудований мікрофон телефона чи ноутбука (або в дротовий мікрофон), продовжуючи слухати через Bluetooth-навушники — наскільки це вплине на вас, залежить від пристрою та ОС.",
   "Turn off noise cancelling or any gaming mode on your headset. Noise gates can cut the quiet end of a long note, so a steady hold gets measured as a short one.": "Вимкніть шумозаглушення та ігрові режими гарнітури. Шумовий фільтр може обрізати тихий кінець довгої ноти, і рівне утримання зарахується як коротке.",
-  "Bluetooth mic detected — the reference tone drops to call quality. Wired is more accurate.": "Виявлено Bluetooth-мікрофон — еталонний тон переходить у якість розмови. Дротове підключення точніше.",
+  "Bluetooth microphone detected — reference-audio quality may be reduced. A wired mic or your device's built-in mic can be more reliable.": "Виявлено Bluetooth-мікрофон — якість еталонного звуку може погіршитися. Дротовий мікрофон або вбудований мікрофон пристрою можуть бути надійнішими.",
   "avg deviation ": "середнє відхилення ",
   "steadiness ": "стабільність ",
   "drift ": "зміщення ",
   "vibrato ": "вібрато ",
   "That's vibrato rather than unsteadiness — this lesson asks for a straight tone.": "Це вібрато, а не нестабільність — у цьому уроці потрібен рівний тон.",
   "on pitch": "точно в ноту",
+  "tone too short — hold it a bit longer": "тон занадто короткий — тримайте трохи довше",
+  "no clear pitch detected": "чіткої висоти тону не виявлено",
+  "Not enough sound detected — sing a little louder or check your microphone.": "Виявлено недостатньо звуку — співайте трохи гучніше або перевірте мікрофон.",
+  "that tone was too short — hold it a little longer": "цей тон був занадто коротким — тримайте трохи довше",
+  "sound came through, but no clear pitch — try one steady, sustained vowel": "звук пройшов, але чіткої висоти тону немає — спробуйте один рівний, витриманий голосний",
+  "I couldn't detect enough sound. Try singing a little louder; if that doesn't help, check the microphone input.": "Не вдалося виявити достатньо звуку. Спробуйте співати трохи гучніше; якщо це не допоможе, перевірте вхід мікрофона.",
   "slightly higher (less than a quarter-tone)": "трохи вище (менше чверті тону)",
   "slightly lower (less than a quarter-tone)": "трохи нижче (менше чверті тону)",
   "about ": "приблизно на ",
@@ -1919,11 +2090,37 @@
   "Microphone needs https": "Мікрофону потрібен https",
   "Microphone not supported": "Мікрофон не підтримується",
   "Microphone didn't start": "Мікрофон не запустився",
+  "Microphone hasn't started": "Мікрофон ще не запустився",
+  "Microphone isn't responding": "Мікрофон не відповідає",
   "Microphone blocked": "Мікрофон заблоковано",
+  "Microphone access is blocked": "Доступ до мікрофона заблоковано",
+  "No microphone found": "Мікрофон не знайдено",
+  "Microphone connection was lost": "З'єднання з мікрофоном втрачено",
+  "Audio was interrupted": "Звук було перервано",
+  "this can happen during a call, Siri, or another app using sound — press Play to continue": "це може статися під час дзвінка, роботи Siri або іншого застосунку, що використовує звук — натисніть «Відтворити», щоб продовжити",
+  "Audio was interrupted — this can happen during a call, Siri, or another app using sound. Press Continue to resume.": "Звук було перервано — це може статися під час дзвінка, роботи Siri або іншого застосунку, що використовує звук. Натисніть «Продовжити», щоб відновити.",
+  "Continue": "Продовжити",
+  "Your attempt wasn't counted.": "Вашу спробу не враховано.",
+  "Attempt interrupted": "Спробу перервано",
+  "It wasn't counted. Press Play when you're ready.": "Її не враховано. Натисніть «Відтворити», коли будете готові.",
+  "Range check was interrupted — try again.": "Перевірку діапазону перервано — спробуйте ще раз.",
   "open this page over https (e.g. your GitHub Pages link) — browsers block the mic on local files": "відкрийте цю сторінку через https (наприклад, за посиланням GitHub Pages) — браузери блокують мікрофон для локальних файлів",
   "this browser doesn't provide microphone access": "цей браузер не надає доступу до мікрофона",
   "the mic didn't come up in time — press Play to try again": "мікрофон не увімкнувся вчасно — натисніть «Відтворити», щоб спробувати ще раз",
+  "check for a browser permission request, or check microphone access for this site, then try again": "перевірте, чи не з'явився запит дозволу браузера, або перевірте доступ до мікрофона для цього сайту, потім спробуйте ще раз",
+  "VPT couldn't open the microphone — try again, or choose another input": "VPT не вдалося відкрити мікрофон — спробуйте ще раз або оберіть інший пристрій введення",
+  "VPT didn't hear back from the browser. Check for a permission request — it may be hidden behind another window — or check microphone access for this site, then try again.": "VPT не отримав відповіді від браузера. Перевірте, чи не з'явився запит дозволу — можливо, він прихований за іншим вікном — або перевірте доступ до мікрофона для цього сайту, потім спробуйте ще раз.",
+  "allow microphone access for this site in your browser, then press Play again": "дозвольте доступ до мікрофона для цього сайту в браузері, потім знову натисніть «Відтворити»",
+  "plug in a microphone, then press Play again": "підключіть мікрофон, потім знову натисніть «Відтворити»",
+  "it may have been unplugged — reconnect it, then press Play again": "можливо, його від'єднали — під'єднайте знову й натисніть «Відтворити»",
   "allow mic access in your browser to continue": "дозвольте доступ до мікрофона в браузері, щоб продовжити",
+  "VPT can't find a microphone connected to this device. Plug one in, then try again.": "VPT не може знайти підключений мікрофон. Підключіть його, потім спробуйте ще раз.",
+  "Your microphone stopped responding — it may have been unplugged or handed to another app. Reconnect it, then try again.": "Мікрофон перестав відповідати — можливо, його від'єднали або ним скористався інший застосунок. Під'єднайте його знову й спробуйте ще раз.",
+  "This app has microphone access, but no sound is coming through. If Zoom, Teams, another browser tab, a recording app, or other audio software is using this microphone, close it and try again.": "Застосунок має доступ до мікрофона, але звук не надходить. Якщо цей мікрофон використовує Zoom, Teams, інша вкладка браузера, застосунок для запису чи інша аудіопрограма — закрийте її та спробуйте ще раз.",
+  "Try microphone again": "Спробувати мікрофон ще раз",
+  "Reconnect": "Під'єднати знову",
+  "Choose microphone": "Обрати мікрофон",
+  "Microphone settings": "Налаштування мікрофона",
   "starting the microphone…": "вмикається мікрофон…",
   "loading piano…": "завантажується фортепіано…",
   "piano unavailable — using synth tone": "фортепіано недоступне — використовується синтезований тон",
@@ -2043,6 +2240,11 @@
     if(typeof refreshProfileRangeTag==="function") refreshProfileRangeTag();
     if(typeof renderPatternOptions==="function") renderPatternOptions();
     if(typeof refreshPathModeSub==="function") refreshPathModeSub();
+    if(typeof updateMicBlockNote==="function") updateMicBlockNote();
+    if(typeof refreshProfileDeleteUI==="function") refreshProfileDeleteUI();
+    if(typeof openProfileDeleteModal==="function" && $("profile-delete-backdrop") && !$("profile-delete-backdrop").hidden){
+      openProfileDeleteModal(); // re-render the open confirm dialog's interpolated text in the new language
+    }
     const sel = $("lang-select");
     if(sel) sel.value = lang;
     // refresh the currently-shown stage message + button labels too -- but
@@ -2069,9 +2271,14 @@
   let gradeMode="follow";      // "follow" = segment & align (default) · "clock" = fixed slots
   let room="quiet";            // "quiet" = raw mic (best pitch) · "noisy" = browser noise suppression
   let ac=null,analyser=null,buf=null,micStream=null,micSrc=null,raf=null;
+  // "unknown" (unsupported/not yet checked) | "granted" | "denied" | "prompt" --
+  // mirrors the Permissions API's own microphone state where the browser
+  // supports querying it (Chrome/Edge; Firefox and Safari don't, so those stay
+  // "unknown" and we fall back to reading getUserMedia's own failure instead).
+  let micPermState="unknown";
   let listening=false,running=false;
-  let liveCents=null,liveNoteData=null;
-  let stepIdx=0, stepCaps=[];
+  let liveCents=null,liveNoteData=null,liveRMS=null;
+  let stepIdx=0, stepCaps=[], stepReasons=[];
 
   ALL_NOTES.forEach(n=>{ const o=document.createElement("option"); o.textContent=n; if(n==="C4")o.selected=true; addSel.appendChild(o); });
 
@@ -2515,6 +2722,7 @@
     }
     const result=await attemptGlide(pair.from, pair.to, pair.direction);
     liveFeedbackHidden=false;   // never leave it hidden once the trial is over
+    if(isAbortedTake(result)){ reportAbortedTake(result.reason); setBusy(false); return; }
     if(!result){ setBusy(false); return; }   // mic issue or the attempt was aborted (e.g. navigated away)
     renderGlideTrace(result);   // show what was actually sung, whether the attempt passed or not
     lessonAttemptCount++;
@@ -3689,6 +3897,12 @@
     // likewise, which Play button(s) show depends on the active tab (Tones gets
     // both tone/phrase actions, the generator tabs collapse to one Play button)
     if(typeof updatePlayButtons==="function") updatePlayButtons();
+    // ...and the stage status line's zero-notes message is also tab-specific
+    // ("Add a tone to begin" only makes sense on the manual Tones tab; the
+    // generator tabs never "add" tones one at a time) -- refresh it the same
+    // way, rather than leaving whichever message was showing before the
+    // switch stuck on screen until the next add/clear/generate.
+    if(typeof resetFlow==="function") resetFlow();
   }
   document.querySelectorAll("#source-set button").forEach(b=>{
     b.addEventListener("click",()=>{
@@ -3783,6 +3997,10 @@
     try{ if(micSrc) micSrc.disconnect(); }catch(e){}
     try{ if(micStream) micStream.getTracks().forEach(t=>t.stop()); }catch(e){}
     micSrc=null; micStream=null; analyser=null; buf=null;
+    // Otherwise a stale reading from the just-released stream could survive
+    // into whatever comes next (a fresh capture, or just the idle meter)
+    // until detectLoop() happens to overwrite it.
+    liveCents=null; liveNoteData=null; liveRMS=null;
   }
 
   // ---------- loudness control settings ----------
@@ -3817,26 +4035,39 @@
   // mic was "avoid iOS earpiece routing while a reference tone plays" -- the
   // routing issue only cares whether the input is actively delivering audio
   // at that moment, not whether the whole stream still exists.
-  // Classic Bluetooth can't do high-quality output and mic capture at once: the
-  // moment getUserMedia opens, the OS drops the headset from A2DP to HFP, which
-  // is mono call quality (8 kHz narrowband, or 16 kHz wideband). What actually
+  // Classic Bluetooth CAN'T do high-quality output and mic capture at once on
+  // most stacks: opening the mic drops the headset from A2DP to HFP, which is
+  // mono call quality (8 kHz narrowband, or 16 kHz wideband). What actually
   // suffers is the REFERENCE TONE: the piano the singer is trying to match gets
   // muffled and mono, so their matching is worse and the app records it as
-  // THEIR error.
+  // THEIR error. This is CONDITIONAL, not universal -- it only happens when the
+  // MICROPHONE being opened is the Bluetooth headset's own mic (Apple documents
+  // this specifically as a property of using a Bluetooth headset's built-in
+  // mic, not of Bluetooth output generally), and some newer stacks avoid it
+  // entirely (Microsoft documents improved/stereo playback during mic use for
+  // supported Bluetooth LE Audio devices on Windows 11). A singer using
+  // Bluetooth headphones for OUTPUT while singing into a different (phone/
+  // laptop/wired/USB) microphone for INPUT is not necessarily affected at all --
+  // that's the workaround surfaced in the help text and in the note below.
   //
-  // Note what is NOT a problem: narrowband is roughly telephone band, so
-  // fundamentals below ~300 Hz are attenuated, but the detector is MPM (pitchy),
-  // not plain autocorrelation, and MPM reads a missing fundamental from the
-  // harmonic spacing. Measured: E2-A4 with everything below 300 Hz stripped
-  // still returns the correct pitch at clarity 1.00. There is a test for it.
+  // Note what is NOT a problem even when the HFP path IS active: narrowband is
+  // roughly telephone band, so fundamentals below ~300 Hz are attenuated, but
+  // the detector is MPM (pitchy), not plain autocorrelation, and MPM reads a
+  // missing fundamental from the harmonic spacing. Measured: E2-A4 with
+  // everything below 300 Hz stripped still returns the correct pitch at
+  // clarity 1.00. There is a test for it.
   //
-  // It also silently breaks the Quiet room promise: those constraints turn off
-  // the BROWSER's processing, but a Bluetooth headset and the OS apply their own
-  // speech-tuned DSP underneath, which the page cannot reach.
+  // It also silently breaks the Quiet room promise when the mic path IS
+  // Bluetooth: those constraints turn off the BROWSER's processing, but a
+  // Bluetooth headset and the OS apply their own speech-tuned DSP underneath,
+  // which the page cannot reach.
   //
   // Detection is best-effort and advisory only -- it never blocks or changes
-  // grading. Safari doesn't reliably report sampleRate, so a miss is expected
-  // and fine; a false positive costs one dismissible line.
+  // grading, and the copy below says "may"/"can", not "will" -- this is a
+  // heuristic on the INPUT device's own reported settings/label, not proof of
+  // what's currently happening to Bluetooth OUTPUT. Safari doesn't reliably
+  // report sampleRate, so a miss is expected and fine; a false positive costs
+  // one dismissible line.
   let micPathNoteDismissed=false;
   function detectBluetoothMicPath(){
     try{
@@ -3854,7 +4085,7 @@
     const note=$("mic-path-note"), txt=$("mic-path-text");
     if(!note||!txt) return;
     if(micPathNoteDismissed || !detectBluetoothMicPath()){ note.classList.add("hidden"); return; }
-    txt.textContent=t("Bluetooth mic detected — the reference tone drops to call quality. Wired is more accurate.");
+    txt.textContent=t("Bluetooth microphone detected — reference-audio quality may be reduced. A wired mic or your device's built-in mic can be more reliable.");
     note.classList.remove("hidden");
   }
 
@@ -4342,7 +4573,7 @@
   // Called after a round's practice completes. No-op outside a generated
   // multi-round exercise -- Manual mode's behavior is entirely untouched.
   let roundAssessLog=[];
-  function roundFinished(caps){
+  function roundFinished(caps, reasons){
     if(!genRounds) return;
     // per-note accuracy: pair this round's caps with its own note list, correct
     // order, before genRoundIdx advances to the next round
@@ -4353,7 +4584,12 @@
       caps.forEach((cap,i)=>{
         const note=roundNotes && roundNotes[i];
         if(note){
-          recordNoteOutcome(note, !!cap && Math.abs(cap.cents)<=15);
+          // "unclear"/"none" (no usable pitch measurement) don't teach the
+          // adaptive per-note accuracy stat that this note is hard -- VPT
+          // never actually heard a pitch to be inaccurate about. "short" and
+          // a real cap are recorded exactly as before.
+          const r=reasons ? reasons[i] : null;
+          if(r!=="unclear" && r!=="none") recordNoteOutcome(note, !!cap && Math.abs(cap.cents)<=15);
           logTrial(trialRecord(currentLessonId, note, cap, roundPhase));
         }
       });
@@ -4553,11 +4789,21 @@
   function clearDotTimers(){ dotTimers.forEach(clearTimeout); dotTimers=[]; }
 
   function resetFlow(){
-    stepIdx=0; stepCaps=[];
+    stepIdx=0; stepCaps=[]; stepReasons=[];
     playToneBtn.textContent=t("▶ Play a tone");
     playPhraseBtn.textContent=t("▶ Play a phrase");
     if(!seq.length){
-      stage(t("Add a tone to begin"),{cls:"muted",sub:t("pick tones above")});
+      // "Add a tone to begin" / "pick tones above" is only true for the
+      // manual Tones tab -- Scales/Arpeggios/Sequences never get "added"
+      // one at a time, they're built from the Exercise setup controls and
+      // then Generated. Showing the Tones-specific wording there pointed the
+      // singer at a step (picking individual tones) that doesn't exist for
+      // whichever generator tab is actually active.
+      if(isGeneratedSourceActive()){
+        stage(t("Finish Exercise setup to begin"),{cls:"muted",sub:t("set the options above, then Generate")});
+      } else {
+        stage(t("Add a tone to begin"),{cls:"muted",sub:t("pick tones above")});
+      }
     } else if(seq.length===1){
       stage(t("Ready — press Play a tone"),{cls:"muted",sub:t("one tone selected")});
     } else if(isGeneratedSourceActive()){
@@ -5066,6 +5312,19 @@ function ceilPow2(v) {
   const pitchDetector = PitchDetector.forFloat32Array(2048);
   pitchDetector.minVolumeAbsolute = 0.01;   // same silence cutoff as the old RMS<0.01 check
   const MIN_CLARITY = 0.85;   // reject low-confidence readings rather than report a shaky guess
+  // autoCorrelate returns -1 for two genuinely different situations: no real
+  // signal reached the mic at all, and a perfectly loud signal whose pitch
+  // just isn't clean/stable enough to clear MIN_CLARITY (breathy, noisy, an
+  // unstable vocal onset). Both used to be reported to the singer as the
+  // identical "no sound detected", which is actively wrong for the second
+  // case -- the mic is fine, the voice just didn't resolve. Recording RMS
+  // (via bufRMS, independent of pitch detection) alongside every frame lets
+  // callers tell "no audio reached VPT" apart from "audio came through, no
+  // clear pitch" after the fact. SIGNAL_RMS_FLOOR matches the same volume
+  // floor the detector itself uses to decide whether to even attempt a pitch
+  // read, so "was there a signal" means exactly the same thing here as it
+  // does inside findPitch.
+  const SIGNAL_RMS_FLOOR = pitchDetector.minVolumeAbsolute;
   function autoCorrelate(b,sr){
     const [freq, clarity] = pitchDetector.findPitch(b, sr);
     if(freq<=0 || clarity<MIN_CLARITY) return -1;
@@ -5092,7 +5351,9 @@ function ceilPow2(v) {
   // arbitrary mic, so every note is compared only against the first
   // successfully-held note of the SAME take, not any fixed target.
   let loudnessOn=false, loudSensitivity="medium";
-  let loudBaseline=null;       // RMS of the first held note this take
+  let loudBaseline=null;       // median RMS of the first ~LOUD_BASELINE_WINDOW_MS of voiced audio this take
+  let loudBaselineSamples=null;// {t,rms}[] accumulated while the baseline is still being established
+  const LOUD_BASELINE_WINDOW_MS=300;   // long enough to smooth over a soft/breathy onset, short enough to feel instant
   let smoothLoudDev=null;      // smoothed vertical deviation, same EMA idea as pitch
   const LOUD_SMOOTH=0.25;
   // half-height of the acceptable band, as a fraction of the meter's usable
@@ -5106,11 +5367,29 @@ function ceilPow2(v) {
   }
   // Called once per detection tick, alongside pitch -- reuses the exact same
   // buffer already sampled for autoCorrelate, no extra mic reads.
-  function updateLoudness(b, pitchDetected){
+  //
+  // The baseline used to be set from whichever frame HAPPENED to be the
+  // first one with a detected pitch -- a soft, breathy, or still-settling
+  // onset became the reference for the entire take, throwing off every
+  // deviation reading that followed it. Instead, collect voiced RMS
+  // readings for LOUD_BASELINE_WINDOW_MS and take their median, so one
+  // unrepresentative instant can't anchor the whole comparison.
+  function updateLoudness(b, pitchDetected, t){
     if(!loudnessOn) return;
     if(!pitchDetected){ drawLoudness(null); return; }   // gate on voice activity
     const rms=bufRMS(b);
-    if(loudBaseline===null){ loudBaseline=rms; drawLoudness(0); return; }
+    if(loudBaseline===null){
+      if(!loudBaselineSamples) loudBaselineSamples=[];
+      loudBaselineSamples.push({t, rms});
+      drawLoudness(0);   // neutral reading while still establishing the baseline
+      const span = t - loudBaselineSamples[0].t;
+      if(span >= LOUD_BASELINE_WINDOW_MS || loudBaselineSamples.length>=6){
+        const sorted=loudBaselineSamples.map(s=>s.rms).sort((a,b)=>a-b);
+        loudBaseline=sorted[Math.floor(sorted.length/2)];
+        loudBaselineSamples=null;
+      }
+      return;
+    }
     // relative deviation in dB from the baseline -- dB because loudness
     // perception is roughly logarithmic, so this feels more even than a raw ratio
     const dev = rms>0 && loudBaseline>0 ? 20*Math.log10(rms/loudBaseline) : 0;
@@ -5138,7 +5417,7 @@ function ceilPow2(v) {
     const topPct=50 - (clamped/12)*45;   // louder (positive dB) moves the ball UP
     needle.style.top=topPct+"%";
   }
-  function resetLoudnessTake(){ loudBaseline=null; smoothLoudDev=null; if(loudnessOn) needle.style.top="50%"; }
+  function resetLoudnessTake(){ loudBaseline=null; loudBaselineSamples=null; smoothLoudDev=null; if(loudnessOn) needle.style.top="50%"; }
 
   // Learning Path lessons can hide the live meter for part of a session (the
   // "delayed feedback" phase from motor-learning research: keep detection and
@@ -5209,6 +5488,11 @@ function ceilPow2(v) {
       lastDetect=now;
       analyser.getFloatTimeDomainData(buf);
       const f=autoCorrelate(buf,ac.sampleRate);
+      // Tracked independently of whether a pitch resolved, same reasoning as
+      // recordTake's per-frame rms -- captureWindow (which polls this state
+      // rather than running its own detection) needs it to tell "no signal
+      // reached the mic" apart from "signal came through, no clear pitch".
+      liveRMS=bufRMS(buf);
       if(f>0 && f<2000){
         const nd=freqToNoteData(f);
         liveNoteData=nd;
@@ -5219,22 +5503,114 @@ function ceilPow2(v) {
           centsOut.innerHTML=(c>0?"+":"")+c+' <small>¢</small>';
           drawNeedle(c);
         }
-        updateLoudness(buf, true);
-      } else { drawNeedle(null); updateLoudness(buf, false); }
+        updateLoudness(buf, true, now);
+      } else {
+        // Without clearing these, captureWindow() (which only reads liveCents,
+        // it doesn't know a detection just failed) keeps seeing the LAST good
+        // reading -- including one from inside the ignored onset grace period,
+        // which could otherwise survive as if it were captured for real after
+        // the singer has already stopped.
+        liveCents=null; liveNoteData=null;
+        drawNeedle(null); updateLoudness(buf, false, now);
+      }
     }
     if(listening) raf=requestAnimationFrame(()=>detectLoop(targetFreq));
   }
 
+  // On-the-clock's per-tone capture: collects every valid reading across the
+  // window, then reports the MEDIAN rather than whichever single instant
+  // happened to land closest to the target. The old "closest frame" approach
+  // rewarded scooping and sliding through the note -- someone sweeping
+  // -90c -> -60 -> -35 -> -12 -> +20 -> +50 -> +75 would score "-12c, on
+  // pitch" despite never actually holding the target. A minimum of voiced
+  // coverage is also required, so a near-silent capture still reports "no
+  // signal" instead of grading off one or two stray frames.
+  //
+  // That coverage check used to be "does the LAST frame's timestamp minus the
+  // FIRST frame's timestamp reach 250ms" -- which two isolated detections
+  // (say at 500ms and 900ms, with nothing reliable in between) satisfy just
+  // as well as a genuine 250ms of continuous voicing. Require an actual run
+  // of consecutive usable frames instead: at the ~70ms polling interval this
+  // runs on, 4 frames in a row (3 gaps) spans roughly 210ms at minimum, up to
+  // CAPTURE_MAX_GAP_MS*3=450ms if some of those gaps run wide -- either way,
+  // real continuous voicing, not merely two detections separated in time.
+  // (4 frames is a frame-count proxy for "enough support to trust," not a
+  // precise stand-in for a specific millisecond figure -- if a pass at tuning
+  // these against real voices ever needs an exact minimum SPAN rather than a
+  // frame count, check `frames[bestStart+bestRun-1].t - frames[bestStart].t`
+  // directly instead of assuming a fixed per-frame interval.)
+  const CAPTURE_MIN_FRAMES=4;
+  const CAPTURE_MAX_GAP_MS=150;
+  function medianCapture(frames){
+    if(!frames.length) return null;
+    let bestRun=1, bestStart=0, run=1, runStart=0;
+    for(let i=1;i<frames.length;i++){
+      if(frames[i].t - frames[i-1].t <= CAPTURE_MAX_GAP_MS) run++;
+      else { run=1; runStart=i; }
+      if(run>bestRun){ bestRun=run; bestStart=runStart; }
+    }
+    if(bestRun < CAPTURE_MIN_FRAMES) return null;
+    // Median comes from the longest continuous run itself, not every valid
+    // frame in the whole window -- a stray, isolated detection well before or
+    // after the real hold (a brief false lock) could otherwise nudge the
+    // median away from what was actually sustained, even though it's not
+    // part of the coverage that qualified the capture in the first place.
+    const runFrames=frames.slice(bestStart, bestStart+bestRun);
+    // Sorting and indexing (rather than averaging) always returns an actual
+    // observed (cents, note) pair, matching segmentTake's centerFreq() --
+    // an interpolated midpoint could pair a cents value with a note name
+    // that was never really sung at that moment.
+    const sorted=runFrames.slice().sort((a,b)=>a.cents-b.cents);
+    const m=sorted[Math.floor(sorted.length/2)];
+    return {cents:m.cents, note:m.note};   // match the original {cents,note} shape exactly
+  }
+  // On-the-clock's capture window previously read only liveCents/liveNoteData
+  // via an independent 70ms poll -- with none of recordTake's mic-loss/
+  // page-hidden/audio-context checks, and no RMS tracking to tell "no signal
+  // reached the mic" apart from "signal came through, no clear pitch ever
+  // resolved". A mic dropping mid-window here would just complete "normally"
+  // with whatever partial data had already been read, and a loud-but-unclear
+  // take was reported identically to true silence. Brought up to the same
+  // {aborted,reason} contract recordTake() already uses, checked on the same
+  // schedule this function already polls on.
   function captureWindow(ms,graceMs){
     graceMs=graceMs||0;
     return new Promise(resolve=>{
-      liveCents=null; liveNoteData=null;
-      let best=null; const start=Date.now();
+      liveCents=null; liveNoteData=null; liveRMS=null;
+      const frames=[]; const start=Date.now();
+      let sawSignal=false, settled=false;
+      function finish(aborted, reason){
+        if(settled) return;
+        settled=true;
+        clearInterval(iv);
+        if(aborted){ resolve({cap:null, aborted:true, reason}); return; }
+        const cap=medianCapture(frames);
+        // Three-way split, matching Follow-me's classifyHeld(): "none" (never
+        // even cleared the RMS floor), "unclear" (signal present, but no
+        // frame ever resolved a clean pitch at all), "short" (a clean pitch
+        // WAS resolved on some frames -- frames.length>0 -- just not enough
+        // consecutive ones for medianCapture's coverage requirement). Without
+        // this split, any not-enough-coverage capture reported "unclear" even
+        // when the actual pitch reading was perfectly clean and just brief.
+        let capReason=null;
+        if(!cap){
+          if(frames.length) capReason="short";
+          else capReason = sawSignal ? "unclear" : "none";
+        }
+        resolve({cap, aborted:false, reason:capReason});
+      }
       const iv=setInterval(()=>{
-        if(Date.now()-start < graceMs) return; // ignore the first moment (breath / scoop into note)
-        if(liveCents!==null){ if(best===null || Math.abs(liveCents)<Math.abs(best.cents)) best={cents:liveCents,note:liveNoteData}; }
+        const track=micStream && micStream.getAudioTracks && micStream.getAudioTracks()[0];
+        if(!analyser || !buf || !track || track.readyState==="ended"){ finish(true,"mic-lost"); return; }
+        if(track.muted){ finish(true,"mic-lost"); return; }
+        if(document.hidden){ finish(true,"page-hidden"); return; }
+        if(ac && (ac.state==="suspended" || ac.state==="interrupted")){ finish(true,"audio-context-interrupted"); return; }
+        if(liveRMS!==null && liveRMS>=SIGNAL_RMS_FLOOR) sawSignal=true;
+        const el=Date.now()-start;
+        if(el < graceMs) return; // ignore the first moment (breath / scoop into note)
+        if(liveCents!==null) frames.push({cents:liveCents, note:liveNoteData, t:el});
       },70);
-      setTimeout(()=>{ clearInterval(iv); resolve(best); },ms);
+      setTimeout(()=>finish(false,null), ms);
     });
   }
 
@@ -5300,27 +5676,58 @@ function ceilPow2(v) {
     }]);
   }
 
+  // recordTake resolves with {samples, aborted, reason} rather than a bare
+  // sample array. "aborted" takes were cut short by something that has
+  // nothing to do with how the singer performed -- the input device
+  // disappearing mid-take (unplugged, handed to another app), the browser/OS
+  // muting or suspending audio (iOS interruption), or the tab being
+  // backgrounded -- and every caller must treat that as "no attempt
+  // happened" rather than grading whatever partial samples were collected.
+  // reason is one of: "mic-lost", "page-hidden", "audio-context-interrupted",
+  // or "normal" for a take that ran to completion (or stopped early on
+  // legitimate silence) without interruption.
   function recordTake(ms,targetFreq,phraseNotes){
     return new Promise(resolve=>{
       const samples=[];           // {t, freq}
       const start=performance.now();
       const SILENCE_STOP=2000;    // stop early after this much continuous silence
-      let aborted=false;
       let lastVoiced=0, everVoiced=false, lastRun=0;
-      // hard stop: even if rAF stalls or the context dies, never hang the flow
-      const hardStop=setTimeout(()=>{ if(listening){ listening=false; } resolve(samples); }, ms+1500);
+      function finish(aborted, reason){
+        clearTimeout(hardStop);
+        resolve({samples, aborted, reason: reason||"normal"});
+      }
+      // hard stop: even if rAF stalls or the context dies, never hang the flow.
+      // Reaching this timeout at all means something upstream already broke
+      // (the loop should always resolve on its own well before ms+1500), so
+      // treat it as a lost take rather than silently grading whatever was
+      // collected.
+      const hardStop=setTimeout(()=>{ if(listening){ listening=false; } finish(true,"mic-lost"); }, ms+1500);
       function loop(){
-        if(!analyser||!buf){ clearTimeout(hardStop); resolve(samples); return; }   // mic went away
+        if(!analyser||!buf){ finish(true,"mic-lost"); return; }   // mic went away
+        // The "mute"/"unmute"/"ended" listeners on the track (see startMic)
+        // log diagnostics, but the live track.muted/readyState properties
+        // they reflect are exactly what this loop needs to know the input
+        // actually died mid-take -- checked every frame, not just at the
+        // moment an event fires, so a mute that resolves a few frames later
+        // still correctly invalidates this take.
+        const track=micStream && micStream.getAudioTracks && micStream.getAudioTracks()[0];
+        if(!track || track.readyState==="ended"){ finish(true,"mic-lost"); return; }
+        if(track.muted){ finish(true,"mic-lost"); return; }
         const t=performance.now()-start;
         // abort cleanly if the page is backgrounded (rAF throttles and data goes junk)
-        if(document.hidden){ aborted=true; resolve(samples); return; }
+        if(document.hidden){ finish(true,"page-hidden"); return; }
+        // iOS (and some other browsers) can suspend or "interrupt" the audio
+        // context mid-take -- a phone call, another app claiming audio focus,
+        // etc. -- without the track itself ever reporting muted/ended.
+        if(ac && (ac.state==="suspended" || ac.state==="interrupted")){ finish(true,"audio-context-interrupted"); return; }
         const now=performance.now();
         if(now-lastRun>=DETECT_MS){
           lastRun=now;
           analyser.getFloatTimeDomainData(buf);
           const f=autoCorrelate(buf,ac.sampleRate);
+          const rms=bufRMS(buf);   // independent of whether a pitch resolved -- see SIGNAL_RMS_FLOOR above
           if(f>0 && f<2000){
-            samples.push({t,freq:f});
+            samples.push({t,freq:f,rms});
             lastVoiced=t; everVoiced=true;
             const nd=freqToNoteData(f);
             noteOut.innerHTML=nd.name+' <small>'+(nd.centsFromNearest>=0?"+":"")+nd.centsFromNearest+'¢</small>';
@@ -5340,17 +5747,50 @@ function ceilPow2(v) {
             }
             drawNeedle(ref ? Math.round(1200*Math.log2(f/ref)) : nd.centsFromNearest);
           } else {
-            samples.push({t,freq:null});   // silence marker
+            samples.push({t,freq:null,rms});   // silence marker (rms may still be non-trivial -- noise/breath, not necessarily silence)
             drawNeedle(null);
           }
         }
         // early stop: only after the singer has started and then gone quiet a while
         const silentEnough = everVoiced && (t-lastVoiced)>=SILENCE_STOP;
         if(t<ms && listening && !silentEnough) raf=requestAnimationFrame(loop);
-        else { clearTimeout(hardStop); resolve(samples); }
+        else finish(false,"normal");
       }
       loop();
     });
+  }
+
+  // A grading function (classifyHeld, analyzeGlideAttempt, alignHeld, ...)
+  // never sees an aborted take -- every call site checks takeResult.aborted
+  // right after recordTake and, if interrupted, returns this sentinel
+  // instead of a normal result. That keeps "was this take interrupted" and
+  // "how did the singer do" from ever being conflated one level up, where a
+  // falsy/null result already means something else (e.g. "!running").
+  function abortedTake(reason){ return {takeAborted:true, reason}; }
+  function isAbortedTake(res){ return !!(res && res.takeAborted); }
+  // Mic-related interruptions reuse the exact recovery panel already shown
+  // when a take can't even start (micError "lost" / updateMicBlockNote) --
+  // same problem, same fix, so the same UI. A backgrounded tab is NOT a mic
+  // problem -- nothing is actually wrong, the singer just switched away --
+  // so it gets its own quiet, non-alarming line instead of either staying
+  // silent (confusing: the stage would just be stuck on "Sing!" with no
+  // explanation of what happened) or reusing the red mic-recovery panel
+  // (misleading: there's no mic issue to reconnect).
+  function reportAbortedTake(reason){
+    if(reason==="mic-lost"){
+      micError="lost";
+      updateMicBlockNote();
+      stage(micStatusTitle(), {cls:"warn", sub: t("Your attempt wasn't counted.")+" "+micStatusSub()});
+    } else if(reason==="audio-context-interrupted"){
+      // Not a hardware failure -- the track itself was never touched, so
+      // this gets its own softer state rather than the "reconnect your
+      // mic" wording that "lost" uses.
+      micError="interrupted";
+      updateMicBlockNote();
+      stage(micStatusTitle(), {cls:"warn", sub: t("Your attempt wasn't counted.")+" "+micStatusSub()});
+    } else if(reason==="page-hidden"){
+      stage(t("Attempt interrupted"), {cls:"muted", sub: t("It wasn't counted. Press Play when you're ready.")});
+    }
   }
 
   // Segment a take into held notes: runs of samples within TOL cents of a running
@@ -5358,6 +5798,13 @@ function ceilPow2(v) {
   const SEG_TOL=60;        // cents tolerance to stay "the same note"
   const MIN_HOLD=500;      // ms a pitch must be held to count (lowered from 1000 for beginners)
   const HOLD_SLACK=100;    // allow ~0.5s holds that fall just short due to frame timing
+  // A single rejected detector frame (breathy voices, vibrato, a vowel change,
+  // clarity hovering near the threshold) used to end a held note outright --
+  // at ~33ms/frame that's easy to hit even mid-hold, and it could silently
+  // split one real ~1s hold into two separate segments each too short to
+  // pass. Glide analysis already tolerates exactly this kind of gap
+  // (GLIDE_DROPOUT_MS); held-note segmentation had none.
+  const SEG_DROPOUT_MS=150;
   // ---------- glide attempt analysis ----------
   // Operates on recordTake's RAW sample stream directly -- segmentTake would
   // throw away exactly the information glides need. Grades the movement
@@ -5492,17 +5939,21 @@ function ceilPow2(v) {
     const micP=startMic();
     const okMic=await readyBeat(2000, micP);
     if(!running) return null;
+    if(okMic) micPermState="granted";
+    updateMicBlockNote();
     if(!okMic){ stage(micStatusTitle(),{cls:"warn",sub:micStatusSub()}); return null; }
     stage(t("Sing!"),{cls:"", sub: direction>0
       ? t("glide smoothly upward from ")+fromNote+t(" to ")+toNote
       : t("glide smoothly downward from ")+fromNote+t(" to ")+toNote, step:"sing"});
     runDots(GLIDE_RECORD_MS);
     listening=true;
-    const samples=await recordTake(GLIDE_RECORD_MS, null);
-    captureTake("glide", fromNote+"->"+toNote, samples);
+    const takeResult=await recordTake(GLIDE_RECORD_MS, null);
+    captureTake("glide", fromNote+"->"+toNote, takeResult.samples);
     listening=false; cancelAnimationFrame(raf); parkNeedle();
     hideDots(); wave.classList.remove("on");
     muteMic();
+    if(takeResult.aborted) return abortedTake(takeResult.reason);
+    const samples=takeResult.samples;
     const result=analyzeGlideAttempt(samples, fromFreq, toFreq, direction);
     // Carried along so the caller can draw a post-attempt trajectory --
     // analyzeGlideAttempt only returns the graded verdict, but the raw
@@ -5596,7 +6047,16 @@ function ceilPow2(v) {
       run=[];
     }
     for(const s of samples){
-      if(s.freq===null){ flush(); continue; }        // silence breaks a run
+      if(s.freq===null){
+        // Bridge a brief dropout rather than ending the run: only flush once
+        // the gap since the last VOICED sample exceeds tolerance. Comparing
+        // against the fixed last-voiced timestamp (not the previous sample)
+        // means several consecutive dropped frames correctly accumulate into
+        // one cumulative gap check, rather than each resetting the clock.
+        if(run.length && (s.t - run[run.length-1].t) <= SEG_DROPOUT_MS) continue;
+        flush();
+        continue;
+      }
       if(run.length===0){ run=[s]; continue; }
       const c=centerFreq(run);
       if(Math.abs(cents(s.freq,c))<=SEG_TOL){ run.push(s); }
@@ -5606,30 +6066,63 @@ function ceilPow2(v) {
     return held;               // ordered list of held notes actually sung
   }
 
-  // Align sung held-notes to the expected sequence. Count-aware:
-  // if counts match, 1-to-1 in order; otherwise map each expected note to the
-  // nearest-in-order held note (monotonic greedy), leaving unmatched as null.
+  // Align sung held-notes to the expected sequence. Count-aware: if counts
+  // match, 1-to-1 in order (the common case -- assume every note was
+  // attempted, even a badly-out-of-tune one, rather than second-guessing).
+  //
+  // When counts differ, this used to walk both lists with a greedy,
+  // monotonic loop bound (`j <= held.length-remainExpected`). That bound goes
+  // NEGATIVE whenever more notes are missing than have been consumed yet, so
+  // the loop body never runs and the current expected note is left
+  // unmatched no matter what was actually sung -- e.g. expected [C4,D4,E4]
+  // vs. held [C4,E4] would leave C4 unmatched and force-fit the real C4
+  // sample onto the D4 slot instead, rather than correctly reporting "D4
+  // missing". The algorithm effectively pushed every gap toward the start of
+  // the phrase instead of identifying which note was actually skipped.
+  //
+  // Fixed with a standard minimum-cost sequence alignment (edit distance):
+  // every expected note either matches a held note (cost = pitch error in
+  // cents), is left missing, or a held note is treated as extra -- each skip
+  // costs a flat ALIGN_SKIP_COST. The globally cheapest path is chosen by
+  // dynamic programming, so a genuinely close match is always preferred over
+  // skipping, and a skip is only chosen when every candidate match is worse
+  // than just admitting the note wasn't sung.
+  const ALIGN_SKIP_COST=250; // cents; a reasonable starting point, not tuned against real voices
   function alignHeld(expected, held){
-    const out=new Array(expected.length).fill(null);
-    if(held.length===0) return out;
-    if(held.length===expected.length){
-      for(let i=0;i<expected.length;i++) out[i]=held[i];
-      return out;
-    }
-    // monotonic greedy: walk both lists, matching in order by best pitch fit
-    let hi=0;
-    for(let i=0;i<expected.length;i++){
-      const tf=noteToFreq(expected[i]);
-      // among remaining held notes, pick the earliest that's a reasonable match,
-      // but don't consume more held notes than remain for the rest of expected
-      const remainExpected=expected.length-i;
-      let bestIdx=-1,bestErr=Infinity;
-      for(let j=hi;j<=held.length-remainExpected;j++){
-        if(j<0) continue;
-        const err=Math.abs(1200*Math.log2(held[j].freq/tf));
-        if(err<bestErr){ bestErr=err; bestIdx=j; }
+    const E=expected.length, H=held.length;
+    const out=new Array(E).fill(null);
+    if(E===0 || H===0) return out;
+    // No H===E "equal counts -> assume 1:1" shortcut: equal counts don't
+    // imply correspondence -- expected [C4,D4,E4] vs. held [C4,X,E4] (an
+    // accidental/spurious segment where D4 was actually never sung) also has
+    // matching counts, and skipping the DP there would silently pair D4 with
+    // X instead of reporting D4 missing and X extra. The sequences here are
+    // small (a handful of notes), so always running the DP costs nothing
+    // measurable, and it already finds the 1:1 mapping on its own whenever
+    // that genuinely is the cheapest alignment.
+    const tf=expected.map(noteToFreq);
+    const matchCost=(i,j)=>Math.abs(1200*Math.log2(held[j].freq/tf[i]));
+    // dp[i][j] = cheapest total cost aligning expected[0..i) with held[0..j)
+    const dp=Array.from({length:E+1},()=>new Array(H+1).fill(0));
+    const from=Array.from({length:E+1},()=>new Array(H+1).fill(0)); // 0=match 1=expected-missing 2=held-extra
+    for(let i=1;i<=E;i++){ dp[i][0]=dp[i-1][0]+ALIGN_SKIP_COST; from[i][0]=1; }
+    for(let j=1;j<=H;j++){ dp[0][j]=dp[0][j-1]+ALIGN_SKIP_COST; from[0][j]=2; }
+    for(let i=1;i<=E;i++){
+      for(let j=1;j<=H;j++){
+        const diag=dp[i-1][j-1]+matchCost(i-1,j-1);
+        const up=dp[i-1][j]+ALIGN_SKIP_COST;      // expected[i-1] missing
+        const left=dp[i][j-1]+ALIGN_SKIP_COST;    // held[j-1] extra
+        if(diag<=up && diag<=left){ dp[i][j]=diag; from[i][j]=0; }
+        else if(up<=left){ dp[i][j]=up; from[i][j]=1; }
+        else { dp[i][j]=left; from[i][j]=2; }
       }
-      if(bestIdx>=0){ out[i]=held[bestIdx]; hi=bestIdx+1; }
+    }
+    let i=E, j=H;
+    while(i>0 || j>0){
+      const dir = (i>0 && j>0) ? from[i][j] : (i>0 ? 1 : 2);
+      if(dir===0){ out[i-1]=held[j-1]; i--; j--; }
+      else if(dir===1){ i--; }
+      else { j--; }
     }
     return out;
   }
@@ -5664,9 +6157,12 @@ function ceilPow2(v) {
             holdMs:held.dur, vibratoStrength:held.vibratoStrength, vibratoHz:held.vibratoHz, trace:held.trace};
   }
   // classify a single-tone follow-me take: returns {cap, reason}
-  // reason: null (ok) · "none" (no signal at all) · "short" (signal but nothing held long enough)
+  // reason: null (ok) · "none" (no audio reached the mic) ·
+  // "unclear" (audio present, but no frame ever resolved a clean pitch) ·
+  // "short" (a clean pitch was heard, but nothing held long enough)
   function classifyHeld(targetNote, samples, held){
     const voiced = samples.some(s=>s.freq!==null);
+    const hadSignal = samples.some(s=>s.rms>=SIGNAL_RMS_FLOOR);
     if(held && held.length){
       const lesson = currentLessonId ? LESSONS[currentLessonId] : null;
       const withOnset=(cap)=>{ if(cap) cap.onsetMs=timeToTarget(samples, targetNote); return cap; };
@@ -5684,27 +6180,105 @@ function ceilPow2(v) {
       held.forEach((h,idx)=>{ const e=Math.abs(1200*Math.log2(h.freq/tf)); if(e<berr){berr=e;bi=idx;} });
       return {cap:withOnset(heldToCap(targetNote,held[bi])), reason:null};
     }
-    return {cap:null, reason: voiced ? "short" : "none"};
+    if(voiced) return {cap:null, reason:"short"};
+    return {cap:null, reason: hadSignal ? "unclear" : "none"};
   }
 
   const wait=ms=>new Promise(r=>setTimeout(r,ms));
 
+  // Wraps a getUserMedia() call in an application-level timeout. Without
+  // this, a native permission prompt that never resolves -- dismissed by an
+  // OS-level dialog, buried behind another window, or just never noticed --
+  // leaves startMic()'s own promise pending forever, which means readyBeat's
+  // "await micPromise" (and the "Get ready... starting the microphone..." UI
+  // it drives) hangs indefinitely too, with the practice UI stuck in its busy
+  // state. If the real getUserMedia() call eventually resolves AFTER this
+  // timeout has already fired and been reported as a failure, the stream it
+  // hands back is stopped immediately rather than left open and orphaned --
+  // nothing should keep recording once VPT itself has already told the user
+  // acquisition failed.
+  const GUM_TIMEOUT_MS=12000;
+  function getUserMediaWithTimeout(constraints, ms){
+    let settled=false;
+    return new Promise((resolve,reject)=>{
+      const timer=setTimeout(()=>{
+        if(settled) return;
+        settled=true;
+        const err=new Error("getUserMedia timed out waiting for the browser");
+        err.name="TimeoutError";
+        reject(err);
+      }, ms);
+      navigator.mediaDevices.getUserMedia(constraints).then(stream=>{
+        if(settled){ try{ stream.getTracks().forEach(t=>t.stop()); }catch(e){} return; }
+        settled=true; clearTimeout(timer);
+        resolve(stream);
+      }).catch(err=>{
+        if(settled) return;
+        settled=true; clearTimeout(timer);
+        reject(err);
+      });
+    });
+  }
+
   // why the mic failed, for a useful message
   let micError="";
   async function startMic(){
+    // Cleared at the very top, before the fast-reuse path below, not just on
+    // the full-acquisition path -- a stale error from an earlier failure (say
+    // micError="lost" from an interrupted take) used to survive a SUCCESSFUL
+    // fast-path recovery, because the old code only cleared it further down,
+    // past the fast path's own early "return true". That let a mic genuinely
+    // come back to life while the "Microphone connection was lost" panel
+    // stayed on screen until some later, unrelated failure happened to clear it.
+    micError="";
+    // Set only when we get here because a stream that HAD been working just died
+    // out from under us (browser reported readyState="ended", or the fast-path
+    // liveness check failed) -- used purely to choose which failure message a
+    // SUBSEQUENT reacquisition failure gets ("connection was lost" vs "no
+    // microphone found"/"isn't responding" for a cold failure). Local to this
+    // call, so it can never leak stale state across separate startMic() calls.
+    let recoveringFromLoss=false;
     // Even if we already have an analyser, the context may have been suspended by
     // iOS (interruption / audio-route change). Resume it or the meter reads silence.
     // Also re-enable the track in case it was only muted (not stopped) by muteMic() --
     // this is the fast, near-instant path for repeated Play presses in one session.
-    if(ac && analyser){
-      await ensureAudioCtx();
-      try{ if(micStream) micStream.getAudioTracks().forEach(t=>t.enabled=true); }catch(e){}
-      return true;
+    if(ac && analyser && micStream){
+      const fastTrack=micStream.getAudioTracks()[0];
+      // readyState="ended" means the browser itself has already torn the track
+      // down (device unplugged, permission revoked mid-session, tab-level stop) --
+      // that's known instantly and for free, so skip straight to reacquisition
+      // rather than waiting out a liveness poll that can only ever fail.
+      if(fastTrack && fastTrack.readyState==="ended"){
+        diagEvent("mic-stale-stream","track already ended, reacquiring");
+        recoveringFromLoss=true;
+        releaseMic();
+      } else {
+        await ensureAudioCtx();
+        // A track VPT itself disabled (muteMic(), between reference playback and
+        // singing) is expected and invisible -- just turn it back on. A track the
+        // OS/browser silently muted independently is a different situation, but
+        // re-enabling is harmless either way; micLive() below is what actually
+        // decides whether the stream is usable, not this flag.
+        try{ micStream.getAudioTracks().forEach(t=>t.enabled=true); }catch(e){}
+        // The stream object and analyser can both still exist even though the
+        // actual track died in the background (device unplugged, another app
+        // took it, a permanent mute) -- none of that invalidates `analyser` on
+        // its own, so without this check this fast path would report success
+        // while the mic delivers nothing. Cheap in the healthy case: a live
+        // track already has real samples, so this returns on the first check,
+        // before the first wait() -- see micLive().
+        if(await micLive(500)) return true;
+        diagEvent("mic-stale-stream","fast path failed liveness check, reacquiring");
+        recoveringFromLoss=true;
+        releaseMic();
+        // fall through to a full re-acquisition below
+      }
     }
-    micError="";
-    // mic needs a secure context — file:// and plain http are blocked by browsers
-    if(!window.isSecureContext && location.protocol!=="http:"){
-      micError="insecure";
+    // mic needs a secure context — file://, plain http, etc. are blocked by browsers.
+    // (localhost is exempted by the browser itself via isSecureContext, so this
+    // check doesn't need to special-case it.)
+    if(!window.isSecureContext){
+      micError="insecure"; return false;
     }
     if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
       micError="unsupported"; return false;
@@ -5723,19 +6297,43 @@ function ceilPow2(v) {
       const prefDev=lsGet(LS_MICDEV)||"";
       const constraints={ audio: prefDev ? Object.assign({deviceId:{exact:prefDev}}, baseAudio) : baseAudio };
       try{
-        micStream=await navigator.mediaDevices.getUserMedia(constraints);
+        micStream=await getUserMediaWithTimeout(constraints, GUM_TIMEOUT_MS);
         diagEvent("mic-open", (prefDev?"saved device":"default")+" ok");
       }catch(e){
         diagEvent("mic-open-failed", (e && e.name) || "error");
-        // A saved device that has since been unplugged throws OverconstrainedError.
-        // Forget it rather than leaving the app with no microphone at all.
-        if(prefDev){ lsSet(LS_MICDEV,""); diagEvent("mic-saved-device-dropped"); }
+        // A denial is a permission problem, not a constraint/device problem --
+        // retrying with looser constraints or the plain-audio fallback can
+        // never succeed once the browser has already refused, so those two
+        // extra getUserMedia calls (and, on some browsers, extra native
+        // permission churn) only slow down reporting "denied" back to the
+        // reader. Bail out immediately and let the outer catch classify it.
+        // A timeout gets the same treatment: if the browser never even
+        // resolved the FIRST request (most likely an unanswered/hidden native
+        // permission prompt), trying different constraints on a second and
+        // third call can't fix that either -- it's the browser not
+        // responding, not a device/constraint problem.
+        if(e && (e.name==="NotAllowedError" || e.name==="TimeoutError")) throw e;
+        // A saved device that has since been unplugged throws OverconstrainedError,
+        // or NotFoundError if it's simply gone. Forget it in those specific cases
+        // rather than leaving the app with no microphone at all. Other errors
+        // (NotReadableError = device busy in another app, etc.) are not the
+        // saved device's fault -- don't punish it for a transient problem
+        // that will recur on any device.
+        const dropSavedDeviceOn=(e && (e.name==="OverconstrainedError" || e.name==="NotFoundError"));
+        if(prefDev && dropSavedDeviceOn){ lsSet(LS_MICDEV,""); diagEvent("mic-saved-device-dropped"); }
         try{
-          micStream=await navigator.mediaDevices.getUserMedia({audio:baseAudio});
+          micStream=await getUserMediaWithTimeout({audio:baseAudio}, GUM_TIMEOUT_MS);
           diagEvent("mic-open", "fallback ok");
         }catch(e2){
+          // Same reasoning as the short-circuit above: a denial (or a hung
+          // request) at this stage can't be fixed by yet another constraint
+          // variant either, so don't spend a third getUserMedia call (and
+          // more permission-prompt churn on browsers that re-prompt) just to
+          // arrive at the same outcome the outer catch already classifies
+          // correctly.
+          if(e2 && (e2.name==="NotAllowedError" || e2.name==="TimeoutError")) throw e2;
           // some browsers reject the constraint object — fall back to plain audio
-          micStream=await navigator.mediaDevices.getUserMedia({audio:true});
+          micStream=await getUserMediaWithTimeout({audio:true}, GUM_TIMEOUT_MS);
           diagEvent("mic-open", "plain-audio fallback ok");
         }
       }
@@ -5762,10 +6360,40 @@ function ceilPow2(v) {
       // The stream can exist before the track is actually delivering audio (iOS is
       // slow to come up after repeated release/acquire). Wait for it to go live.
       const ok=await micLive(2500);
-      if(!ok){ micError="notlive"; diagEvent("mic-not-live","no samples within 2.5s"); return false; }
+      if(!ok){
+        // A fresh acquisition that never goes live is "isn't responding"; the
+        // same outcome right after a previously-good stream died is better
+        // described to the user as "connection was lost" -- same underlying
+        // signal, different likely cause and different message.
+        micError = recoveringFromLoss ? "lost" : "notlive";
+        diagEvent("mic-not-live","no samples within 2.5s");
+        // Without this, `analyser` stays set to the stream that just failed
+        // its own liveness test -- the NEXT call's fast path (`ac && analyser
+        // && micStream`) would then trust that exact same dead stream and
+        // report success.
+        releaseMic();
+        return false;
+      }
       updateMicPathNote();
       return true;
-    }catch(e){ micError="failed"; return false; }
+    }catch(e){
+      // Classify by the browser's own error name so the message is accurate
+      // instead of a generic catch-all -- this is what makes "permission
+      // blocked" detectable on Firefox/Safari too (they don't support
+      // permissions.query("microphone"), so NotAllowedError from a real
+      // getUserMedia call is the only signal those browsers ever give).
+      const name = e && e.name;
+      if(name==="NotAllowedError") micError="denied";
+      else if(name==="NotFoundError") micError = recoveringFromLoss ? "lost" : "nodevice";
+      // The browser itself never responded to the request at all (most likely
+      // an unanswered/hidden native permission prompt) -- a distinct failure
+      // from "device is gone" (nodevice/lost) even on a recovery attempt, so
+      // this doesn't fold into recoveringFromLoss the way the others do.
+      else if(name==="TimeoutError") micError="timeout";
+      else micError = recoveringFromLoss ? "lost" : "failed";
+      diagEvent("mic-open-failed-final", name||"error");
+      return false;
+    }
   }
   // True once the audio track reports "live" AND the analyser sees real samples.
   function micTrackLive(){
@@ -5793,14 +6421,224 @@ function ceilPow2(v) {
   function micStatusTitle(){
     if(micError==="insecure") return t("Microphone needs https");
     if(micError==="unsupported") return t("Microphone not supported");
+    if(micError==="denied") return t("Microphone access is blocked");
+    if(micError==="nodevice") return t("No microphone found");
+    if(micError==="lost") return t("Microphone connection was lost");
+    // A suspended/interrupted AudioContext (a phone call, Siri, an alarm, a
+    // route change) previously collapsed into the same "lost" bucket as a
+    // genuinely dead microphone -- but nothing is actually wrong with the
+    // hardware here, and the track itself was never touched. Telling someone
+    // to "reconnect" their mic for what's really an OS-level audio
+    // interruption is both inaccurate and needlessly alarming; this case
+    // resolves itself the moment the interruption ends and the next Play
+    // press resumes the context via the existing startMic() fast path.
+    if(micError==="interrupted") return t("Audio was interrupted");
     if(micError==="notlive") return t("Microphone didn't start");
+    // The browser never resolved the getUserMedia() request at all within
+    // GUM_TIMEOUT_MS -- most likely an unanswered or hidden native permission
+    // prompt. Distinct from "notlive" (a stream WAS granted, it just never
+    // delivered samples) and from "failed" (a real, resolved error) below.
+    if(micError==="timeout") return t("Microphone hasn't started");
+    // A resolved technical failure other than denied/no-device/timeout --
+    // NotReadableError (busy in another app), AbortError, etc. Previously had
+    // no case here at all and fell through to the generic "Microphone
+    // blocked" / "allow mic access" default, which wrongly implied a
+    // permission problem for what's actually a device/technical one.
+    if(micError==="failed") return t("Microphone isn't responding");
     return t("Microphone blocked");
   }
   function micStatusSub(){
     if(micError==="insecure") return t("open this page over https (e.g. your GitHub Pages link) — browsers block the mic on local files");
     if(micError==="unsupported") return t("this browser doesn't provide microphone access");
+    if(micError==="denied") return t("allow microphone access for this site in your browser, then press Play again");
+    if(micError==="nodevice") return t("plug in a microphone, then press Play again");
+    if(micError==="lost") return t("it may have been unplugged — reconnect it, then press Play again");
+    if(micError==="interrupted") return t("this can happen during a call, Siri, or another app using sound — press Play to continue");
     if(micError==="notlive") return t("the mic didn't come up in time — press Play to try again");
+    if(micError==="timeout") return t("check for a browser permission request, or check microphone access for this site, then try again");
+    if(micError==="failed") return t("VPT couldn't open the microphone — try again, or choose another input");
     return t("allow mic access in your browser to continue");
+  }
+
+  // ================= MIC PERMISSION: PLAN B =================
+  // Checking navigator.permissions.query() needs no user gesture and no prior
+  // getUserMedia call, so this runs once at load -- it lets the app tell
+  // "never asked yet" apart from "the user (or a past visit) already said no",
+  // which getUserMedia's own error alone can't distinguish. Chrome/Edge support
+  // querying "microphone"; Firefox and Safari don't (the query itself throws),
+  // so on those browsers this just stays "unknown" and the note below falls
+  // back to whatever getUserMedia's own failure says once Play is pressed.
+  async function refreshMicPermState(){
+    try{
+      if(navigator.permissions && navigator.permissions.query){
+        const status=await navigator.permissions.query({name:"microphone"});
+        micPermState=status.state;
+        // Fires if the user flips the browser's own site setting while this tab
+        // stays open -- Chrome applies that change live, no reload needed, so
+        // the note should clear itself the moment that happens. micPermState
+        // alone isn't enough to do that: updateMicBlockNote()'s "denied" check
+        // also looks at micError, which getUserMedia set to "denied" on the
+        // earlier failed attempt and which nothing was clearing here -- so
+        // flipping the browser setting back to Allow updated micPermState but
+        // left the blocked panel on screen until the reader pressed the
+        // button and retried. The Permissions API is authoritative when it's
+        // available at all, so once it says anything other than "denied",
+        // drop the stale getUserMedia-era denial too.
+        status.onchange=()=>{
+          micPermState=status.state;
+          if(status.state!=="denied" && micError==="denied") micError="";
+          updateMicBlockNote();
+        };
+      }
+    }catch(e){ /* not supported here -- stays "unknown" */ }
+    updateMicBlockNote();
+  }
+  // The "how to enable" disclosure lists Chrome/Edge, Firefox and Safari --
+  // fine for a desktop reader, but VPT's singers are just as often on a phone,
+  // where showing all four paths at once means hunting for your own, and
+  // where there is a second wrinkle desktop doesn't have: the SITE can be
+  // allowed while the OS itself still denies the browser app microphone
+  // access altogether. Detect the broad platform and default to showing only
+  // the one relevant path, with a link to reveal the rest for anyone this
+  // guesses wrong for (e.g. a desktop browser with a spoofed/unusual UA).
+  function detectMicHelpPlatform(){
+    const ua=navigator.userAgent||"", plat=navigator.platform||"";
+    if(/iPad|iPhone|iPod/.test(ua) || (plat==="MacIntel" && navigator.maxTouchPoints>1)) return "ios";
+    if(/Android/.test(ua)) return "android";
+    if(/Mac/.test(plat)) return "mac";
+    if(/Win/.test(plat)) return "windows";
+    return null;   // unrecognized -- show everything rather than guess wrong
+  }
+  let micHelpFiltered=false;
+  function filterMicHelpByPlatform(){
+    if(micHelpFiltered) return;
+    const items=[...document.querySelectorAll("#mic-unblock-list li")];
+    const showAllBtn=$("mic-help-showall");
+    const platform=detectMicHelpPlatform();
+    if(!platform || !items.length || !showAllBtn) return;
+    micHelpFiltered=true;
+    let anyHidden=false;
+    items.forEach(li=>{
+      const tags=(li.getAttribute("data-mic-platform")||"").split(/\s+/);
+      const match=tags.includes(platform);
+      li.classList.toggle("hidden", !match);
+      if(!match) anyHidden=true;
+    });
+    if(anyHidden){
+      showAllBtn.classList.remove("hidden");
+      showAllBtn.onclick=()=>{
+        items.forEach(li=>li.classList.remove("hidden"));
+        showAllBtn.classList.add("hidden");
+      };
+    }
+  }
+  // A persistent, always-visible-when-needed note (unlike the transient
+  // stage-sub line, which a later status message just overwrites) with an
+  // actual button to press -- added because "Microphone blocked" text alone
+  // assumes the reader already knows how to fix that, which most don't.
+  // Five user-facing states, collapsed down from several internal micError
+  // values -- the goal (per a UX review of this exact flow) is that a
+  // non-technical singer only ever sees one of five short, plain-language
+  // situations, each with one clear next action, never raw browser/DOM
+  // vocabulary (readyState, MediaStream, NotReadableError, etc. -- those stay
+  // in Diagnostics, which is the deliberate one level down from all of these):
+  //   1. permission never asked yet     -> no note at all; pressing Play IS
+  //                                        the "Allow microphone" gesture and
+  //                                        triggers the browser's real prompt
+  //   2. permission explicitly blocked  -> "Microphone access is blocked"
+  //   3. granted, but not delivering    -> "isn't responding" (technical)
+  //   4. no input device exists         -> "No microphone found"
+  //   5. a working mic stopped working  -> "connection was lost"
+  function updateMicBlockNote(){
+    const note=$("mic-block-note");
+    if(!note) return;
+    const hardFail = micError==="insecure" || micError==="unsupported";
+    // A real denial can surface two ways: the Permissions API (Chrome/Edge --
+    // detectable even before any getUserMedia call, so a pre-existing block
+    // shows up the moment the page loads) or getUserMedia's own
+    // NotAllowedError (works on every browser, including Firefox/Safari,
+    // which don't support querying "microphone" permission state at all --
+    // for them this is the ONLY way a denial is ever detected).
+    const denied = micPermState==="denied" || micError==="denied";
+    const nodevice = micError==="nodevice";
+    const lost = micError==="lost";
+    const interrupted = micError==="interrupted";
+    const timedOut = micError==="timeout";
+    const technical = micError==="notlive" || micError==="failed";
+    const show = hardFail || denied || nodevice || lost || interrupted || timedOut || technical;
+    note.classList.toggle("hidden", !show);
+    if(!show) return;
+    const txt=$("mbn-text"), help=$("mic-unblock-help"), btn=$("mic-activate-btn"), label=$("mbn-activate-label"),
+          secBtn=$("mic-secondary-btn"), secLabel=$("mbn-secondary-label");
+    help.classList.add("hidden");
+    secBtn.classList.add("hidden");
+    if(hardFail){
+      // Nothing a button can retry here -- wrong protocol, or no mic API at all.
+      txt.textContent=micStatusSub();
+      btn.classList.add("hidden");
+    } else if(denied){
+      // A real denial: no browser will ever re-show its native prompt for this
+      // origin from a JS call alone -- that's a deliberate browser security
+      // rule, not something this app can route around. The button still earns
+      // its place for the moment right after the reader fixes the site setting
+      // and wants to try again without reloading. No secondary link here --
+      // Diagnostics can't do anything about a permission decision, so the only
+      // useful "more help" is the how-to-enable disclosure already below.
+      // "This browser won't ask again on its own" overstates what VPT actually
+      // knows -- NotAllowedError alone (the only signal some browsers give)
+      // doesn't disambiguate a site-level block from an OS-level one, so a
+      // claim that specific shouldn't be made on its behalf.
+      txt.textContent=t("Microphone access wasn't granted. Try again. If your browser doesn't show a permission request, allow microphone access for this site in your browser or device settings.");
+      btn.classList.remove("hidden");
+      label.textContent=t("Try again");
+      help.classList.remove("hidden");
+      filterMicHelpByPlatform();
+    } else if(nodevice){
+      txt.textContent=t("VPT can't find a microphone connected to this device. Plug one in, then try again.");
+      btn.classList.remove("hidden");
+      label.textContent=t("Try again");
+      secBtn.classList.remove("hidden");
+      secLabel.textContent=t("Choose microphone");
+    } else if(lost){
+      txt.textContent=t("Your microphone stopped responding — it may have been unplugged or handed to another app. Reconnect it, then try again.");
+      btn.classList.remove("hidden");
+      label.textContent=t("Reconnect");
+      secBtn.classList.remove("hidden");
+      secLabel.textContent=t("Choose microphone");
+    } else if(interrupted){
+      // A suspended AudioContext from a phone call, Siri, an alarm, or a
+      // route change -- not a dead mic, and the track itself was never
+      // touched. No secondary link: Diagnostics and the device picker have
+      // nothing to add here, and reconnecting isn't the fix -- the very
+      // next Play press resumes the context via startMic()'s existing fast
+      // path once the interruption ends.
+      txt.textContent=t("Audio was interrupted — this can happen during a call, Siri, or another app using sound. Press Continue to resume.");
+      btn.classList.remove("hidden");
+      label.textContent=t("Continue");
+    } else if(timedOut){
+      // The browser never resolved the request at all -- most likely an
+      // unanswered or hidden native permission prompt, so the same
+      // how-to-allow disclosure denial gets is genuinely useful here too,
+      // even though this isn't a confirmed denial. No secondary
+      // Diagnostics link: if the prompt itself never appeared, the device
+      // picker there can't help.
+      txt.textContent=t("VPT didn't hear back from the browser. Check for a permission request — it may be hidden behind another window — or check microphone access for this site, then try again.");
+      btn.classList.remove("hidden");
+      label.textContent=t("Try again");
+      help.classList.remove("hidden");
+      filterMicHelpByPlatform();
+    } else {
+      // technical: permission is granted and a device exists, but no usable
+      // audio ever arrived (notlive) or acquisition failed for some other
+      // reason (failed) -- NotReadableError/AbortError/etc. land here too,
+      // deliberately not spelled out to the reader; that detail belongs in
+      // Diagnostics, one click away via the secondary link below.
+      txt.textContent=t("This app has microphone access, but no sound is coming through. If Zoom, Teams, another browser tab, a recording app, or other audio software is using this microphone, close it and try again.");
+      btn.classList.remove("hidden");
+      label.textContent=t("Try microphone again");
+      secBtn.classList.remove("hidden");
+      secLabel.textContent=t("Microphone settings");
+    }
   }
 
   async function ensureAudioCtx(){
@@ -5819,8 +6657,17 @@ function ceilPow2(v) {
     const sang=best?best.note.name+" "+(best.note.centsFromNearest>=0?"+":"")+best.note.centsFromNearest+"¢":"—";
     let pw;
     if(cents!==null) pw=plainWords(cents);
-    else if(reason==="short") pw={txt:"tone too short — hold it a bit longer",tone:"bad"};
-    else pw={txt:"no sound detected",tone:"bad"};
+    else if(reason==="short") pw={txt:t("tone too short — hold it a bit longer"),tone:"bad"};
+    else if(reason==="unclear") pw={txt:t("no clear pitch detected"),tone:"bad"};
+    // "No sound reached the mic" overstated what the RMS floor actually
+    // proves: it's the same volume floor the pitch detector itself uses to
+    // decide whether to even attempt a pitch read, not a separately-tuned
+    // "is there literally any audio" threshold -- a quiet singer, low mic
+    // gain, or a distant mic could sit just under it with real audio still
+    // reaching VPT. Softened to describe what was actually measured (not
+    // enough signal to work with) rather than implying the mic itself is
+    // broken or disconnected.
+    else pw={txt:t("Not enough sound detected — sing a little louder or check your microphone."),tone:"bad"};
     const cls = cents===null ? "bad" : pw.tone;
     const cell=document.createElement("div");
     cell.className="rcell "+cls;
@@ -5927,8 +6774,9 @@ function ceilPow2(v) {
       return pw.txt==="on pitch" ? "on pitch — nicely done" : nd.name+" is "+pw.txt+" than "+targetNote;
     }
     noteOut.textContent="—"; centsOut.textContent="—";
-    return reason==="short" ? "that tone was too short — hold it a little longer"
-                            : "no sound detected — try singing a bit louder";
+    if(reason==="short") return t("that tone was too short — hold it a little longer");
+    if(reason==="unclear") return t("sound came through, but no clear pitch — try one steady, sustained vowel");
+    return t("I couldn't detect enough sound. Try singing a little louder; if that doesn't help, check the microphone input.");
   }
 
   // Whether THIS attempt asks the singer to hold the note internally across
@@ -5966,6 +6814,8 @@ function ceilPow2(v) {
     const micP=startMic();
     const okMic=await readyBeat(2000, micP, shouldPreHear(note));
     if(!running) return null;
+    if(okMic) micPermState="granted";
+    updateMicBlockNote();
     if(!okMic){ stage(micStatusTitle(),{cls:"warn",sub:micStatusSub()}); return null; }
     const winMs=singMsFor(true);      // one tone on its own
     if(effectiveGrade()==="follow"){
@@ -5983,22 +6833,25 @@ function ceilPow2(v) {
         : t("hold the tone for at least half a second"), step:"sing"});
       runDots(holdWin);
       listening=true;
-      const samples=await recordTake(holdWin, tf);
+      const takeResult=await recordTake(holdWin, tf);
       listening=false; cancelAnimationFrame(raf); parkNeedle();
       hideDots(); wave.classList.remove("on");
       muteMic();                       // free the mic so the next tone plays loud
-      captureTake("hold", note, samples);
+      captureTake("hold", note, takeResult.samples);
+      if(takeResult.aborted) return abortedTake(takeResult.reason);
+      const samples=takeResult.samples;
       const held=segmentTake(samples);
       return classifyHeld(note, samples, held);   // {cap, reason}
     }
     stage(t("Sing!"),{cls:"",sub:t("your turn — hold the note"),step:"sing"});
     runDots(winMs);
     listening=true; detectLoop(tf);
-    const best=await captureWindow(winMs, 400);  // ignore first 400ms
+    const capResult=await captureWindow(winMs, 400);  // ignore first 400ms
     listening=false; cancelAnimationFrame(raf); parkNeedle();
     hideDots(); wave.classList.remove("on");
     muteMic();
-    return {cap:best, reason: best?null:"none"};
+    if(capResult.aborted) return abortedTake(capResult.reason);
+    return {cap:capResult.cap, reason:capResult.reason};
   }
 
   playToneBtn.onclick=async ()=>{
@@ -6013,7 +6866,7 @@ function ceilPow2(v) {
     if(timbre==="piano") await ensurePiano();
     else if(timbre==="guitar") await ensureGuitar();
 
-    if(stepIdx===0){ resultsGrid.innerHTML=""; stepCaps=[]; results.classList.remove("hidden"); scoreEl.classList.add("hidden"); }
+    if(stepIdx===0){ resultsGrid.innerHTML=""; stepCaps=[]; stepReasons=[]; results.classList.remove("hidden"); scoreEl.classList.add("hidden"); }
 
     const i=stepIdx;
     // Learning Path: decide guided vs delayed for THIS attempt before singing,
@@ -6026,8 +6879,22 @@ function ceilPow2(v) {
       liveFeedbackHidden = (manualLiveFeedback==="hidden");   // Free Practice: user's own explicit choice
     }
     const res=await playOne(i);
+    if(isAbortedTake(res)){ reportAbortedTake(res.reason); setBusy(false); return; }
+    // playOne() returns a bare null in exactly two cases: the exercise was
+    // stopped mid-flow (!running), or the mic never even started for this
+    // attempt (!okMic -- denied/no-device/lost/timeout/failed) -- distinct
+    // from a completed take that genuinely captured nothing, which always
+    // comes back as {cap:null, reason:"..."} instead. Bailing out here (no
+    // scoring, no step advance) instead of falling through to the "you
+    // completed the exercise" wrap-up below matters because that wrap-up
+    // unconditionally calls stage(t("Complete"),...), which would otherwise
+    // immediately overwrite the mic-status message playOne() itself just
+    // set via stage(micStatusTitle(),...) -- a real user would never
+    // actually see that message, only the persistent panel below it.
+    if(res===null){ setBusy(false); return; }
     const cap=res?res.cap:null, reason=res?res.reason:"none";
     stepCaps[i]=cap||null;
+    stepReasons[i]=cap ? null : reason;
 
     // Independent phase: pause for a self-assessment guess before revealing
     // anything about the actual result.
@@ -6047,12 +6914,31 @@ function ceilPow2(v) {
 
       const isSingleToneLesson = currentLessonId && seq.length===1 && LESSONS[currentLessonId].mode==="free-practice";
       if(isSingleToneLesson){
+        // A "none" reading (nothing measurable reached the mic at all) is a
+        // measurement failure, not a singing outcome -- counting it as a
+        // missed attempt would teach the adaptive per-note accuracy system,
+        // and this lesson's own pass/fail ratio, that this note is hard when
+        // VPT never actually heard anything. Repeat the SAME attempt slot
+        // instead of advancing lessonAttemptCount, so a mic hiccup costs the
+        // singer a retry, not a data point that follows them into Progress.
+        if(stepReasons[0]==="none"){
+          stage(t("That attempt wasn't counted"),{cls:"warn",sub:t("no sound reached the mic — try that tone again")});
+          stepIdx=0;
+          setBusy(false);
+          return;
+        }
         lessonAttemptCount++;
         lessonTrialResults.push({note:seq[0], cap:stepCaps[0]});
         logTrial(trialRecord(currentLessonId, seq[0], stepCaps[0],
           LESSONS[currentLessonId].feedbackSchedule
             ? computeFeedbackPhase(currentLessonId, lessonAttemptCount-1, seq[0]) : null));
-        if(seq[0]) recordNoteOutcome(seq[0], isTrialHit(currentLessonId, stepCaps[0]));
+        // "unclear" (real signal, but no frame ever resolved a clean pitch)
+        // still counts as a completed attempt -- the singer did attempt it,
+        // so it stays in the trial count and this lesson's own pass ratio --
+        // but it's excluded from the adaptive per-note accuracy stat, since
+        // there's no pitch value to be accurate ABOUT. "short" keeps being
+        // recorded as a miss exactly as before: holding the note IS the task.
+        if(seq[0] && stepReasons[0]!=="unclear") recordNoteOutcome(seq[0], isTrialHit(currentLessonId, stepCaps[0]));
         const totalTrials=LESSONS[currentLessonId].trials;
         if(lessonAttemptCount < totalTrials){
           // more trials remain -- stay on this lesson, don't finish it yet
@@ -6089,10 +6975,15 @@ function ceilPow2(v) {
         stage(t("Complete"),{cls:"",sub:summaryLine(stepCaps,seq.length),step:"review"});
         playToneBtn.textContent=t("▶ Play a tone again");
         stepIdx=0;
-        roundFinished(stepCaps);
+        roundFinished(stepCaps, stepReasons);
         if(currentLessonId && !genRounds){
+          // Same measurement-vs-singing distinction as the single-tone lesson
+          // path above: "unclear"/"none" (no usable pitch measurement at all)
+          // are excluded from the adaptive per-note accuracy stat rather than
+          // recorded as a miss; "short" and a real cap are unaffected.
           stepCaps.forEach((cap,idx)=>{
-            if(seq[idx]) recordNoteOutcome(seq[idx], !!cap && Math.abs(cap.cents)<=15);
+            const r=stepReasons[idx];
+            if(seq[idx] && r!=="unclear" && r!=="none") recordNoteOutcome(seq[idx], !!cap && Math.abs(cap.cents)<=15);
           });
           const hits=stepCaps.filter(c=>c && Math.abs(c.cents)<=15).length;
           const ratio = seq.length ? hits/seq.length : 0;
@@ -6163,6 +7054,8 @@ function ceilPow2(v) {
     const micP=startMic();
     const okMic=await readyBeat(2000, micP);
     if(!running) return;
+    if(okMic) micPermState="granted";
+    updateMicBlockNote();
     if(!okMic){ stage(micStatusTitle(),{cls:"warn",sub:micStatusSub()}); return; }
     results.classList.remove("hidden");
 
@@ -6176,15 +7069,18 @@ function ceilPow2(v) {
       runDots(totalMs);
       clearChipHighlights();
       listening=true;
-      const samples=await recordTake(totalMs, null, pseq);
-      captureTake("phrase", pseq.join(" "), samples);
+      const takeResult=await recordTake(totalMs, null, pseq);
+      captureTake("phrase", pseq.join(" "), takeResult.samples);
       listening=false; cancelAnimationFrame(raf); parkNeedle();
       hideDots(); muteMic();
+      if(takeResult.aborted){ reportAbortedTake(takeResult.reason); return; }   // runWhole() still calls setBusy(false) after
+      const samples=takeResult.samples;
       const held=segmentTake(samples);
       const aligned=alignHeld(pseq, held);
       const caps=aligned.map((hh,i)=>heldToCap(pseq[i],hh));
       const voiced = samples.some(s=>s.freq!==null);
-      const missReason = voiced ? "short" : "none";
+      const hadSignal = samples.some(s=>s.rms>=SIGNAL_RMS_FLOOR);
+      const missReason = voiced ? "short" : (hadSignal ? "unclear" : "none");
       resultsGrid.innerHTML="";
       caps.forEach((c,i)=>addResult(pseq[i],c,c?null:missReason));
       showScore(caps,pseq.length);
@@ -6205,7 +7101,7 @@ function ceilPow2(v) {
       const raLine=await maybeAskRoundAssess(caps, pseq.length);
       if(caps.length) commitFeedback(pseq[pseq.length-1],caps[caps.length-1],missReason);
       stage(t("Complete"),{cls:"",sub:summaryLine(caps,pseq.length)+extra,step:"review"});
-      roundFinished(caps);
+      roundFinished(caps, caps.map(c=>c?null:missReason));
       if(!currentLessonId){
         const insight=freePracticeInsight(caps);
         if(insight) scoreEl.innerHTML += '<div class="exercise-done lesson-stability-detail">'+insight+'</div>';
@@ -6222,24 +7118,33 @@ function ceilPow2(v) {
 
     listening=true;
     const caps=new Array(pseq.length).fill(null);
+    const reasons=new Array(pseq.length).fill("none");
     const graceMs=350;
+    let abortedReason=null;
     for(let i=0;i<pseq.length && running;i++){
       const tf=noteToFreq(pseq[i]);
       clearChipHighlights(); chipPlaying(chipIndexFor(i),true);
       detectLoop(tf);
-      const best=await captureWindow(perNote, i===0?graceMs:0);
+      const capResult=await captureWindow(perNote, i===0?graceMs:0);
       cancelAnimationFrame(raf);
-      caps[i]=best;
+      // A mic/page/audio-context interruption on any single slot invalidates
+      // the whole round the same way recordTake's follow-me path already
+      // does -- stop right here rather than filling the remaining slots with
+      // captures against a mic that isn't there any more.
+      if(capResult.aborted){ abortedReason=capResult.reason; break; }
+      caps[i]=capResult.cap;
+      reasons[i]=capResult.reason||"none";
     }
     listening=false; clearChipHighlights(); parkNeedle();
     hideDots(); muteMic();
+    if(abortedReason){ reportAbortedTake(abortedReason); return; }   // runWhole() still calls setBusy(false) after
     resultsGrid.innerHTML="";
-    caps.forEach((c,i)=>addResult(pseq[i],c));
+    caps.forEach((c,i)=>addResult(pseq[i],c,reasons[i]));
     showScore(caps,pseq.length);
     const raLine2=await maybeAskRoundAssess(caps, pseq.length);
-    if(caps.length) commitFeedback(pseq[pseq.length-1],caps[caps.length-1]);
+    if(caps.length) commitFeedback(pseq[pseq.length-1],caps[caps.length-1],reasons[reasons.length-1]);
     stage(t("Complete"),{cls:"",sub:summaryLine(caps,pseq.length),step:"review"});
-    roundFinished(caps);
+    roundFinished(caps, reasons);
     if(!currentLessonId){
       const insight=freePracticeInsight(caps);
       if(insight) scoreEl.innerHTML += '<div class="exercise-done lesson-stability-detail">'+insight+'</div>';
@@ -6489,6 +7394,7 @@ function ceilPow2(v) {
     renderPathList();
     const tp=$("to-path-link");
     if(tp) tp.classList.toggle("hidden", Object.keys(loadLpProgress()).length>0);
+    refreshProfileDeleteUI();
   }
   profileSelect.addEventListener("change",()=>{
     if(!profileSelect.value) return;
@@ -6509,6 +7415,11 @@ function ceilPow2(v) {
   function createProfile(name){
     name=name.trim();
     if(!name){ profileInput.focus(); profileInput.style.borderColor="var(--bad)"; setTimeout(()=>profileInput.style.borderColor="",1200); return; }
+    // A pending deletion for this exact name is still waiting out its undo
+    // window (see finalizePendingProfileDelete) -- without this, re-creating
+    // the same name here and then having that timer fire later would silently
+    // wipe the just-created profile's fresh data out from under it.
+    if(pendingProfileDelete && pendingProfileDelete.name===name) finalizePendingProfileDelete();
     const list=loadProfileList();
     if(!list.includes(name)) list.push(name);
     saveProfileList(list);
@@ -6526,7 +7437,115 @@ function ceilPow2(v) {
   profileBackdrop.addEventListener("click",e=>{ if(e.target===profileBackdrop) closeProfileModal(); });
   document.addEventListener("keydown",e=>{ if(e.key==="Escape" && !profileBackdrop.hidden) closeProfileModal(); });
 
+  // ================= DELETE PROFILE =================
+  // Deliberately tucked into Practice options rather than the profile row
+  // itself, away from the frequently-touched "+ New"/switch controls, so it
+  // can't be hit by a stray tap. Deletion itself is two-stage: confirming in
+  // the modal below removes the profile from the picker immediately, but the
+  // actual localStorage keys aren't erased for a few seconds -- long enough
+  // for the Undo toast to put everything back exactly as it was.
+  function collectProfileKeys(name){
+    const keys=["vpt:progress:"+name,"vpt:noteAccuracy:"+name,"vpt:trials:"+name,
+      "vpt:range:"+name,"vpt:rangeOnboardSkipped:"+name,"vpt:fpSettings:"+name];
+    // Free Practice stats are dated (today/yesterday only -- see
+    // pruneOldFreePracticeStats), so they can't be named directly here.
+    try{
+      const prefix="vpt:freePracticeStats:"+name+":";
+      for(let i=0;i<localStorage.length;i++){
+        const k=localStorage.key(i);
+        if(k && k.indexOf(prefix)===0) keys.push(k);
+      }
+    }catch(e){}
+    return keys;
+  }
+
+  const profileDeleteBtn=$("profile-delete-btn");
+  const profileDeleteBackdrop=$("profile-delete-backdrop");
+  const profileDeleteToast=$("profile-delete-toast");
+  let pendingProfileDelete=null; // {name, index, snapshot, timer}
+
+  // Lives right next to the profile picker now (Phase 18): pick a profile
+  // from the list, delete button right there -- rather than a separate,
+  // more heavily-labeled control buried in Practice options. Deliberately a
+  // small icon, not text, so it reads as one more option in the row instead
+  // of a call-out; the profile name goes on the aria-label (and, as before,
+  // on the confirm dialog) rather than the visible button.
+  function refreshProfileDeleteUI(){
+    if(!profileDeleteBtn) return;
+    const name=lsGet(LS_ACTIVE);
+    profileDeleteBtn.classList.toggle("hidden", !name);
+    if(name) profileDeleteBtn.setAttribute("aria-label", fill("Delete {name}", {name}));
+  }
+
+  function openProfileDeleteModal(){
+    const name=lsGet(LS_ACTIVE);
+    if(!name) return;
+    $("profile-delete-title").textContent=fill("Delete {name}?", {name});
+    $("profile-delete-body").textContent=fill("This removes {name}'s saved vocal range, lesson progress, and practice stats from this device. Other profiles won't be affected, and you'll have a few seconds to undo right after.", {name});
+    profileDeleteBackdrop.hidden=false;
+  }
+  function closeProfileDeleteModal(){ profileDeleteBackdrop.hidden=true; }
+
+  function hideProfileDeleteToast(){ profileDeleteToast.classList.add("hidden"); }
+  function showProfileDeleteToast(name){
+    $("profile-delete-toast-text").textContent=fill("Profile {name} deleted", {name});
+    profileDeleteToast.classList.remove("hidden");
+  }
+
+  // Actually erases the staged keys. Called either when the undo window
+  // expires, or immediately if a new deletion (or a same-named re-creation,
+  // see createProfile) needs to supersede whatever was still pending.
+  function finalizePendingProfileDelete(){
+    if(!pendingProfileDelete) return;
+    clearTimeout(pendingProfileDelete.timer);
+    Object.keys(pendingProfileDelete.snapshot).forEach(k=>{ try{ localStorage.removeItem(k); }catch(e){} });
+    pendingProfileDelete=null;
+    hideProfileDeleteToast();
+  }
+
+  function confirmDeleteProfile(){
+    const name=lsGet(LS_ACTIVE);
+    closeProfileDeleteModal();
+    if(!name) return;
+    finalizePendingProfileDelete(); // only one undo-able deletion at a time
+    const keys=collectProfileKeys(name);
+    const snapshot={};
+    keys.forEach(k=>{ snapshot[k]=lsGet(k); });
+    const list=loadProfileList();
+    const index=Math.max(0,list.indexOf(name));
+    saveProfileList(list.filter(n=>n!==name));
+    lsSet(LS_ACTIVE, loadProfileList()[0]||"");
+    renderProfileSelect();
+    refreshProfileScopedUI();
+    pendingProfileDelete={ name, index, snapshot,
+      timer: setTimeout(finalizePendingProfileDelete, 8000) };
+    showProfileDeleteToast(name);
+  }
+
+  function undoDeleteProfile(){
+    if(!pendingProfileDelete) return;
+    clearTimeout(pendingProfileDelete.timer);
+    const {name, index, snapshot}=pendingProfileDelete;
+    Object.keys(snapshot).forEach(k=>{ if(snapshot[k]!==null) lsSet(k, snapshot[k]); });
+    const list=loadProfileList();
+    if(!list.includes(name)){ list.splice(Math.min(index,list.length),0,name); saveProfileList(list); }
+    lsSet(LS_ACTIVE,name);
+    pendingProfileDelete=null;
+    hideProfileDeleteToast();
+    renderProfileSelect();
+    refreshProfileScopedUI();
+  }
+
+  profileDeleteBtn.addEventListener("click",openProfileDeleteModal);
+  $("profile-delete-cancel").addEventListener("click",closeProfileDeleteModal);
+  $("profile-delete-close").addEventListener("click",closeProfileDeleteModal);
+  $("profile-delete-confirm").addEventListener("click",confirmDeleteProfile);
+  $("profile-delete-undo").addEventListener("click",undoDeleteProfile);
+  profileDeleteBackdrop.addEventListener("click",e=>{ if(e.target===profileDeleteBackdrop) closeProfileDeleteModal(); });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape" && !profileDeleteBackdrop.hidden) closeProfileDeleteModal(); });
+
   renderProfileSelect();
+  refreshProfileDeleteUI();
   // Deliberately NOT shown on load: a nickname prompt has nothing to do with
   // a visitor's first job (start the first lesson), so it used to compete
   // with Start for attention before anyone had done anything. Offered once,
@@ -6632,6 +7651,31 @@ function ceilPow2(v) {
     $("mic-path-note").classList.add("hidden");
   });
 
+  const micActivateBtn=$("mic-activate-btn");
+  if(micActivateBtn) micActivateBtn.addEventListener("click", async ()=>{
+    micActivateBtn.disabled=true;
+    const ok=await startMic();
+    micActivateBtn.disabled=false;
+    if(ok){
+      micPermState="granted";
+      stage(t("Ready — press Play."),{cls:"muted"});
+    } else {
+      // getUserMedia's own rejection is the freshest read of permission state --
+      // re-check via the Permissions API too, in case the user had just fixed
+      // the browser setting and this call is what confirms it.
+      await refreshMicPermState();
+    }
+    updateMicBlockNote();
+  });
+  // The secondary "Choose microphone" / "Microphone settings" link -- the
+  // deliberate one-level-down step from the note's own primary retry button,
+  // per the "automatic recovery -> Try again -> this -> Diagnostics" hierarchy.
+  // Diagnostics is where the actual device dropdown and technical detail live;
+  // this is just a shortcut into it from wherever the note is showing.
+  const micSecondaryBtn=$("mic-secondary-btn");
+  if(micSecondaryBtn) micSecondaryBtn.addEventListener("click", ()=>{ openDiag(); });
+  refreshMicPermState();
+
   const backToPathLink=$("back-to-path-link");
   if(backToPathLink) backToPathLink.addEventListener("click",()=>{
     abandonLesson();   // the link used to only scroll, leaving the lesson running
@@ -6652,6 +7696,7 @@ function ceilPow2(v) {
     "your-exercise": "The exercise you've built so far. Drag a tone to reorder it, or tap × to remove it.",
     "practice-options": "Sound, tempo, grading style, and vocal range — how you practice, not what you practice.",
     "play-sing": "Press Play to hear the reference, then sing it back. Your result shows up in Results below.",
+    "profile": "A profile keeps your vocal range, lesson progress, and stats separate from anyone else on this device. Setting a range helps exercises fit your voice — it's optional, and you can change it later. Use the delete button next to the profile picker above to remove a profile (and everything saved under it).",
   };
   const stepPopover=$("step-popover"), stepPopoverText=$("step-popover-text");
   let openStepHelpBtn=null;
@@ -6774,12 +7819,32 @@ function ceilPow2(v) {
   const VR_MIN_HOLD_MS=500;
   async function detectSungNote(){
     const okMic=await startMic(); await ensureAudioCtx();
+    if(okMic) micPermState="granted";
+    updateMicBlockNote();
     if(!okMic) return {error:true, msg:micStatusSub()};
     listening=true;
-    const samples=await recordTake(3000, null, null);   // no target -- tuner-style live read
-    captureTake("range", null, samples);   // free sustained-tone data during calibration
+    const takeResult=await recordTake(3000, null, null);   // no target -- tuner-style live read
+    captureTake("range", null, takeResult.samples);   // free sustained-tone data during calibration
     listening=false; muteMic(); parkNeedle();
-    const held=segmentTake(samples).filter(h=>h.dur>=VR_MIN_HOLD_MS);
+    // A mic that died mid-listen is a mic problem, not "didn't hold the note
+    // long enough" -- surface the real reason (and the same recovery panel
+    // used everywhere else) instead of telling someone to just try harder.
+    // Every aborted take is a non-attempt per recordTake's own contract, so
+    // this branch has to catch ALL reasons, not just the mic-related ones --
+    // a page-hidden abort used to fall through into analysing whatever
+    // partial samples were captured before the tab was backgrounded.
+    if(takeResult.aborted){
+      if(takeResult.reason==="mic-lost"){
+        micError="lost"; updateMicBlockNote();
+        return {error:true, msg:micStatusSub()};
+      }
+      if(takeResult.reason==="audio-context-interrupted"){
+        micError="interrupted"; updateMicBlockNote();
+        return {error:true, msg:micStatusSub()};
+      }
+      return {error:true, msg:t("Range check was interrupted — try again.")};
+    }
+    const held=segmentTake(takeResult.samples).filter(h=>h.dur>=VR_MIN_HOLD_MS);
     if(!held.length) return {error:true, msg:t("No note held long enough — try again, holding it steady for at least half a second.")};
     held.sort((a,b)=>b.dur-a.dur);   // most sustained reading is the most reliable one
     return {error:false, note:freqToNoteData(held[0].freq).name};
@@ -7031,6 +8096,20 @@ function ceilPow2(v) {
     if(navigator.mediaDevices && "ondevicechange" in navigator.mediaDevices){
       navigator.mediaDevices.addEventListener("devicechange",function(){
         diagEvent("devicechange");
+        // Reactive, not proactive: refresh the Diagnostics device list so a
+        // plugged-in or removed mic shows up next time it's opened, but
+        // never hot-swap the ACTIVE stream or touch grading state here --
+        // especially never mid-take. If the current track actually died
+        // (e.g. a USB mic unplugged), let that surface the normal way, once
+        // it's safe: the "lost" recovery panel, not a silent switch.
+        try{ diagListDevices(); }catch(e){}
+        if(running) return;
+        const track=micStream && micStream.getAudioTracks && micStream.getAudioTracks()[0];
+        if(track && track.readyState==="ended"){
+          releaseMic();
+          micError="lost";
+          updateMicBlockNote();
+        }
       });
     }
   }catch(e){}
@@ -7182,6 +8261,12 @@ function ceilPow2(v) {
     if(diagRaf) cancelAnimationFrame(diagRaf);
     diagRaf=null;
     diagBackdrop.hidden=true;
+    // The diagnostics panel opens the mic on demand (see openDiag) even outside a
+    // real take. muteMic() only disables the track -- the stream stays "live" and
+    // the browser's recording indicator stays lit. Only releaseMic() actually
+    // stops the tracks. Never touch the mic here if a real take is mid-flight
+    // (running===true): that mic belongs to the session, not to diagnostics.
+    if(!running) releaseMic();
   }
 
   $("diag-open").addEventListener("click",openDiag);
@@ -7219,7 +8304,17 @@ function ceilPow2(v) {
   // when the tab is backgrounded. Resume it when the page becomes visible again,
   // otherwise playback is silent and the meter reads nothing.
   document.addEventListener("visibilitychange",()=>{
-    if(document.hidden){ diagEvent("tab-hidden"); return; }
+    if(document.hidden){
+      diagEvent("tab-hidden");
+      // An idle backgrounded tab shouldn't keep leaving the mic actively
+      // open. Only when nothing is running -- muting mid-take would cut off
+      // whatever's still being captured, and recordTake's own page-hidden
+      // check already aborts that cleanly. muteMic() just disables the
+      // track, so the next Play press's fast-reuse path in startMic()
+      // re-enables it automatically; nothing to undo on the visible side.
+      if(!running) muteMic();
+      return;
+    }
     diagEvent("tab-visible", ac ? ac.state : "no context");
     if(ac && ac.state==="suspended"){ ac.resume().catch(()=>{}); }
   });
@@ -7344,7 +8439,7 @@ function ceilPow2(v) {
     });
     observer.observe(backdrop, {attributes:true, attributeFilter:["hidden"]});
   }
-  ["prog-backdrop","diag-backdrop","fb-backdrop","profile-backdrop","vr-backdrop"].forEach(id=>setupModalA11y($(id)));
+  ["prog-backdrop","diag-backdrop","fb-backdrop","profile-backdrop","vr-backdrop","profile-delete-backdrop"].forEach(id=>setupModalA11y($(id)));
 })();
 </script>
 </body>
