@@ -69,8 +69,51 @@ and guitar playback use bundled/CDN sample instruments where available, with a s
 fallback so sound options still work offline.
 
 ## License
+Vocal Pitch Trainer License
 
-<!-- Add a license (e.g. MIT) and update this section — none is currently declared. -->
+Copyright (c) 2026 Nikolai Scherbak
+
+This license applies to the original source code and documentation of this
+project (the "Software"), written by Nikolai Scherbak. It does NOT cover
+bundled third-party components — see the "NOTE ON SCOPE" section below.
+
+Permission is granted, free of charge, to use, copy, modify, and redistribute
+the Software, in whole or in part, subject to the following conditions:
+
+1. NON-COMMERCIAL USE ONLY. The Software, and any copy, modification, or
+   derivative of it, may be used only for non-commercial purposes. Any use
+   intended for or directed toward commercial advantage or monetary
+   compensation is not permitted without prior written permission from the
+   copyright holder.
+
+2. ATTRIBUTION REQUIRED. Any reproduction or redistribution of the Software,
+   in whole or in part, must give clear attribution to the original creator
+   (Nikolai Scherbak) and the source of the project. This applies whether the
+   Software is shared unmodified, modified, or incorporated into a larger
+   work.
+
+3. NO WARRANTY. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+   KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+   NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+   DEALINGS IN THE SOFTWARE.
+
+For commercial licensing inquiries, contact the copyright holder directly.
+
+---
+
+NOTE ON SCOPE: This license covers only the original source code and
+documentation of this project. It does NOT cover:
+
+- The third-party piano samples in samples/piano/
+- The bundled pitchy (pitch detection) library
+- The bundled fft.js library
+
+These remain under their own original licenses — see NOTICES.md for full
+attribution and license text for each.
+
 
 ## Author
 
