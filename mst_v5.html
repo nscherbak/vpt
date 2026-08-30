@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VPT Microphone Device Test</title>
+<style>
+:root{--bg:#0f1417;--panel:#161d21;--panel2:#1c252a;--line:#2a353b;--ink:#e8eef0;--muted:#93a3aa;--dim:#74858c;--accent:#4ec9b0;--good:#4ec9b0;--warn:#e0c04a;--bad:#e0684a;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5}.wrap{max-width:820px;margin:auto;padding:24px 16px 64px}h1{font-size:25px;margin:0 0 5px}h2{font-size:18px;margin:0 0 10px}h3{font-size:15px;margin:0 0 5px}p{margin:6px 0}.small{font-size:12.5px;color:var(--muted)}.mono{font-family:var(--mono)}.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0}.intro{border-color:rgba(78,201,176,.5);background:linear-gradient(180deg,rgba(78,201,176,.08),rgba(78,201,176,.02))}.steps{margin:8px 0 0;padding-left:22px}.steps li{margin:6px 0}.status{display:inline-flex;align-items:center;gap:7px;font:12px var(--mono);color:var(--muted);margin-bottom:10px}.dot{width:8px;height:8px;border-radius:50%;background:var(--dim)}.dot.good{background:var(--good)}.dot.warn{background:var(--warn)}.dot.bad{background:var(--bad)}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:620px){.field-grid{grid-template-columns:1fr}}label.field{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--muted)}select,button{font:500 14px var(--sans);border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--ink);padding:9px 11px}select{width:100%}button{cursor:pointer}button:hover{border-color:var(--accent)}button.primary{background:var(--accent);border-color:var(--accent);color:#04120e;font-weight:700}button.secondary{background:transparent}button.danger{border-color:var(--bad);color:var(--bad)}button:disabled{opacity:.45;cursor:not-allowed}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}.check-row{display:flex;gap:9px;align-items:flex-start;margin:9px 0;color:var(--muted);font-size:13px}.check-row input{margin-top:3px}.detected{font-size:13px;padding:9px 11px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;color:var(--muted)}.detected b{color:var(--ink)}.callout{border-left:3px solid var(--warn);background:rgba(224,192,74,.06);padding:10px 12px;border-radius:4px;font-size:13px;margin:10px 0}.callout.good{border-left-color:var(--good);background:rgba(78,201,176,.06)}.callout.bad{border-left-color:var(--bad);background:rgba(224,104,74,.06)}.callout[hidden]{display:none}.guide-steps{margin:8px 0 0;padding-left:20px}.guide-steps li{margin:5px 0}.progress{height:8px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:10px 0 4px}.progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .18s}.test-list{display:flex;flex-direction:column;gap:9px}.test{border:1px solid var(--line);background:var(--panel2);border-radius:11px;padding:12px}.test-head{display:flex;justify-content:space-between;gap:12px}.test-result{font:12px/1.4 var(--mono);margin-top:7px;color:var(--muted)}.pass{color:var(--good)}.warn{color:var(--warn)}.fail{color:var(--bad)}.skip{color:var(--dim)}.manual-intro{margin-bottom:10px}.manual-box{border-top:1px solid var(--line);margin-top:10px;padding-top:10px}.choice{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.meter{height:10px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:8px}.meter i{height:100%;display:block;width:0;background:var(--accent);transition:width .08s}.kv{display:grid;grid-template-columns:150px 1fr;gap:5px 12px;font-size:13px}.kv b{color:var(--muted);font-weight:500}details{margin-top:10px}summary{cursor:pointer;color:var(--muted);font-size:13px}.log{height:160px;overflow:auto;background:#0b0f11;border:1px solid var(--line);border-radius:9px;padding:9px;font:11px/1.4 var(--mono);white-space:pre-wrap;color:#b7c5ca}.report{width:100%;min-height:220px;background:#0b0f11;color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:9px;font:11px/1.4 var(--mono)}.copy-status{font-size:12px;color:var(--muted);align-self:center}.hidden{display:none!important}.phase-title{display:flex;justify-content:space-between;gap:12px;align-items:center}.tag{font:10px var(--mono);text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:3px 6px;color:var(--dim)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="panel intro">
+    <div class="status"><span class="dot" id="overall-dot"></span><span id="overall-label">Ready to start</span></div>
+    <h1>VPT Microphone Device Test</h1>
+    <p>This checks whether your usual device and browser can use the microphone reliably with VPT.</p>
+    <ol class="steps">
+      <li>Answer the short setup questions below.</li>
+      <li>Press <b>Start test</b>. If microphone access is blocked, the test stops and tells you how to fix it. Nothing else runs until the microphone works.</li>
+      <li>Let the automatic tests finish. Speak or sing normally when asked.</li>
+      <li>Then do only the extra checks shown for your setup. The report is built automatically.</li>
+    </ol>
+    <p class="small">No voice recording is saved or uploaded. The page only measures the live audio signal on this device.</p>
+  </section>
+
+  <section class="panel" id="setup-panel">
+    <div class="phase-title"><h2>1. Your setup</h2><span class="tag" id="detected-short">Detecting…</span></div>
+    <div class="field-grid">
+      <label class="field">What are you listening through?
+        <select id="listen-setup">
+          <option value="">Choose one…</option>
+          <option value="speakers">Device speakers</option>
+          <option value="wired">Wired headphones / earbuds</option>
+          <option value="bluetooth">Bluetooth headphones / earbuds</option>
+          <option value="other">Other / not sure</option>
+        </select>
+      </label>
+      <label class="field">What microphone do you normally use with VPT?
+        <select id="mic-setup">
+          <option value="">Choose one…</option>
+          <option value="built-in">Built-in microphone</option>
+          <option value="usb">USB microphone / audio interface</option>
+          <option value="wired-headset">Wired headset microphone</option>
+          <option value="bluetooth">Bluetooth headset microphone</option>
+          <option value="other">Other / not sure</option>
+        </select>
+      </label>
+    </div>
+    <div id="optional-questions" style="margin-top:12px">
+      <label class="check-row" id="busy-row"><input type="checkbox" id="can-busy"> <span>I can briefly open another app that uses the same microphone (for example Zoom, Teams, Voice Recorder).</span></label>
+      <label class="check-row" id="interrupt-row"><input type="checkbox" id="can-interrupt"> <span>I can briefly trigger Siri / Assistant or a phone-call interruption during the test.</span></label>
+    </div>
+    <div class="detected" id="environment-summary">Detecting browser and device…</div>
+  </section>
+
+  <section class="panel" id="start-panel">
+    <h2>2. Start the automatic test</h2>
+    <p class="small">The microphone is checked first. If it cannot be used, testing stops immediately so you can fix that problem before continuing.</p>
+    <div class="callout" id="mic-prereq-status">Checking microphone permission…</div>
+    <div class="actions"><button id="start-test" class="primary">Start test</button><button id="stop-test" class="danger" disabled>Stop</button></div>
+    <div class="progress"><i id="progress-bar"></i></div>
+    <div class="small" id="run-status">Waiting to start.</div>
+    <div class="callout bad" id="permission-guide" hidden></div>
+    <div class="callout good" id="auto-done" hidden></div>
+  </section>
+
+  <section class="panel" id="automatic-panel">
+    <h2>Automatic checks</h2>
+    <div class="test-list" id="auto-results"><div class="small">Results will appear here after you start the test.</div></div>
+    <details>
+      <summary>Live microphone details</summary>
+      <div class="kv" style="margin-top:9px"><b>Device</b><span id="live-device">—</span><b>Track</b><span id="live-track">—</span><b>AudioContext</b><span id="live-ac">—</span><b>Sample rate</b><span id="live-rate">—</span><b>Current signal</b><span id="live-rms">—</span></div>
+      <div class="meter"><i id="rms-bar"></i></div>
+    </details>
+  </section>
+
+  <section class="panel hidden" id="manual-panel">
+    <h2>3. Extra checks for your setup</h2>
+    <p class="small manual-intro" id="manual-intro">Automatic checks are complete. Only checks relevant to this setup are shown. Do the highlighted check now; the next one appears after you finish it.</p>
+    <div class="test-list" id="manual-tests"></div>
+  </section>
+
+  <section class="panel" id="report-panel">
+    <h2>4. Report</h2>
+    <p class="small">The report updates automatically. It contains only the information needed to evaluate this device/browser combination; repetitive internal event logs are omitted unless a problem occurred.</p>
+    <div class="callout" id="report-summary">Test not started yet.</div>
+    <div class="actions"><button id="download-report" class="primary">Download report</button><button id="copy-report" class="secondary">Copy report</button><span class="copy-status" id="copy-status"></span></div>
+    <details>
+      <summary>Show report details</summary>
+      <textarea id="report" class="report" spellcheck="false" readonly></textarea>
+    </details>
+    <details>
+      <summary>Technical event log (not included in a normal report)</summary>
+      <div id="event-log" class="log"></div>
+    </details>
+  </section>
+</div>
+<script>
+"use strict";
+const $=id=>document.getElementById(id), wait=ms=>new Promise(r=>setTimeout(r,ms));
+const MODULE_VERSION="5.0-pilot";
+const state={env:null,config:{listen:"",mic:"",canBusy:false,canInterrupt:false},stream:null,ac:null,source:null,analyser:null,buf:null,permission:"unknown",running:false,stop:false,results:{},manual:{},events:[],abnormal:[],trackEvents:[],visibilityEvents:[],deviceChangeCount:0,phase:"setup",lastError:null,prereqIssues:[],activeManual:null};
+function nowIso(){return new Date().toISOString()}
+function log(tag,detail="",abnormal=false){const r={at:nowIso(),tag,detail:String(detail||"")};state.events.push(r);if(state.events.length>300)state.events.shift();if(abnormal){state.abnormal.push(r);if(state.abnormal.length>30)state.abnormal.shift()}const box=$("event-log");if(box){box.textContent=state.events.map(e=>`${e.at}  ${e.tag}${e.detail?"  "+e.detail:""}`).join("\n");box.scrollTop=box.scrollHeight}}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]))}
+function browserVersion(ua,browser){const patterns={"Edge":/Edg\/([\d.]+)/,"Chrome":/Chrome\/([\d.]+)/,"Chrome (iOS)":/CriOS\/([\d.]+)/,"Firefox":/Firefox\/([\d.]+)/,"Firefox (iOS)":/FxiOS\/([\d.]+)/,"Safari":/Version\/([\d.]+)/};const m=(patterns[browser]||/$^/).exec(ua);return m?m[1]:"unknown"}
+function detectEnvironment(){const ua=navigator.userAgent||"",plat=(navigator.userAgentData&&navigator.userAgentData.platform)||navigator.platform||"",touch=navigator.maxTouchPoints||0,isIPadOS=plat==="MacIntel"&&touch>1;let os="Unknown";if(/iPhone|iPad|iPod/i.test(ua)||isIPadOS)os="iOS/iPadOS";else if(/Android/i.test(ua))os="Android";else if(/Win/i.test(plat)||/Windows/i.test(ua))os="Windows";else if(/Mac/i.test(plat)||/Mac OS X/i.test(ua))os="macOS";else if(/Linux/i.test(plat)||/Linux/i.test(ua))os="Linux";let browser="Unknown";if(/Edg\//.test(ua))browser="Edge";else if(/Firefox\//.test(ua))browser="Firefox";else if(/CriOS\//.test(ua))browser="Chrome (iOS)";else if(/FxiOS\//.test(ua))browser="Firefox (iOS)";else if(/Chrome\//.test(ua)&&!/Chromium/.test(ua))browser="Chrome";else if(/Safari\//.test(ua)&&/Version\//.test(ua))browser="Safari";const mobile=/Mobi|Android|iPhone|iPad|iPod/i.test(ua)||isIPadOS;state.env={os,browser,browserVersion:browserVersion(ua,browser),mobile,secure:window.isSecureContext,gum:!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia),enumerate:!!(navigator.mediaDevices&&navigator.mediaDevices.enumerateDevices),devicechange:!!(navigator.mediaDevices&&("ondevicechange" in navigator.mediaDevices)),permissions:!!(navigator.permissions&&navigator.permissions.query),wakeLock:!!navigator.wakeLock,audioContext:!!(window.AudioContext||window.webkitAudioContext)};$("detected-short").textContent=`${os} · ${browser}`;$("environment-summary").innerHTML=`Detected automatically: <b>${esc(os)}</b> · <b>${esc(browser)} ${esc(state.env.browserVersion)}</b> · ${mobile?"mobile/tablet":"desktop"}.`;$("busy-row").classList.toggle("hidden",mobile);$("interrupt-row").classList.toggle("hidden",!(os==="iOS/iPadOS"||os==="Android"));log("environment",`${os} | ${browser} ${state.env.browserVersion} | ${mobile?"mobile":"desktop"}`);refreshPermissionState();refreshReport();return state.env}
+async function refreshPermissionState(){
+  state.permission="unknown";
+  if(navigator.permissions&&navigator.permissions.query){
+    try{
+      const p=await navigator.permissions.query({name:"microphone"});
+      state.permission=p.state;updatePrereqUI();
+      p.onchange=()=>{
+        state.permission=p.state;log("permission-change",p.state,state.activeManual!=="permission");updatePrereqUI();
+        if(p.state==="granted"&&state.phase==="blocked") showPermissionGuide("Microphone permission is now allowed. Continue the test to verify the microphone works.","retry");
+        refreshReport()
+      };
+      return p.state
+    }catch(e){log("permission-query-unavailable",e.name||"error")}
+  }
+  updatePrereqUI();return state.permission
+}
+function readConfig(){state.config.listen=$("listen-setup").value;state.config.mic=$("mic-setup").value;state.config.canBusy=$("can-busy").checked;state.config.canInterrupt=$("can-interrupt").checked;refreshManualPlan();refreshReport()}
+["listen-setup","mic-setup","can-busy","can-interrupt"].forEach(id=>$(id).addEventListener("change",readConfig));
+function configReady(){return !!state.config.listen&&!!state.config.mic}
+function recordPrereqIssue(code,message){
+  const last=state.prereqIssues[state.prereqIssues.length-1];
+  if(last && last.code===code && !last.resolvedAt) return last;
+  const item={code,message,at:nowIso(),resolvedAt:null};state.prereqIssues.push(item);if(state.prereqIssues.length>6)state.prereqIssues.shift();return item
+}
+function resolvePrereqIssues(){state.prereqIssues.forEach(x=>{if(!x.resolvedAt)x.resolvedAt=nowIso()})}
+function updatePrereqUI(){
+  const box=$("mic-prereq-status"),btn=$("start-test");if(!box||!btn)return;
+  box.className="callout";
+  if(state.permission==="denied"){box.classList.add("bad");box.textContent="Microphone access is blocked. Fix this before the test can run.";btn.textContent="Fix microphone access";return}
+  if(state.permission==="granted"){box.classList.add("good");box.textContent="Microphone permission is allowed. The test can start.";btn.textContent="Start test";return}
+  if(state.permission==="prompt"){box.textContent="Your browser will ask for microphone access when you start.";btn.textContent="Allow microphone & start test";return}
+  box.textContent="Microphone access will be checked when you start.";btn.textContent="Check microphone & start test"
+}
+function setOverall(label,tone=""){$("overall-label").textContent=label;$("overall-dot").className="dot "+tone}
+function setProgress(pct,label){$("progress-bar").style.width=Math.max(0,Math.min(100,pct))+"%";$("run-status").textContent=label}
+function track(){return state.stream&&state.stream.getAudioTracks?state.stream.getAudioTracks()[0]:null}
+function stopStream(){try{if(state.source)state.source.disconnect()}catch(e){}try{if(state.stream)state.stream.getTracks().forEach(t=>t.stop())}catch(e){}state.source=null;state.stream=null;state.analyser=null;state.buf=null;updateLive()}
+async function ensureAudio(){if(!state.ac||state.ac.state==="closed"){const C=window.AudioContext||window.webkitAudioContext;if(!C)throw new Error("AudioContext unavailable");state.ac=new C();state.ac.onstatechange=()=>{const st=state.ac?state.ac.state:"closed";log("audio-context",st,st==="interrupted")}}if(state.ac.state==="suspended"||state.ac.state==="interrupted"){try{await state.ac.resume()}catch(e){log("audio-resume-failed",e.name||"error",true)}}return state.ac}
+function gumTimed(constraints,ms=12000){let settled=false;return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{if(settled)return;settled=true;const e=new Error("Microphone request timed out");e.name="TimeoutError";reject(e)},ms);navigator.mediaDevices.getUserMedia(constraints).then(s=>{if(settled){try{s.getTracks().forEach(t=>t.stop())}catch(e){}return}settled=true;clearTimeout(timer);resolve(s)}).catch(e=>{if(settled)return;settled=true;clearTimeout(timer);reject(e)})})}
+function micConstraints(){return{audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}}}
+async function requestMic(){let s;try{s=await gumTimed(micConstraints(),12000)}catch(e){if(e&&(e.name==="OverconstrainedError"||e.name==="TypeError")){s=await gumTimed({audio:true},12000)}else throw e}return s}
+function bindTrackEvents(t){if(!t)return;["mute","unmute","ended"].forEach(ev=>t.addEventListener(ev,()=>{const r={at:nowIso(),event:ev,readyState:t.readyState,enabled:t.enabled,muted:t.muted};state.trackEvents.push(r);const expected=(state.activeManual==="usb"||state.activeManual==="permission");log("track-"+ev,`${t.readyState} enabled=${t.enabled} muted=${t.muted}`,ev!=="unmute"&&!expected);updateLive();refreshReport()}))}
+async function attachStream(s){stopStream();state.stream=s;bindTrackEvents(track());await ensureAudio();state.source=state.ac.createMediaStreamSource(s);state.analyser=state.ac.createAnalyser();state.analyser.fftSize=2048;state.buf=new Float32Array(state.analyser.fftSize);state.source.connect(state.analyser);updateLive()}
+function rmsOf(buf){let sum=0;for(let i=0;i<buf.length;i++)sum+=buf[i]*buf[i];return Math.sqrt(sum/buf.length)}
+function sampleRms(){if(!state.analyser||!state.buf)return null;state.analyser.getFloatTimeDomainData(state.buf);const r=rmsOf(state.buf);$("live-rms").textContent=r.toFixed(5);$("rms-bar").style.width=Math.min(100,r*1000)+"%";return r}
+function updateLive(){const t=track();$("live-device").textContent=t?(t.label||"Unnamed microphone"):"—";$("live-track").textContent=t?`${t.readyState} · ${t.enabled?"enabled":"disabled"} · ${t.muted?"muted":"not muted"}`:"—";$("live-ac").textContent=state.ac?state.ac.state:"—";$("live-rate").textContent=state.ac?`${state.ac.sampleRate} Hz`:"—";if(!state.analyser){$("live-rms").textContent="—";$("rms-bar").style.width="0"}}
+async function getInputs(){if(!state.env.enumerate)return[];try{return(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==="audioinput")}catch(e){log("enumerate-failed",e.name||"error",true);return[]}}
+function inferMicType(t){if(!t)return"unknown";let s={};try{s=t.getSettings?t.getSettings():{}}catch(e){}const label=(t.label||"").toLowerCase();if(/bluetooth|airpods|hands-?free|\bhfp\b/.test(label)||(typeof s.sampleRate==="number"&&s.sampleRate<=16000))return"bluetooth-likely";if(/usb|scarlett|focusrite|audio interface|motu|presonus|steinberg|behringer|rode|blue yeti|samson/.test(label))return"usb/external-likely";if(/built.?in|internal|microphone array/.test(label))return"built-in-likely";return"unknown"}
+function compactTrack(){const t=track();if(!t)return null;let s={};try{s=t.getSettings?t.getSettings():{}}catch(e){}return{label:t.label||"unnamed",inferredType:inferMicType(t),readyState:t.readyState,enabled:t.enabled,muted:t.muted,sampleRate:s.sampleRate??null,channelCount:s.channelCount??null,echoCancellation:s.echoCancellation??null,noiseSuppression:s.noiseSuppression??null,autoGainControl:s.autoGainControl??null}}
+function setResult(id,status,message,data={}){state.results[id]={status,message,data,at:nowIso()};renderAutoResults();refreshReport()}
+const autoOrder=["preflight","permission","inputs","signal","toggle","context","reacquire","wake"];
+const autoNames={preflight:"Browser prerequisites",permission:"Microphone access",inputs:"Audio input detection",signal:"Signal-flow stability",toggle:"Listen → Sing track switching",context:"AudioContext recovery",reacquire:"Repeated microphone reopen",wake:"Screen Wake Lock"};
+function renderAutoResults(){const box=$("auto-results");const entries=autoOrder.filter(id=>state.results[id]);if(!entries.length){box.innerHTML='<div class="small">Results will appear here after you start the test.</div>';return}box.innerHTML=entries.map(id=>{const r=state.results[id];const cls=r.status==="pass"?"pass":r.status==="fail"?"fail":r.status==="skip"?"skip":"warn";return`<div class="test"><div class="test-head"><h3>${esc(autoNames[id]||id)}</h3><span class="tag ${cls}">${esc(r.status)}</span></div><div class="test-result ${cls}">${esc(r.message)}</div></div>`}).join("")}
+function preflight(){const e=state.env;if(!e.secure)return{ok:false,msg:"This page is not running over HTTPS/localhost, so the browser will block microphone access."};if(!e.gum)return{ok:false,msg:"This browser does not provide microphone access to web pages."};if(!e.audioContext)return{ok:false,msg:"This browser does not provide the Web Audio API required by VPT."};return{ok:true,msg:"Required browser APIs and secure context are available."}}
+function permissionSteps(){const e=state.env||{};if(e.os==="Windows")return e.browser==="Edge"||e.browser==="Chrome"?["Click the site-controls icon next to the address bar.","Open Site settings and set Microphone to Allow.","If it is still blocked: Windows Settings → Privacy & security → Microphone; turn on microphone access for desktop apps."]: ["Allow microphone access for this site in the browser.","If it is still blocked: Windows Settings → Privacy & security → Microphone; turn on microphone access for desktop apps."];if(e.os==="macOS")return e.browser==="Safari"?["Safari → Settings for This Website → Microphone → Allow.","If it is still blocked: System Settings → Privacy & Security → Microphone; enable Safari."]:["Open this site's permissions in the address bar and set Microphone to Allow.",`If it is still blocked: System Settings → Privacy & Security → Microphone; enable ${e.browser}.`];if(e.os==="iOS/iPadOS")return["In Safari, open the page/website settings from the address bar and set Microphone to Allow.","If needed: iPhone/iPad Settings → Apps → Safari → Microphone, then return here."];if(e.os==="Android")return["In Chrome, open this site's permissions from the address bar and set Microphone to Allow.","If needed: Android Settings → Apps → Chrome → Permissions → Microphone → Allow."];return["Allow microphone access for this site in your browser or device settings."]}
+function showPermissionGuide(message,kind="retry",errorName=""){
+  state.phase="blocked";state.lastError=errorName||state.lastError;
+  if(errorName)recordPrereqIssue(errorName,message);
+  setOverall("Action needed before testing can continue","warn");setProgress(0,"Testing paused until the microphone works.");
+  const guide=$("permission-guide"),steps=permissionSteps();guide.hidden=false;
+  const label=state.permission==="denied"?"I've allowed it — check again":"Try again";
+  guide.innerHTML=`<b>${esc(message)}</b><ol class="guide-steps">${steps.map(s=>`<li>${esc(s)}</li>`).join("")}</ol><div class="actions"><button id="permission-retry" class="primary">${label}</button></div>`;
+  $("permission-retry").onclick=async()=>{guide.hidden=true;await startTest(true)};
+  $("stop-test").disabled=true;state.running=false;updatePrereqUI();refreshReport()
+}
+function hidePermissionGuide(){$("permission-guide").hidden=true}
+async function acquireGate(){await refreshPermissionState();if(state.permission==="denied"){showPermissionGuide("Microphone access is currently blocked. Change the permission, then continue the test.","retry","NotAllowedError");return false}setProgress(8,state.permission==="prompt"||state.permission==="unknown"?"Waiting for microphone permission…":"Opening microphone…");try{const s=await requestMic();await attachStream(s);state.permission="granted";resolvePrereqIssues();updatePrereqUI();setResult("permission","pass","Microphone access granted and a live track was opened.",{device:track()?.label||"unnamed"});return true}catch(e){state.lastError=e.name||"Error";log("microphone-open-failed",`${e.name||"Error"}: ${e.message||""}`,true);if(e.name==="NotAllowedError"){state.permission="denied";showPermissionGuide("Microphone access was not granted. The remaining tests have not been run.","retry",e.name)}else if(e.name==="TimeoutError"){showPermissionGuide("The browser did not answer the microphone request. Look for a permission prompt; if none appears, check the site's microphone permission.","retry",e.name)}else if(e.name==="NotFoundError"){showPermissionGuide("No usable microphone was found. Connect a microphone or enable the built-in microphone, then continue.","retry",e.name)}else{showPermissionGuide("The microphone could not be opened. Close any app that may be using it, reconnect an external microphone if needed, then try again.","retry",e.name)}return false}}
+function resetRun(){state.stop=false;state.activeManual=null;state.results={};state.manual={};state.abnormal=[];state.trackEvents=[];state.visibilityEvents=[];state.deviceChangeCount=0;$("auto-done").hidden=true;$("manual-panel").classList.add("hidden");renderAutoResults();refreshReport()}
+async function startTest(resume=false){if(state.running)return;readConfig();if(!configReady()){setOverall("Choose your listening and microphone setup first","warn");$("setup-panel").scrollIntoView({behavior:"smooth",block:"start"});return}if(!resume)resetRun();state.running=true;state.stop=false;$("start-test").disabled=true;$("stop-test").disabled=false;hidePermissionGuide();setOverall("Testing in progress","warn");const pf=preflight();setResult("preflight",pf.ok?"pass":"fail",pf.msg,{secure:state.env.secure});if(!pf.ok){showPermissionGuide(pf.msg,"retry","PreflightError");$("start-test").disabled=false;return}const micOk=await acquireGate();if(!micOk){$("start-test").disabled=false;return}try{await runAutomaticSuite()}finally{state.running=false;$("start-test").disabled=false;$("stop-test").disabled=true;updateLive();refreshReport()}}
+async function runAutomaticSuite(){let step=1,total=6+(state.env.mobile?1:0);const advance=(label)=>setProgress(10+Math.round(step/total*86),label);advance("Checking detected inputs…");const inputs=await getInputs();setResult("inputs","pass",`${inputs.length} audio input${inputs.length===1?"":"s"} detected after permission was granted.`,{count:inputs.length,labels:inputs.map(d=>d.label||"unnamed").slice(0,6)});step++;if(state.stop)return;
+ advance("Speak or sing normally for a few seconds…");const signal=await testSignal(8000);setResult("signal",signal.status,signal.message,signal.data);step++;
+ if(signal.blocking){showPermissionGuide("The microphone opened, but the test could not measure usable voice input. Speak or sing close to the microphone, check that the intended input is selected, then try again.","retry","NoUsableSignal");return}
+ if(state.stop)return;
+ advance("Testing repeated Listen → Sing microphone switching…");const toggle=await testToggle(20);setResult("toggle",toggle.status,toggle.message,toggle.data);step++;if(state.stop)return;
+ advance("Testing Web Audio suspend/resume recovery…");const context=await testContext(12);setResult("context",context.status,context.message,context.data);step++;if(state.stop)return;
+ advance("Testing repeated microphone close/reopen…");const reacq=await testReacquire(10);setResult("reacquire",reacq.status,reacq.message,reacq.data);step++;if(reacq.blocking){showPermissionGuide(reacq.guide||"The microphone could not be restored during stress testing. Fix the microphone problem, then continue.","retry",reacq.errorName||"");return}if(state.stop)return;
+ if(state.env.mobile){advance("Checking screen Wake Lock…");const wake=await testWake();setResult("wake",wake.status,wake.message,wake.data);step++}
+ setProgress(100,"Automatic tests complete.");state.phase="manual";$("auto-done").hidden=false;$("auto-done").textContent="Automatic tests are complete. Do the extra checks shown below for your setup.";const autoHasFail=Object.values(state.results).some(r=>r.status==="fail");setOverall(autoHasFail?"Automatic test found a problem":"Automatic tests complete",autoHasFail?"bad":"good");refreshManualPlan(true);refreshReport()}
+async function testSignal(ms){const t=track();if(!t)return{status:"fail",message:"No active microphone track.",data:{}};const samples=[];let trackFailures=0,contextFailures=0;const start=performance.now();while(performance.now()-start<ms&&!state.stop){if(t.readyState!=="live"||t.muted||!t.enabled)trackFailures++;if(!state.ac||state.ac.state!=="running")contextFailures++;const r=sampleRms();if(r!==null)samples.push(r);await wait(100)}const max=samples.length?Math.max(...samples):0,mean=samples.length?samples.reduce((a,b)=>a+b,0)/samples.length:0;const data={durationSec:Math.round(ms/1000),trackFailures,contextFailures,maxRms:Number(max.toFixed(6)),meanRms:Number(mean.toFixed(6))};if(trackFailures||contextFailures)return{status:"fail",message:"The microphone or AudioContext became unavailable during the signal test.",data};if(max<0.00001)return{status:"warn",message:"The microphone track stayed live, but usable voice input was not measured.",data,blocking:true};return{status:"pass",message:"The microphone stayed live and delivered audio throughout the signal test.",data}}
+async function testToggle(cycles){let fail=0;for(let i=0;i<cycles&&!state.stop;i++){const t=track();if(!t){fail++;break}t.enabled=false;await wait(70);t.enabled=true;await wait(110);if(t.readyState!=="live"||t.muted||!t.enabled)fail++}return fail?{status:"fail",message:`${fail} of ${cycles} microphone enable/disable cycles ended unusable.`,data:{cycles,fail}}:{status:"pass",message:`${cycles} microphone enable/disable cycles completed successfully.`,data:{cycles,fail:0}}}
+async function testContext(cycles){await ensureAudio();let fail=0;for(let i=0;i<cycles&&!state.stop;i++){try{await state.ac.suspend();await wait(55);await state.ac.resume();await wait(75);if(state.ac.state!=="running")fail++}catch(e){fail++;log("context-cycle-failed",e.name||"error",true)}}return fail?{status:"fail",message:`${fail} of ${cycles} AudioContext recovery cycles failed.`,data:{cycles,fail}}:{status:"pass",message:`${cycles} AudioContext suspend/resume cycles returned to running.`,data:{cycles,fail:0}}}
+function countErrors(names){const out={};names.forEach(n=>out[n]=(out[n]||0)+1);return out}
+async function testReacquire(cycles){stopStream();let fail=0,times=[],errors=[];for(let i=0;i<cycles&&!state.stop;i++){const t0=performance.now();try{const s=await requestMic();times.push(performance.now()-t0);const tr=s.getAudioTracks()[0];if(!tr||tr.readyState!=="live")fail++;s.getTracks().forEach(x=>x.stop())}catch(e){fail++;errors.push(e.name||"Error");log("reacquire-failed",e.name||"Error",true);if(e.name==="NotAllowedError"||e.name==="TimeoutError")break}await wait(100)}let restored=false,restoreError="";if(!state.stop){try{await attachStream(await requestMic());restored=true}catch(e){restoreError=e.name||"Error";errors.push(restoreError);log("restore-failed",restoreError,true)}}const data={cyclesPlanned:cycles,cyclesCompleted:times.length+fail,fail,meanAcquireMs:times.length?Math.round(times.reduce((a,b)=>a+b,0)/times.length):null,maxAcquireMs:times.length?Math.round(Math.max(...times)):null,errors:countErrors(errors),restored};if(!restored)return{status:"fail",message:"The microphone could not be restored after the reopen stress test.",data,blocking:true,errorName:restoreError||errors[errors.length-1]||"",guide:restoreError==="NotAllowedError"?"Microphone permission became blocked during the reopen test. Restore permission, then continue.":"The microphone stopped reopening reliably. Reconnect it or close other apps using it, then continue."};return fail?{status:"fail",message:`${fail} microphone reopen attempt${fail===1?"":"s"} failed, but the microphone was restored.`,data}:{status:"pass",message:`${cycles} microphone close/reopen cycles completed; microphone restored successfully.`,data}}
+async function testWake(){if(!navigator.wakeLock)return{status:"warn",message:"This browser does not expose Screen Wake Lock. Keep the screen on manually during mobile practice.",data:{supported:false}};try{const w=await navigator.wakeLock.request("screen");await wait(350);await w.release();return{status:"pass",message:"Screen Wake Lock could be requested and released.",data:{supported:true,success:true}}}catch(e){log("wake-lock-failed",e.name||"Error",true);return{status:"warn",message:"Screen Wake Lock could not be obtained; screen-lock behavior should be checked manually.",data:{supported:true,success:false,error:e.name||"Error"}}}}
+function manualDefinitions(){const e=state.env||{},cfg=state.config,t=track(),inferred=inferMicType(t);return[
+ {id:"background",title:e.mobile?"Switch to another app and return":"Switch to another browser tab/app and return",relevant:true,desc:"Checks what happens when VPT is backgrounded and then brought back."},
+ {id:"screenlock",title:"Lock and unlock the screen",relevant:!!e.mobile,desc:"Checks mobile screen-lock interruption and recovery."},
+ {id:"interruption",title:"Siri / Assistant / phone-call interruption",relevant:!!e.mobile&&cfg.canInterrupt,desc:"Checks a real mobile audio-focus interruption."},
+ {id:"usb",title:"Unplug and reconnect the external microphone",relevant:cfg.mic==="usb"||inferred==="usb/external-likely",desc:"Checks USB/audio-interface removal and reconnection."},
+ {id:"busy",title:"Let another app use the same microphone",relevant:!e.mobile&&cfg.canBusy,desc:"Checks whether VPT remains usable when another desktop app also opens the microphone. Sharing the mic without a track-state change is a normal pass."},
+ {id:"bluetooth",title:"Bluetooth playback A/B check",relevant:cfg.listen==="bluetooth"||cfg.mic==="bluetooth"||inferred==="bluetooth-likely",desc:"Checks whether opening the microphone changes reference-audio quality or routing."},
+ {id:"permission",title:"Optional final check: block and restore microphone permission",relevant:true,desc:"Advanced recovery check. A web page cannot revoke its own permission, so this one step must be done in the browser's site settings. You may skip it."}
+]}
+function refreshManualPlan(show=false){
+  if(!state.env)return;
+  const defs=manualDefinitions().filter(d=>d.relevant);
+  if(show||state.phase==="manual"||state.phase==="complete")$("manual-panel").classList.remove("hidden");
+  const box=$("manual-tests");
+  const next=defs.find(d=>!state.manual[d.id]);
+  box.innerHTML=defs.filter(d=>state.manual[d.id]||!next||d.id===next.id).map(d=>{
+    const r=state.manual[d.id],isNext=!r&&next&&d.id===next.id,cls=r?(r.status==="pass"?"pass":r.status==="fail"?"fail":r.status==="skip"?"skip":"warn"):"";
+    return`<div class="test" data-manual="${d.id}"${isNext?' style="border-color:var(--accent)"':''}><div class="test-head"><div><h3>${esc(d.title)}${isNext?' · NEXT':''}</h3><div class="small">${esc(d.desc)}</div></div>${r?`<button data-start-manual="${d.id}">Run again</button>`:`<button data-start-manual="${d.id}" class="primary">Start</button>`}</div><div class="test-result ${cls}" data-manual-result="${d.id}">${r?esc(r.status.toUpperCase()+": "+r.message):"READY"}</div><div class="manual-box hidden" id="manual-box-${d.id}"></div></div>`
+  }).join("");
+  box.querySelectorAll("[data-start-manual]").forEach(b=>b.onclick=()=>startManual(b.dataset.startManual));
+  if(!defs.length)box.innerHTML='<div class="small">No additional manual checks are required for this setup.</div>';
+  refreshReport()
+}
+function finishManual(id,status,message,data={}){
+  state.activeManual=null;state.manual[id]={status,message,data,at:nowIso()};refreshManualPlan(true);refreshReport();
+  const defs=manualDefinitions().filter(d=>d.relevant),next=defs.find(d=>!state.manual[d.id]);
+  if(!next){state.phase="complete";const hasFail=Object.values(state.results).some(r=>r.status==="fail")||Object.values(state.manual).some(r=>r.status==="fail");setOverall(hasFail?"Testing complete — issue found":"Testing complete",hasFail?"bad":"good")}
+  else setTimeout(()=>document.querySelector(`[data-manual="${next.id}"]`)?.scrollIntoView({behavior:"smooth",block:"center"}),120)
+}
+function manualSnapshot(){return{visibility:document.visibilityState,ac:state.ac?state.ac.state:null,track:compactTrack(),permission:state.permission,deviceChangeCount:state.deviceChangeCount,trackEvents:state.trackEvents.length,visibilityEvents:state.visibilityEvents.length}}
+function permissionManualSteps(mode){
+  const e=state.env||{}, site=location.hostname||location.origin||"this site", block=mode==="block";
+  if((e.browser==="Chrome"||e.browser==="Edge")&&!e.mobile){
+    const action=block?"Block (or Never allow)":"Allow";
+    return [
+      "Do not use the microphone-in-use indicator; it may only show that the mic is active.",
+      "Click the Site controls icon (the sliders/tune icon) immediately to the left of the web address.",
+      `If Microphone is shown there, set it to ${action}. Otherwise choose Site settings, find Microphone, and set it to ${action}.`,
+      `If you still cannot find it: open browser Settings → Privacy and security → Site settings → Microphone, find ${site}, and change its permission there.`,
+      "Return to this test tab without reloading it."
+    ];
+  }
+  if(e.browser==="Safari"&&e.os==="macOS")return block?
+    ["Safari → Settings for This Website → Microphone → Deny.","Return to this test tab without reloading it."]:
+    ["Safari → Settings for This Website → Microphone → Allow.","Return to this test tab without reloading it."];
+  if(e.os==="iOS/iPadOS")return block?
+    ["Open this website's settings from Safari's address bar controls and set Microphone to Deny.","Return to this test tab without reloading it."]:
+    ["Open this website's settings from Safari's address bar controls and set Microphone to Allow.","Return to this test tab without reloading it."];
+  if(e.os==="Android")return block?
+    ["Open this site's permissions in Chrome and set Microphone to Block.","Return to this test tab without reloading it."]:
+    ["Open this site's permissions in Chrome and set Microphone to Allow.","Return to this test tab without reloading it."];
+  return block?["Open this site's permission settings in your browser and set Microphone to Block/Deny.","Return here without reloading."]:["Open this site's permission settings and restore Microphone to Allow.","Return here without reloading."];
+}
+function stepsHtml(items){return `<ol class="guide-steps">${items.map(x=>`<li>${esc(x)}</li>`).join("")}</ol>`}
+function startManual(id){state.activeManual=id;if(!track()){state.activeManual=null;showPermissionGuide("The microphone is no longer available. Restore it before continuing with manual checks.","retry","NoTrack");return}const box=$("manual-box-"+id);if(!box)return;box.classList.remove("hidden");const before=manualSnapshot();if(id==="background"){box.innerHTML=`<div class="callout">Press <b>Arm test</b>, then switch away from this page for about 5 seconds and come back. When you return, press <b>Finish</b>.</div><div class="actions"><button id="arm-bg" class="primary">Arm test</button><button id="finish-bg" disabled>Finish</button></div>`;let armed=false,v0=state.visibilityEvents.length;$("arm-bg").onclick=()=>{armed=true;v0=state.visibilityEvents.length;$("arm-bg").disabled=true;$("finish-bg").disabled=false;log("manual-background-armed")};$("finish-bg").onclick=()=>{const ev=state.visibilityEvents.slice(v0),s=manualSnapshot(),sawHidden=ev.some(x=>x.state==="hidden");finishManual(id,sawHidden?"pass":"warn",sawHidden?"The page background/return transition was observed.":"No background transition was recorded; repeat and stay away for about 5 seconds.",{sawHidden,after:s})};return}
+ if(id==="screenlock"){box.innerHTML=`<div class="callout">Press <b>Arm test</b>, lock the screen for about 5 seconds, unlock it, return here, then press <b>Finish</b>.</div><div class="actions"><button id="arm-lock" class="primary">Arm test</button><button id="finish-lock" disabled>Finish</button></div>`;let v0=state.visibilityEvents.length;$("arm-lock").onclick=()=>{v0=state.visibilityEvents.length;$("arm-lock").disabled=true;$("finish-lock").disabled=false};$("finish-lock").onclick=()=>{const ev=state.visibilityEvents.slice(v0),s=manualSnapshot(),sawHidden=ev.some(x=>x.state==="hidden");finishManual(id,sawHidden?"pass":"warn",sawHidden?"A screen/background interruption was observed and the page returned.":"No screen-lock/background transition was recorded.",{sawHidden,after:s})};return}
+ if(id==="interruption"){box.innerHTML=`<div class="callout">Press <b>Arm test</b>, then briefly trigger Siri/Assistant or a phone-call interruption. Return here and press <b>Finish</b>.</div><div class="actions"><button id="arm-int" class="primary">Arm test</button><button id="finish-int" disabled>Finish</button></div>`;let t0=state.trackEvents.length,v0=state.visibilityEvents.length;$("arm-int").onclick=()=>{$("arm-int").disabled=true;$("finish-int").disabled=false;t0=state.trackEvents.length;v0=state.visibilityEvents.length};$("finish-int").onclick=()=>{const tev=state.trackEvents.slice(t0),vev=state.visibilityEvents.slice(v0),s=manualSnapshot(),observed=tev.length>0||vev.length>0||(state.ac&&state.ac.state!=="running");finishManual(id,observed?"pass":"warn",observed?"An interruption/lifecycle change was observed.":"No browser-visible interruption signal was recorded; note whether audio behavior changed anyway.",{trackEvents:tev.map(x=>x.event),visibilityChanges:vev.length,after:s})};return}
+ if(id==="usb"){const d0=state.deviceChangeCount,t0=state.trackEvents.length;box.innerHTML=`<div class="callout">Unplug the microphone/audio interface. Wait 3–5 seconds. Reconnect it. Wait again, then press <b>Finish</b>. Do not choose another microphone manually during the test.</div><div class="actions"><button id="finish-usb" class="primary">Finish</button></div>`;$("finish-usb").onclick=async()=>{const s=manualSnapshot(),changes=state.deviceChangeCount-d0,tev=state.trackEvents.slice(t0),observed=changes>0||tev.some(x=>x.event==="ended"||x.event==="mute");finishManual(id,observed?"pass":"warn",observed?"The browser exposed the microphone removal/reconnection.":"No device/track change was exposed; repeat once if the microphone was definitely unplugged.",{deviceChanges:changes,trackEvents:tev.map(x=>x.event),after:s})};return}
+ if(id==="busy"){const t0=state.trackEvents.length;box.innerHTML=`<div class="callout">Open the other app and make it use the same microphone for about 5–10 seconds. Return here, then press <b>Finish</b>. It is normal if both apps can use the microphone at the same time.</div><div class="actions"><button id="finish-busy" class="primary">Finish</button></div>`;$("finish-busy").onclick=async()=>{const tev=state.trackEvents.slice(t0),s=manualSnapshot(),t=track(),changed=tev.length>0||(t&&(t.muted||t.readyState==="ended"));let recovered=!!(t&&t.readyState==="live"&&!t.muted);if(!recovered){try{await attachStream(await requestMic());recovered=true}catch(e){log("busy-recovery-failed",e.name||"Error",true)}}if(!recovered){finishManual(id,"fail","The microphone was no longer usable after the other app used it, and VPT could not reopen it.",{trackStateChange:changed,recovered:false,trackEvents:tev.map(x=>x.event),after:s});return}finishManual(id,"pass",changed?"The browser exposed a microphone state change, and the microphone was usable again afterwards.":"No interruption was exposed; this system appears to allow both apps to share the microphone.",{trackStateChange:changed,recovered:true,trackEvents:tev.map(x=>x.event),after:s})};return}
+ if(id==="bluetooth"){box.innerHTML=`<div class="callout">Listen to the same reference tone twice. A = microphone active. B = microphone temporarily disabled. Then choose what you heard.</div><div class="actions"><button id="bt-a">Play A — mic active</button><button id="bt-b">Play B — mic disabled</button></div><div class="choice"><button data-bt="same">Sounds the same</button><button data-bt="better-b">B sounds clearly better</button><button data-bt="uncertain">Different / not sure</button></div>`;$("bt-a").onclick=async()=>{if(track())track().enabled=true;await playTone()};$("bt-b").onclick=async()=>{if(track())track().enabled=false;await wait(150);await playTone();if(track())track().enabled=true};box.querySelectorAll("[data-bt]").forEach(b=>b.onclick=()=>{const v=b.dataset.bt;finishManual(id,v==="better-b"?"warn":"pass",v==="better-b"?"Reference audio sounded clearly better with the microphone disabled; Bluetooth routing may affect VPT playback.":v==="same"?"No clear playback degradation was heard when the microphone was active.":"Playback changed or was uncertain; this setup should be checked once more.",{observation:v,inferredInput:inferMicType(track())})});return}
+ if(id==="permission"){let observedBlocked=false;box.innerHTML=`<div class="callout"><b>Optional final recovery check.</b> For browser security, this page cannot block its own microphone permission. Change the site's microphone permission in the browser, then the page will verify what happened.</div><div class="small"><b>Step 1 — set this site to Block/Deny</b></div>${stepsHtml(permissionManualSteps("block"))}<div class="actions"><button id="perm-blocked" class="primary">I've set it to Block — check</button><button id="perm-skip" class="secondary">Skip this optional check</button></div><div class="small" id="perm-manual-state"></div><div id="perm-restore-area" class="hidden"></div>`;$("perm-skip").onclick=()=>finishManual(id,"skip","Optional live permission-revocation check was skipped.",{blockedObserved:false,recovered:null});$("perm-blocked").onclick=async()=>{await refreshPermissionState();const t=track(),ended=!t||t.readyState==="ended"||t.muted;observedBlocked=state.permission==="denied"||ended;const msg=$("perm-manual-state"),restore=$("perm-restore-area");if(!observedBlocked){msg.textContent="Block was not detected yet. Check that you changed the permission for THIS site, then press the button again. Do not restore Allow yet.";$("perm-blocked").textContent="Check again";return}msg.textContent="Block detected. Now restore microphone permission to Allow.";$("perm-blocked").disabled=true;$("perm-skip").disabled=true;restore.classList.remove("hidden");restore.innerHTML=`<div class="small" style="margin-top:10px"><b>Step 2 — restore Allow</b></div>${stepsHtml(permissionManualSteps("allow"))}<div class="actions"><button id="perm-restored" class="primary">I've set it to Allow — verify recovery</button></div>`;$("perm-restored").onclick=async()=>{await refreshPermissionState();try{await attachStream(await requestMic());state.permission="granted";finishManual(id,"pass","A real permission block was detected, then microphone access recovered without reloading the page.",{blockedObserved:true,recovered:true})}catch(e){log("permission-recovery-failed",e.name||"Error",true);finishManual(id,"fail",`The browser detected the permission block, but the microphone did not recover after Allow was restored (${e.name||"error"}).`,{blockedObserved:true,recovered:false,error:e.name||"Error"})}}};return}}
+async function playTone(){await ensureAudio();const o=state.ac.createOscillator(),g=state.ac.createGain();o.frequency.value=440;g.gain.value=.055;o.connect(g).connect(state.ac.destination);o.start();g.gain.setValueAtTime(.055,state.ac.currentTime);g.gain.exponentialRampToValueAtTime(.0001,state.ac.currentTime+1);o.stop(state.ac.currentTime+1.05);await wait(1100)}
+function pendingManual(){if(state.phase!=="manual"&&state.phase!=="complete")return[];return manualDefinitions().filter(d=>d.relevant&&!state.manual[d.id]).map(d=>d.title)}
+function overallReportStatus(){const rs=Object.values(state.results),ms=Object.values(state.manual);if(state.phase==="blocked")return"blocked";if(rs.some(r=>r.status==="fail")||ms.some(r=>r.status==="fail"))return"fail";if(state.phase==="setup"||state.phase==="running")return"incomplete";if(pendingManual().length)return"pending";if(rs.some(r=>r.status==="warn")||ms.some(r=>r.status==="warn"))return"warning";return"pass"}
+function reportSummary(status){if(status==="blocked")return{summary:"Testing paused: microphone access/device problem must be fixed first.",nextStep:"Follow the on-screen microphone instructions, then continue the test."};if(status==="fail")return{summary:"Testing found at least one microphone/browser reliability problem.",nextStep:"Send this report for evaluation; failed checks identify the affected area."};if(status==="pending")return{summary:"Automatic tests are complete; some relevant manual checks are still pending.",nextStep:"Complete the extra checks shown, then download the report."};if(status==="warning")return{summary:"Testing completed with one or more warnings but no hard failure.",nextStep:"Send the report for evaluation."};if(status==="pass")return{summary:"All relevant completed checks passed on this setup.",nextStep:"Download and send the report."};return{summary:"Test is not complete yet.",nextStep:"Finish the setup and run the test."}}
+function conciseAutoResults(){
+  const out={};
+  for(const id of autoOrder){
+    const r=state.results[id];if(!r)continue;const x={status:r.status};const d=r.data||{};
+    if(id==="inputs")Object.assign(x,{count:d.count??null});
+    else if(id==="signal")Object.assign(x,{maxRms:d.maxRms??null,trackFailures:d.trackFailures??0,contextFailures:d.contextFailures??0});
+    else if(id==="toggle"||id==="context")Object.assign(x,{cycles:d.cycles??null,fail:d.fail??0});
+    else if(id==="reacquire")Object.assign(x,{cyclesCompleted:d.cyclesCompleted??null,fail:d.fail??0,restored:d.restored??null,meanAcquireMs:d.meanAcquireMs??null,maxAcquireMs:d.maxAcquireMs??null,errors:d.errors||{}});
+    else if(id==="wake")Object.assign(x,{supported:d.supported??null,success:d.success??null});
+    if(r.status!=="pass")x.note=r.message;out[id]=x
+  }
+  return out
+}
+function conciseManual(){
+  const out={};
+  for(const [id,r] of Object.entries(state.manual)){const x={status:r.status};const d=r.data||{};
+    if(id==="background"||id==="screenlock")x.observed=!!d.sawHidden;
+    else if(id==="interruption")Object.assign(x,{trackEvents:d.trackEvents||[],visibilityChanges:d.visibilityChanges??0});
+    else if(id==="usb")Object.assign(x,{deviceChanges:d.deviceChanges??0,trackEvents:d.trackEvents||[]});
+    else if(id==="busy")Object.assign(x,{trackStateChange:!!d.trackStateChange,recovered:d.recovered??null});
+    else if(id==="bluetooth")Object.assign(x,{observation:d.observation||null,inferredInput:d.inferredInput||null});
+    else if(id==="permission")Object.assign(x,{blockedObserved:d.blockedObserved??null,recovered:d.recovered??null,error:d.error||null});
+    if(r.status!=="pass")x.note=r.message;out[id]=x
+  }
+  return out
+}
+function conciseTrack(){const t=track();if(!t)return null;let st={};try{st=t.getSettings?t.getSettings():{}}catch(e){}return{label:t.label||"unnamed",inferredType:inferMicType(t),sampleRate:st.sampleRate??null,channelCount:st.channelCount??null}}
+function buildReportObject(){
+  const status=overallReportStatus(),sum=reportSummary(status),t=conciseTrack();
+  const unresolved=state.prereqIssues.filter(x=>!x.resolvedAt),resolved=state.prereqIssues.filter(x=>x.resolvedAt);
+  const report={
+    module:"VPT Microphone Device Test",version:MODULE_VERSION,generatedAt:nowIso(),
+    overall:{status,summary:sum.summary,nextStep:sum.nextStep},
+    environment:{os:state.env?.os||"unknown",browser:state.env?.browser||"unknown",browserVersion:state.env?.browserVersion||"unknown",deviceClass:state.env?.mobile?"mobile/tablet":"desktop"},
+    setup:{listening:state.config.listen||"not answered",microphoneIntended:state.config.mic||"not answered"},
+    microphone:{permission:state.permission,active:t},
+    audio:{contextState:state.ac?.state||null,sampleRate:state.ac?.sampleRate||null},
+    tests:{automatic:conciseAutoResults(),manual:conciseManual()},
+    pendingManualTests:pendingManual()
+  };
+  if(unresolved.length)report.blocker={code:unresolved[unresolved.length-1].code,message:unresolved[unresolved.length-1].message};
+  if(resolved.length)report.prerequisiteRecovery=resolved.map(x=>({code:x.code,recovered:true}));
+  const meaningfulAbnormal=state.abnormal.filter(e=>!/^clipboard|visibility|devicechange$/.test(e.tag)).slice(-6);if((status==="fail"||status==="warning"||status==="blocked")&&meaningfulAbnormal.length)report.diagnostics={abnormalEvents:meaningfulAbnormal};
+  return report
+}
+function refreshReport(){const obj=buildReportObject();$("report").value=JSON.stringify(obj,null,2);const status=obj.overall.status;$("report-summary").className="callout "+(status==="pass"?"good":status==="fail"||status==="blocked"?"bad":"");$("report-summary").textContent=obj.overall.summary+(obj.pendingManualTests.length?` Pending manual checks: ${obj.pendingManualTests.length}.`:"")}
+async function copyReport(){const text=$("report").value||JSON.stringify(buildReportObject(),null,2),status=$("copy-status");status.textContent="";let copied=false;try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);copied=true}}catch(e){log("clipboard-api-failed",e.name||"Error")}
+ if(!copied){const ta=document.createElement("textarea");ta.value=text;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.opacity="0";ta.style.pointerEvents="none";document.body.appendChild(ta);ta.select();try{copied=document.execCommand("copy")}catch(e){copied=false}ta.remove()}
+ if(copied){status.textContent="Copied.";setTimeout(()=>status.textContent="",1800)}else{const report=$("report");report.closest("details").open=true;report.focus();report.select();status.textContent="Automatic copy was blocked. Press Ctrl+C (or Copy) now."}}
+function downloadReport(){refreshReport();const text=$("report").value,blob=new Blob([text],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`vpt-device-test-${new Date().toISOString().replace(/[:.]/g,"-")}.json`;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
+function recordVisibility(){const r={at:nowIso(),state:document.visibilityState,ac:state.ac?state.ac.state:null,track:track()?{readyState:track().readyState,muted:track().muted}:null};state.visibilityEvents.push(r);log("visibility",r.state,false);refreshReport()}
+if(navigator.mediaDevices&&"ondevicechange" in navigator.mediaDevices){navigator.mediaDevices.addEventListener("devicechange",()=>{state.deviceChangeCount++;log("devicechange",`count=${state.deviceChangeCount}`,state.activeManual!=="usb");refreshReport()})}
+document.addEventListener("visibilitychange",recordVisibility);
+$("start-test").onclick=()=>startTest(false);$("stop-test").onclick=()=>{state.stop=true;state.running=false;$("stop-test").disabled=true;setProgress(0,"Stopped by tester.");setOverall("Test stopped","warn");refreshReport()};$("copy-report").onclick=copyReport;$("download-report").onclick=downloadReport;
+detectEnvironment();readConfig();updatePrereqUI();setInterval(()=>{if(state.analyser)sampleRms()},300);window.addEventListener("beforeunload",()=>{try{stopStream()}catch(e){}try{if(state.ac&&state.ac.state!=="closed")state.ac.close()}catch(e){}});
+</script>
+</body>
+</html>
